@@ -11,6 +11,36 @@
     <title>$Title$</title>
   </head>
   <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-5">
+          <table class="table" width="100%">
+            <tr>
+              <td>Server</td>
+              <td>Active</td>
+            </tr>
+            <tr>
+              <td>Server 1</td>
+              <td>Active</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-md-5">
+          <table class="table" width="100%">
+            <tr>
+              <td>Jill</td>
+              <td>Smith</td>
+              <td>50</td>
+            </tr>
+            <tr>
+              <td>Eve</td>
+              <td>Jackson</td>
+              <td>94</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
   Hello Again. Please work.
   </body>
 </html>
