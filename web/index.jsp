@@ -12,36 +12,49 @@
     <title>$Title$</title>
   </head>
   <body>
+    <div class ="container">
+      <h5>All Servers are healthy.</h5>
+    </div>
     <div class="container">
       <div class="row">
         <div class="col-md-5">
           <table class="table" width="100%">
             <tr>
+              <th>Server</th>
+              <th>Status</th>
+              <th>Server Type</th>
+            </tr>
+            <tr>
               <td>Server</td>
               <td>Active</td>
+              <td>Master</td>
             </tr>
             <tr>
               <td>Server 1</td>
               <td>Active</td>
+              <td>Slave</td>
             </tr>
           </table>
         </div>
         <div class="col-md-5">
           <table class="table" width="100%">
             <tr>
-              <td>Jill</td>
-              <td>Smith</td>
-              <td>50</td>
+              <th>Queues</th>
+              <th>Size</th>
             </tr>
             <tr>
-              <td>Eve</td>
-              <td>Jackson</td>
-              <td>94</td>
+              <td>Q1</td>
+              <td>50 Items</td>
+            </tr>
+            <tr>
+              <td>Q2</td>
+              <td>94 Items</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
   Hello Again. Please work.
+
   </body>
 </html>
