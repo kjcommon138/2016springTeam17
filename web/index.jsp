@@ -2,7 +2,7 @@
   Created by IntelliJ IDEA.
   User: michael
   Date: 1/26/16
-  Time: 9:38 AM
+  Time: 10:00 AM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -11,6 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  Hello World
+  Hello Again
   </body>
 </html>
