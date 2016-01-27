@@ -7,6 +7,10 @@
         <element id="directory" name="classes">
           <element id="module-output" name="2016springTeam17" />
         </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/../lettuce-4.0.2.Final.jar" />
+          <element id="library" level="project" name="biz.paluch.redis:lettuce:4.0.2.Final" />
+        </element>
       </element>
     </root>
   </artifact>

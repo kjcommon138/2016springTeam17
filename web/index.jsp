@@ -37,7 +37,7 @@
 
 
     <div class ="container">
-      <h5>All Servers are <%= myServer.getServerStatus()%></h5>
+      <h5>All Servers are <%= myServer.getRedisConnection()%></h5>
     </div>
     <div class="container">
       <div class="row">
