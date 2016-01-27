@@ -6,14 +6,42 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="cluster.ServerStatus" %>
 <html>
   <head>
     <link rel="stylesheet" href="css/bootstrap.css" />
     <title>$Title$</title>
   </head>
   <body>
+
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">ElasticQueue Dashboard</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Servers
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Add a Server</a></li>
+              <li><a href="#">Page 1-2</a></li>
+              <li><a href="#">Page 1-3</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Page 2</a></li>
+          <li><a href="#">Page 3</a></li>
+        </ul>
+      </div>
+    </nav>
+    <%
+      ServerStatus myServer = new ServerStatus();
+    %>
+
+
     <div class ="container">
-      <h5>All Servers are healthy.</h5>
+      <h5>All Servers are <%= myServer.getServerStatus()%></h5>
     </div>
     <div class="container">
       <div class="row">
@@ -58,3 +86,6 @@
 
   </body>
 </html>
+<!-- Latest compiled JavaScript -->
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootstrap.js"></script>
