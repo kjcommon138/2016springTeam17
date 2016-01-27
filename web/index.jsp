@@ -26,12 +26,8 @@
             <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="#">Add a Server</a></li>
-              <li><a href="#">Page 1-2</a></li>
-              <li><a href="#">Page 1-3</a></li>
             </ul>
           </li>
-          <li><a href="#">Page 2</a></li>
-          <li><a href="#">Page 3</a></li>
         </ul>
       </div>
     </nav>
@@ -65,7 +61,7 @@
           </table>
         </div>
         <div class="col-md-5">
-          <table class="table" width="100%">
+          <table id="tableId" class="table" width="100%">
             <tr>
               <th>Queues</th>
               <th>Size</th>
@@ -84,8 +80,19 @@
     </div>
   Hello Again. Please work.
 
+
   </body>
 </html>
 <!-- Latest compiled JavaScript -->
+<script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap.js"></script>
+<script>
+  $('#tableId').find('tr').click( function(){
+    var table = document.getElementById("tableId");
+    var rows = table.getElementsByTagName("tr");
+    for(i=0; i <rows.length; i++) {
+      table.rows[i].style.backgroundColor = 'white';
+    }
+    table.rows[$(this).index()].style.backgroundColor = 'green';
+  });
+</script>
