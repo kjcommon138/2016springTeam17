@@ -42,25 +42,31 @@
     <div class="container">
       <div class="row">
         <div class="col-md-5">
-          <table class="table" width="100%">
+          <table id="serverTable" class="table" width="100%">
             <tr>
               <th>Server</th>
               <th>Status</th>
               <th>Server Type</th>
             </tr>
             <tr>
-              <td>Server</td>
+              <td>Server 1</td>
               <td>Active</td>
               <td>Master</td>
             </tr>
             <tr>
-              <td>Server 1</td>
+              <td>Server 2</td>
               <td>Active</td>
               <td>Slave</td>
             </tr>
           </table>
         </div>
         <div class="col-md-5">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                 aria-valuemin="0" aria-valuemax="100" style="width:70%">
+              70%
+            </div>
+          </div>
           <table id="tableId" class="table" width="100%">
             <tr>
               <th>Queues</th>
@@ -87,12 +93,14 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
-  $('#tableId').find('tr').click( function(){
-    var table = document.getElementById("tableId");
-    var rows = table.getElementsByTagName("tr");
-    for(i=0; i <rows.length; i++) {
-      table.rows[i].style.backgroundColor = 'white';
+  $('#serverTable').find('tr').click( function(){
+    if($(this).index() != 0) {
+      var table = document.getElementById("serverTable");
+      var rows = table.getElementsByTagName("tr");
+      for(i=0; i <rows.length; i++) {
+        table.rows[i].style.backgroundColor = 'white';
+      }
+      table.rows[$(this).index()].style.backgroundColor = 'green';
     }
-    table.rows[$(this).index()].style.backgroundColor = 'green';
   });
 </script>
