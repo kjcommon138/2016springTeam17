@@ -77,7 +77,7 @@
                 if(selectedServer != null) { %>
                   <h4>Showing queues for: <%= selectedServer%></h4>
                 <% }%>
-            <table id="queueTable" class="table" width="100%">
+            <table style="display:none" id="queueTable" class="table" width="100%">
                 <tr>
                     <th>Queues</th>
                     <th>Size</th>
@@ -94,7 +94,7 @@
 
             <div class="col-md-5" style="overflow:scroll;height:80px;width:100%;overflow:auto">
 
-                <table class="table" width:100% id="redisTable">
+                <table style="display:none" class="table" width:100% id="redisTable">
                     <tr>
                         <th>ID</th>
                         <th>Item</th>
@@ -112,6 +112,27 @@
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
+    //Toggles queue table off by default
+    var qTable = document.getElementById("queueTable");
+    var rTable = document.getElementById("redisTable");
+
+    function toggleQueueTable() {
+        var qTable = document.getElementById("queueTable");
+        if(qTable.style.display == "none")
+            qTable.style.display = "table";
+
+        var rTable = document.getElementById("redisTable");
+        if(rTable.style.display == "table")
+            rTable.style.display = "none";
+    }
+
+    function toggleRedisTable() {
+        var rTable = document.getElementById("redisTable");
+        if(rTable.style.display == "none")
+            rTable.style.display = "table";
+    }
+
+
     $('#queueTable').find('tr').click(function queueClick() {
         if ($(this).index() != 0) {
             var table = document.getElementById("queueTable");
@@ -120,6 +141,8 @@
                 table.rows[i].style.backgroundColor = 'white';
             }
             table.rows[$(this).index()].style.backgroundColor = 'lightblue';
+            toggleRedisTable();
+
             //output table of values inside of queue
             var redisTable = document.getElementById("redisTable");
             //clears entire table
@@ -190,6 +213,7 @@ window.onload = function colorTableRow() {
             for(j = 0; j < Cells.length; j++) {
                 if(Cells[j].innerHTML === serverName) {
                     done = true;
+                    toggleQueueTable();
                 }
             }
             if(done == true) {
@@ -200,5 +224,6 @@ window.onload = function colorTableRow() {
     }
 }
 </script>
+
 </body>
 </html>

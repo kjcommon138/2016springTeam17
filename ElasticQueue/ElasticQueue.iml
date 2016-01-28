@@ -21,6 +21,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:servlet-api:2.4" level="project" />
     <orderEntry type="library" name="Maven: biz.paluch.redis:lettuce:4.0.2.Final" level="project" />
     <orderEntry type="library" name="Maven: io.reactivex:rxjava:1.0.14" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.0.30.Final" level="project" />
