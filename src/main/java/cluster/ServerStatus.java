@@ -9,7 +9,7 @@ import com.lambdaworks.redis.api.sync.RedisCommands;
  * Created by laureltimko on 1/26/16.
  */
 public class ServerStatus {
-
+    //public variables...
     public String serverStatus = "Active";
     private String cacheKey = "listOfLanguages";
     private String[] elements;
