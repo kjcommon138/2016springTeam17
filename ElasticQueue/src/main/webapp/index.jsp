@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="cluster.ServerStatus" %>
+<%@ page import="cluster.ServerStatus, java.util.*" %>
 <html>
 <head>
     <link rel="stylesheet" href="css/bootstrap.css"/>
@@ -33,12 +33,16 @@
 </nav>
 <%
     ServerStatus myServer = new ServerStatus();
+    String selectedServer = request.getParameter("selectedServer");
 %>
 
-
 <div class="container">
-    <h5>All Servers are <%= myServer.getRedisConnection()%>
-    </h5>
+    <% if(myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
+    <div class="alert alert-danger">
+        <strong>Server down!</strong> One or more servers are down.
+    </div>
+    <% } %>
+
 </div>
 <div class="container">
     <div class="row">
@@ -50,24 +54,29 @@
                     <th>Server Type</th>
                 </tr>
                 <tr>
-                    <td>Server 1</td>
+                    <td>Server1</td>
                     <td>Active</td>
                     <td>Master</td>
                 </tr>
                 <tr>
-                    <td>Server 2</td>
+                    <td>Server2</td>
                     <td>Active</td>
                     <td>Slave</td>
                 </tr>
             </table>
         </div>
         <div class="col-md-5">
+            <h5>Load: High</h5>
             <div class="progress">
                 <div class="progress-bar" role="progressbar" aria-valuenow="70"
                      aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                    70%
+                    <span class="sr-only">70% Complete</span>
                 </div>
             </div>
+            <%
+                if(selectedServer != null) { %>
+                  <h4>Showing queues for: <%= selectedServer%></h4>
+                <% }%>
             <table id="queueTable" class="table" width="100%">
                 <tr>
                     <th>Queues</th>
@@ -97,26 +106,13 @@
         </div>
     </div>
 </div>
-Hello Again. Please work.
 
 
 <!-- Latest compiled JavaScript -->
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script>
-    $('#serverTable').find('tr').click(function () {
-        if ($(this).index() != 0) {
-            var table = document.getElementById("serverTable");
-            var rows = table.getElementsByTagName("tr");
-            for (i = 0; i < rows.length; i++) {
-                table.rows[i].style.backgroundColor = 'white';
-            }
-            table.rows[$(this).index()].style.backgroundColor = 'green';
-        }
-    });
-</script>
-<script>
-    $('#queueTable').find('tr').click(function () {
+    $('#queueTable').find('tr').click(function queueClick() {
         if ($(this).index() != 0) {
             var table = document.getElementById("queueTable");
             var rows = table.getElementsByTagName("tr");
@@ -145,6 +141,64 @@ Hello Again. Please work.
         }
     });
 </script>
+<script>
+    $('#serverTable').find('tr').click(function () {
+        if ($(this).index() != 0) {
+            var table = document.getElementById("serverTable");
+            var rows = table.getElementsByTagName("tr");
+            for (i = 0; i < rows.length; i++) {
+                table.rows[i].style.backgroundColor = 'white';
+            }
+            var Cells = table.rows[$(this).index()].getElementsByTagName("td");
+            window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
 
+            /**
+            var queueTable = document.getElementById("queueTable");
+            //clears entire table
+            for (j = queueTable.rows.length; j > 1; j--) {
+                queueTable.deleteRow(j-1);
+            }
+            var queueList = ["hi","bye"];
+            <%
+              String[] arr = myServer.getQueueList();
+              for(int i = 0; i < arr.length; i++) { %>
+            queueList[<%= i%>] = "<%=arr[i]%>";
+            <% }%>
+            for (var l = 1; l < queueList.length + 1; l++) {
+                var newRow = queueTable.insertRow(l);
+                var newCell1 = newRow.insertCell(0);
+                newCell1.innerText = queueList[l-1];
+                var newCell2 = newRow.insertCell(1);
+                newCell2.innerText = "50 items";
+            }
+             **/
+        }
+    });
+
+</script>
+<script>
+window.onload = function colorTableRow() {
+    var url = window.location.href;
+    var dist = url.indexOf("selectedServer=");
+    if(dist != -1) {
+        var serverName = url.substring(dist + 15);
+        var table = document.getElementById("serverTable");
+        var rows = table.getElementsByTagName("tr");
+        var done = false;
+        for (i = 0; i < rows.length; i++) {
+            var Cells = rows[i].getElementsByTagName("td");
+            for(j = 0; j < Cells.length; j++) {
+                if(Cells[j].innerHTML === serverName) {
+                    done = true;
+                }
+            }
+            if(done == true) {
+                table.rows[i].style.backgroundColor = 'lightgreen';
+                break;
+            }
+        }
+    }
+}
+</script>
 </body>
 </html>

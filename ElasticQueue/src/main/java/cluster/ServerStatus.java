@@ -13,6 +13,7 @@ public class ServerStatus {
     public String serverStatus = "Active";
     private String cacheKey = "listOfLanguages";
     private String[] elements;
+    public String[] queueList;
 
     //set redis connection
     private RedisClient redisClient;
@@ -28,6 +29,9 @@ public class ServerStatus {
         redisClient = new RedisClient(RedisURI.create("redis://localhost/"));
         stateful = redisClient.connect();
         syncApi = stateful.sync();
+        queueList = new String[2];
+        queueList[0] = "Q1";
+        queueList[1] = "Q2";
     }
 
     public String getServerStatus() {
@@ -63,6 +67,10 @@ public class ServerStatus {
 
     public String[] getList() {
         return elements;
+    }
+
+    public String[] getQueueList() {
+        return queueList;
     }
 
 }
