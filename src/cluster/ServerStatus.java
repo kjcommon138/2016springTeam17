@@ -11,8 +11,23 @@ import com.lambdaworks.redis.api.sync.RedisCommands;
 public class ServerStatus {
 
     public String serverStatus = "Active";
+    private String cacheKey = "listOfLanguages";
+    private String[] elements;
+
+    //set redis connection
+    private RedisClient redisClient;
+    private StatefulRedisConnection<String, String> stateful;
+    private RedisCommands<String, String> syncApi;
+
 
     public static void main(String[] args) {
+    }
+
+    public ServerStatus() {
+        //set redis connection
+        redisClient = new RedisClient(RedisURI.create("redis://localhost/"));
+        stateful = redisClient.connect();
+        syncApi = stateful.sync();
     }
 
     public String getServerStatus() {
@@ -24,22 +39,30 @@ public class ServerStatus {
     }
 
     public String getRedisConnection() {
-        //set redis connection
-        RedisClient redisClient = new RedisClient(RedisURI.create("redis://localhost/"));
-        StatefulRedisConnection<String, String> stateful = redisClient.connect();
-        RedisCommands<String, String> syncApi = stateful.sync();
-        setServerStatus(!syncApi.ping().isEmpty() ? "Active" : "Disabled");
         //if connection is good
         //set serverstatus to "Active"
         //else
         //set serverstatus as "Disabled"
+        if (syncApi != null) {
+            setServerStatus(!syncApi.ping().isEmpty() ? "Active" : "Disabled");
 
-        System.out.println("Connected to Redis");
+            System.out.println("Connected to Redis");
+            syncApi.del(cacheKey);
 
-        syncApi.close();
-        redisClient.shutdown();
+            syncApi.sadd(cacheKey, "Test1", "Test2", "Test3");
+            elements = syncApi.smembers(cacheKey).toArray(new String[syncApi.smembers(cacheKey).size()]);
+            syncApi.close();
+            redisClient.shutdown();
 
+            return getServerStatus();
+        }
+
+        setServerStatus("Disabled");
         return getServerStatus();
+    }
+
+    public String[] getList() {
+        return elements;
     }
 
 }
