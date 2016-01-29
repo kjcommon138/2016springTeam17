@@ -10,16 +10,15 @@ import com.lambdaworks.redis.api.sync.RedisCommands;
  */
 public class ServerStatus {
     //public variables...
-    public String serverStatus = "Active";
+    private String serverStatus = "Active";
     private String cacheKey = "listOfLanguages";
     private String[] elements;
-    public String[] queueList;
+    private String[] queueList;
 
     //set redis connection
     private RedisClient redisClient;
     private StatefulRedisConnection<String, String> stateful;
     private RedisCommands<String, String> syncApi;
-
 
     public static void main(String[] args) {
     }
@@ -38,7 +37,7 @@ public class ServerStatus {
         return serverStatus;
     }
 
-    public void setServerStatus(String serverStatus) {
+    private void setServerStatus(String serverStatus) {
         this.serverStatus = serverStatus;
     }
 
@@ -51,12 +50,11 @@ public class ServerStatus {
             setServerStatus(!syncApi.ping().isEmpty() ? "Active" : "Disabled");
 
             System.out.println("Connected to Redis");
-            syncApi.del(cacheKey);
+
+            syncApi.flushdb();
 
             syncApi.sadd(cacheKey, "Test1", "Test2", "Test3");
             elements = syncApi.smembers(cacheKey).toArray(new String[syncApi.smembers(cacheKey).size()]);
-            syncApi.close();
-            redisClient.shutdown();
 
             return getServerStatus();
         }
@@ -65,14 +63,23 @@ public class ServerStatus {
         return getServerStatus();
     }
 
+    public String[] getList(String key) {
+        elements = syncApi.smembers(key).toArray(new String[syncApi.smembers(key).size()]);
+        return elements;
+    }
+
     public String[] getList() {
         return elements;
     }
 
-    public int getListSize() {return elements.length; }
-
     public String[] getQueueList() {
         return queueList;
     }
+
+    /*
+    private void closeConnection() {
+        syncApi.close();
+        redisClient.shutdown();
+    }*/
 
 }

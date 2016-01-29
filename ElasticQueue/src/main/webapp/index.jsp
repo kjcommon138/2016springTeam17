@@ -172,7 +172,7 @@
                 var newCell1 = newRow.insertCell(0);
                 newCell1.innerText = queueList[l-1];
                 var newCell2 = newRow.insertCell(1);
-                newCell2.innerText = "<%=myServer.getListSize()%>" + " items";
+                newCell2.innerText = "<%=myServer.getList().length%>" + " items";
             }
 
             $('#queueTable').find('tr').click(function () {
