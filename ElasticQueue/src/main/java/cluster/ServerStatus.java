@@ -30,8 +30,8 @@ public class ServerStatus {
         stateful = redisClient.connect();
         syncApi = stateful.sync();
         queueList = new String[2];
-        queueList[0] = "Q1";
-        queueList[1] = "Q2";
+        queueList[0] = "Test1";
+        queueList[1] = "Test2";
     }
 
     public String getServerStatus() {
@@ -68,6 +68,8 @@ public class ServerStatus {
     public String[] getList() {
         return elements;
     }
+
+    public int getListSize() {return elements.length; }
 
     public String[] getQueueList() {
         return queueList;

@@ -10,7 +10,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/bootstrap.css"/>
-    <title>$Title$</title>
+    <title>ElasticQueue</title>
 </head>
 <body>
 
@@ -33,8 +33,13 @@
 </nav>
 <%
     ServerStatus myServer = new ServerStatus();
-    String selectedServer = request.getParameter("selectedServer");
+    //String selectedServer = request.getParameter("selectedServer");
 %>
+
+<!-- Latest compiled JavaScript -->
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>var selectedServer = "";</script>
 
 <div class="container">
     <% if(myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
@@ -73,10 +78,7 @@
                     <span class="sr-only">70% Complete</span>
                 </div>
             </div>
-            <%
-                if(selectedServer != null) { %>
-                  <h4>Showing queues for: <%= selectedServer%></h4>
-                <% }%>
+            <h4 id="queueHeading" style="display:none">Showing queues for: <span class="serverValue"></span></h4>
             <table style="display:none" id="queueTable" class="table" width="100%">
                 <tr>
                     <th>Queues</th>
@@ -107,10 +109,6 @@
     </div>
 </div>
 
-
-<!-- Latest compiled JavaScript -->
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
 <script>
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
@@ -118,12 +116,16 @@
 
     function toggleQueueTable() {
         var qTable = document.getElementById("queueTable");
-        if(qTable.style.display == "none")
+        if (qTable.style.display == "none")
             qTable.style.display = "table";
 
         var rTable = document.getElementById("redisTable");
-        if(rTable.style.display == "table")
+        if (rTable.style.display == "table")
             rTable.style.display = "none";
+
+        var heading = document.getElementById("queueHeading");
+        if(heading.style.display == "none")
+                heading.style.display = "inline";
     }
 
     function toggleRedisTable() {
@@ -132,39 +134,6 @@
             rTable.style.display = "table";
     }
 
-
-    $('#queueTable').find('tr').click(function queueClick() {
-        if ($(this).index() != 0) {
-            var table = document.getElementById("queueTable");
-            var rows = table.getElementsByTagName("tr");
-            for (i = 0; i < rows.length; i++) {
-                table.rows[i].style.backgroundColor = 'white';
-            }
-            table.rows[$(this).index()].style.backgroundColor = 'lightblue';
-            toggleRedisTable();
-
-            //output table of values inside of queue
-            var redisTable = document.getElementById("redisTable");
-            //clears entire table
-            for (j = redisTable.rows.length; j > 1; j--) {
-                redisTable.deleteRow(j-1);
-            }
-            <% String[] strList = myServer.getList(); %>
-            var redisSet = [];
-            redisSet.push(<% for(int k = 0; k < strList.length; k++) { %>"<%= strList[k] %>"<%= k + 1 < strList.length ? ",":"" %><% } %> );
-            console.log("Length of redisSet: " + redisSet.length);
-            console.log(redisSet);
-            for (l = 1; l < redisSet.length + 1; l++) {
-                var newRow = redisTable.insertRow(l);
-                var newCell1 = newRow.insertCell(0);
-                newCell1.innerHTML=l;
-                var newCell2 = newRow.insertCell(1);
-                newCell2.innerHTML=redisSet[l-1];
-            }
-        }
-    });
-</script>
-<script>
     $('#serverTable').find('tr').click(function () {
         if ($(this).index() != 0) {
             var table = document.getElementById("serverTable");
@@ -172,57 +141,75 @@
             for (i = 0; i < rows.length; i++) {
                 table.rows[i].style.backgroundColor = 'white';
             }
-            var Cells = table.rows[$(this).index()].getElementsByTagName("td");
-            window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
 
-            /**
+            var queueTable = document.getElementById("queueTable");
+            var queueRows = table.getElementsByTagName("tr");
+            for (i = 0; i < queueRows.length; i++) {
+                queueTable.rows[i].style.backgroundColor = 'white';
+            }
+
+            table.rows[$(this).index()].style.backgroundColor = 'green';
+            toggleQueueTable();
+            var Cells = table.rows[$(this).index()].getElementsByTagName("td");
+
+            selectedServer = Cells[0].innerText;
+
+            $("#queueHeading .serverValue").html(selectedServer);
+
             var queueTable = document.getElementById("queueTable");
             //clears entire table
             for (j = queueTable.rows.length; j > 1; j--) {
                 queueTable.deleteRow(j-1);
             }
-            var queueList = ["hi","bye"];
+            var queueList = [];
             <%
               String[] arr = myServer.getQueueList();
               for(int i = 0; i < arr.length; i++) { %>
-            queueList[<%= i%>] = "<%=arr[i]%>";
+            queueList.push("<%=arr[i]%>");
             <% }%>
             for (var l = 1; l < queueList.length + 1; l++) {
                 var newRow = queueTable.insertRow(l);
                 var newCell1 = newRow.insertCell(0);
                 newCell1.innerText = queueList[l-1];
                 var newCell2 = newRow.insertCell(1);
-                newCell2.innerText = "50 items";
+                newCell2.innerText = "<%=myServer.getListSize()%>" + " items";
             }
-             **/
+
+            $('#queueTable').find('tr').click(function () {
+                if ($(this).index() != 0) {
+                    var table = document.getElementById("queueTable");
+                    var rows = table.getElementsByTagName("tr");
+                    for (i = 0; i < rows.length; i++) {
+                        table.rows[i].style.backgroundColor = 'white';
+                    }
+                    table.rows[$(this).index()].style.backgroundColor = 'lightblue';
+                    var Cells = table.rows[$(this).index()].getElementsByTagName("td");
+                    //window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
+
+                    toggleRedisTable();
+
+                    //output table of values inside of queue
+                    var redisTable = document.getElementById("redisTable");
+                    //clears entire table
+                    for (j = redisTable.rows.length; j > 1; j--) {
+                        redisTable.deleteRow(j-1);
+                    }
+                    <% String[] strList = myServer.getList(); %>
+                    var redisSet = [];
+                    redisSet.push(<% for(int k = 0; k < strList.length; k++) { %>"<%= strList[k] %>"<%= k + 1 < strList.length ? ",":"" %><% } %> );
+                    console.log("Length of redisSet: " + redisSet.length);
+                    console.log(redisSet);
+                    for (l = 1; l < redisSet.length + 1; l++) {
+                        var newRow = redisTable.insertRow(l);
+                        var newCell1 = newRow.insertCell(0);
+                        newCell1.innerHTML=l;
+                        var newCell2 = newRow.insertCell(1);
+                        newCell2.innerHTML=redisSet[l-1];
+                    }
+                }
+            });
         }
     });
-
-</script>
-<script>
-window.onload = function colorTableRow() {
-    var url = window.location.href;
-    var dist = url.indexOf("selectedServer=");
-    if(dist != -1) {
-        var serverName = url.substring(dist + 15);
-        var table = document.getElementById("serverTable");
-        var rows = table.getElementsByTagName("tr");
-        var done = false;
-        for (i = 0; i < rows.length; i++) {
-            var Cells = rows[i].getElementsByTagName("td");
-            for(j = 0; j < Cells.length; j++) {
-                if(Cells[j].innerHTML === serverName) {
-                    done = true;
-                    toggleQueueTable();
-                }
-            }
-            if(done == true) {
-                table.rows[i].style.backgroundColor = 'lightgreen';
-                break;
-            }
-        }
-    }
-}
 </script>
 
 </body>
