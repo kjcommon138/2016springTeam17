@@ -148,7 +148,7 @@
                 queueTable.rows[i].style.backgroundColor = 'white';
             }
 
-            table.rows[$(this).index()].style.backgroundColor = 'green';
+            table.rows[$(this).index()].style.backgroundColor = 'lightblue';
             toggleQueueTable();
             var Cells = table.rows[$(this).index()].getElementsByTagName("td");
 
