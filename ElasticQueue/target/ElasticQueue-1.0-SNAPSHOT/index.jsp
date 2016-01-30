@@ -39,10 +39,13 @@
 <!-- Latest compiled JavaScript -->
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
-<script>var selectedServer = "";</script>
+<script>
+    var selectedServer = "";
+    var selectedQueue = "";
+</script>
 
 <div class="container">
-    <% if(myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
+    <% if (myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
     <div class="alert alert-danger">
         <strong>Server down!</strong> One or more servers are down.
     </div>
@@ -79,6 +82,7 @@
                 </div>
             </div>
             <h4 id="queueHeading" style="display:none">Showing queues for: <span class="serverValue"></span></h4>
+            <span style="display:none" class="queueValue"></span>
             <table style="display:none" id="queueTable" class="table" width="100%">
                 <tr>
                     <th>Queues</th>
@@ -124,13 +128,13 @@
             rTable.style.display = "none";
 
         var heading = document.getElementById("queueHeading");
-        if(heading.style.display == "none")
-                heading.style.display = "inline";
+        if (heading.style.display == "none")
+            heading.style.display = "inline";
     }
 
     function toggleRedisTable() {
         var rTable = document.getElementById("redisTable");
-        if(rTable.style.display == "none")
+        if (rTable.style.display == "none")
             rTable.style.display = "table";
     }
 
@@ -159,20 +163,30 @@
             var queueTable = document.getElementById("queueTable");
             //clears entire table
             for (j = queueTable.rows.length; j > 1; j--) {
-                queueTable.deleteRow(j-1);
+                queueTable.deleteRow(j - 1);
             }
             var queueList = [];
+            var itemLength = [];
             <%
               String[] arr = myServer.getQueueList();
-              for(int i = 0; i < arr.length; i++) { %>
+              %>
+
+            var redisSet = new Array(<%=arr.length%>);
+            <%
+              for(int i = 0; i < arr.length; i++) {
+               String[] list = myServer.getList(arr[i]);
+               %>
             queueList.push("<%=arr[i]%>");
-            <% }%>
+            redisSet[<%=i%>] = [<% for(int k = 0; k < list.length; k++) { %>"<%= list[k] %>"<%= k + 1 < list.length ? ",":"" %><% } %>];
+            itemLength.push("<%=myServer.getList(arr[i]).length + " items"%>")
+            <% } %>
+
             for (var l = 1; l < queueList.length + 1; l++) {
                 var newRow = queueTable.insertRow(l);
                 var newCell1 = newRow.insertCell(0);
-                newCell1.innerText = queueList[l-1];
+                newCell1.innerText = queueList[l - 1];
                 var newCell2 = newRow.insertCell(1);
-                newCell2.innerText = "<%=myServer.getListSize()%>" + " items";
+                newCell2.innerText = itemLength[l - 1];
             }
 
             $('#queueTable').find('tr').click(function () {
@@ -186,25 +200,23 @@
                     var Cells = table.rows[$(this).index()].getElementsByTagName("td");
                     //window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
 
+                    selectedQueue = Cells[0].innerText;
+                    $(".queueValue").html(selectedServer);
+
                     toggleRedisTable();
 
                     //output table of values inside of queue
                     var redisTable = document.getElementById("redisTable");
                     //clears entire table
                     for (j = redisTable.rows.length; j > 1; j--) {
-                        redisTable.deleteRow(j-1);
+                        redisTable.deleteRow(j - 1);
                     }
-                    <% String[] strList = myServer.getList(); %>
-                    var redisSet = [];
-                    redisSet.push(<% for(int k = 0; k < strList.length; k++) { %>"<%= strList[k] %>"<%= k + 1 < strList.length ? ",":"" %><% } %> );
-                    console.log("Length of redisSet: " + redisSet.length);
-                    console.log(redisSet);
-                    for (l = 1; l < redisSet.length + 1; l++) {
+                    for (l = 1; l < redisSet[$(this).index() - 1].length + 1; l++) {
                         var newRow = redisTable.insertRow(l);
                         var newCell1 = newRow.insertCell(0);
-                        newCell1.innerHTML=l;
+                        newCell1.innerHTML = l;
                         var newCell2 = newRow.insertCell(1);
-                        newCell2.innerHTML=redisSet[l-1];
+                        newCell2.innerHTML = redisSet[$(this).index() - 1][l - 1];
                     }
                 }
             });

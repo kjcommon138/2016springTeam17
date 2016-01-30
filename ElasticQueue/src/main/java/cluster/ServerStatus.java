@@ -5,13 +5,15 @@ import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.api.sync.RedisCommands;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Created by laureltimko on 1/26/16.
  */
 public class ServerStatus {
     //public variables...
     private String serverStatus = "Active";
-    private String cacheKey = "listOfLanguages";
     private String[] elements;
     private String[] queueList;
 
@@ -51,10 +53,13 @@ public class ServerStatus {
 
             System.out.println("Connected to Redis");
 
-            syncApi.flushdb();
+            syncApi.flushall();
 
-            syncApi.sadd(cacheKey, "Test1", "Test2", "Test3");
-            elements = syncApi.smembers(cacheKey).toArray(new String[syncApi.smembers(cacheKey).size()]);
+            syncApi.sadd(queueList[0], "Test1", "Test2", "Test3");
+            syncApi.sadd(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
+
+            Set<String> tempSet = syncApi.smembers(queueList[0]);
+            elements = tempSet.toArray(new String[tempSet.size()]);
 
             return getServerStatus();
         }
@@ -73,6 +78,8 @@ public class ServerStatus {
     }
 
     public String[] getQueueList() {
+        List<String> tempList = syncApi.scan().getKeys();
+        queueList = tempList.toArray(new String[tempList.size()]);
         return queueList;
     }
 
