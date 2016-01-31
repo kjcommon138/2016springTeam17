@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="cluster.ServerStatus, java.util.*" %>
+<%@ page import="cluster.ServerStatus, net.sf.json.JSONSerializer" %>
 <html>
 <head>
     <link rel="stylesheet" href="css/bootstrap.css"/>
@@ -56,11 +56,14 @@
     <div class="row">
         <div class="col-md-5">
             <table id="serverTable" class="table" width="100%">
+                <thead>
                 <tr>
                     <th>Server</th>
                     <th>Status</th>
                     <th>Server Type</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Server1</td>
                     <td>Active</td>
@@ -71,6 +74,7 @@
                     <td>Active</td>
                     <td>Slave</td>
                 </tr>
+                </tbody>
             </table>
         </div>
         <div class="col-md-5">
@@ -84,10 +88,13 @@
             <h4 id="queueHeading" style="display:none">Showing queues for: <span class="serverValue"></span></h4>
             <span style="display:none" class="queueValue"></span>
             <table style="display:none" id="queueTable" class="table" width="100%">
+                <thead>
                 <tr>
                     <th>Queues</th>
                     <th>Size</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Q1</td>
                     <td>50 Items</td>
@@ -96,15 +103,18 @@
                     <td>Q2</td>
                     <td>94 Items</td>
                 </tr>
+                </tbody>
             </table>
 
             <div class="col-md-5" style="overflow:scroll;height:80px;width:100%;overflow:auto">
 
                 <table style="display:none" class="table" width:100% id="redisTable">
+                    <thead>
                     <tr>
                         <th>ID</th>
                         <th>Item</th>
                     </tr>
+                    </thead>
                 </table>
 
             </div>
@@ -138,88 +148,86 @@
             rTable.style.display = "table";
     }
 
-    $('#serverTable').find('tr').click(function () {
-        if ($(this).index() != 0) {
-            var table = document.getElementById("serverTable");
-            var rows = table.getElementsByTagName("tr");
-            for (i = 0; i < rows.length; i++) {
-                table.rows[i].style.backgroundColor = 'white';
-            }
-
-            var queueTable = document.getElementById("queueTable");
-            var queueRows = table.getElementsByTagName("tr");
-            for (i = 0; i < queueRows.length; i++) {
-                queueTable.rows[i].style.backgroundColor = 'white';
-            }
-
-            table.rows[$(this).index()].style.backgroundColor = 'lightblue';
-            toggleQueueTable();
-            var Cells = table.rows[$(this).index()].getElementsByTagName("td");
-
-            selectedServer = Cells[0].innerText;
-
-            $("#queueHeading .serverValue").html(selectedServer);
-
-            var queueTable = document.getElementById("queueTable");
-            //clears entire table
-            for (j = queueTable.rows.length; j > 1; j--) {
-                queueTable.deleteRow(j - 1);
-            }
-            var queueList = [];
-            var itemLength = [];
-            <%
-              String[] arr = myServer.getQueueList();
-              %>
-
-            var redisSet = new Array(<%=arr.length%>);
-            <%
-              for(int i = 0; i < arr.length; i++) {
-               %>
-            queueList.push("<%=arr[i]%>");
-            redisSet[<%=i%>] = '<%=Arrays.toString(myServer.getList(arr[i]))%>';
-            itemLength.push("<%=myServer.getList(arr[i]).length + " items"%>")
-            <% } %>
-
-            for (var l = 1; l < queueList.length + 1; l++) {
-                var newRow = queueTable.insertRow(l);
-                var newCell1 = newRow.insertCell(0);
-                newCell1.innerText = queueList[l - 1];
-                var newCell2 = newRow.insertCell(1);
-                newCell2.innerText = itemLength[l - 1];
-            }
-
-            $('#queueTable').find('tr').click(function () {
-                if ($(this).index() != 0) {
-                    var table = document.getElementById("queueTable");
-                    var rows = table.getElementsByTagName("tr");
-                    for (i = 0; i < rows.length; i++) {
-                        table.rows[i].style.backgroundColor = 'white';
-                    }
-                    table.rows[$(this).index()].style.backgroundColor = 'lightblue';
-                    var Cells = table.rows[$(this).index()].getElementsByTagName("td");
-                    //window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
-
-                    selectedQueue = Cells[0].innerText;
-                    $(".queueValue").html(selectedQueue);
-
-                    toggleRedisTable();
-
-                    //output table of values inside of queue
-                    var redisTable = document.getElementById("redisTable");
-                    //clears entire table
-                    for (j = redisTable.rows.length; j > 1; j--) {
-                        redisTable.deleteRow(j - 1);
-                    }
-                    for (l = 1; l < redisSet[$(this).index() - 1].length + 1; l++) {
-                        var newRow = redisTable.insertRow(l);
-                        var newCell1 = newRow.insertCell(0);
-                        newCell1.innerHTML = l;
-                        var newCell2 = newRow.insertCell(1);
-                        newCell2.innerHTML = redisSet[$(this).index() - 1][l - 1];
-                    }
-                }
-            });
+    $('#serverTable > tbody').find('tr').click(function () {
+        var table = document.getElementById("serverTable");
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        for (i = 0; i < rows.length; i++) {
+            rows[i].style.backgroundColor = 'white';
         }
+
+        var queueTable = document.getElementById("queueTable");
+        var queueRows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+        for (i = 0; i < queueRows.length; i++) {
+            queueRows[i].style.backgroundColor = 'white';
+        }
+
+        rows[$(this).index()].style.backgroundColor = 'lightblue';
+        toggleQueueTable();
+        var Cells = table.rows[$(this).index()+1].getElementsByTagName("td");
+
+        selectedServer = Cells[0].innerText;
+
+        $("#queueHeading .serverValue").html(selectedServer);
+
+        var queueTable = document.getElementById("queueTable");
+        //clears entire table
+        $('#queueTable > tbody').remove();
+        $('#queueTable').append("<tbody></tbody>");
+
+        var queueList = [];
+        var itemLength = [];
+        <%
+          String[] arr = myServer.getQueueList();
+          %>
+
+        var redisSet = new Array(<%=arr.length%>);
+        <%
+          for(int i = 0; i < arr.length; i++) {
+           %>
+        queueList.push("<%=arr[i]%>");
+        redisSet[<%=i%>] = <%=JSONSerializer.toJSON((myServer.getList(arr[i])))%>;
+        itemLength.push("<%=myServer.getList(arr[i]).length + " items"%>")
+        <% } %>
+
+        newQueueRows = queueTable.getElementsByTagName("tbody")[0];
+        for (var l = 0; l < queueList.length; l++) {
+            var newRow = newQueueRows.insertRow(l);
+            var newCell1 = newRow.insertCell(0);
+            newCell1.innerText = queueList[l];
+            var newCell2 = newRow.insertCell(1);
+            newCell2.innerText = itemLength[l];
+        }
+
+        $('#queueTable > tbody').find('tr').click(function () {
+            var table = document.getElementById("queueTable");
+            var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            for (i = 0; i < rows.length; i++) {
+                rows[i].style.backgroundColor = 'white';
+            }
+            rows[$(this).index()].style.backgroundColor = 'lightblue';
+            var Cells = table.rows[$(this).index()+1].getElementsByTagName("td");
+            //window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
+
+            selectedQueue = Cells[0].innerText;
+            $(".queueValue").html(selectedQueue);
+
+            toggleRedisTable();
+
+            //output table of values inside of queue
+            var redisTable = document.getElementById("redisTable");
+            //clears entire table
+            $('#redisTable > tbody').remove();
+            $('#redisTable').append("<tbody></tbody>");
+            newRedisRows = redisTable.getElementsByTagName("tbody")[0];
+
+            for (l = 0; l < redisSet[$(this).index()].length; l++) {
+                var newRow = newRedisRows.insertRow(l);
+                var newCell1 = newRow.insertCell(0);
+                newCell1.innerHTML = l+1;
+                var newCell2 = newRow.insertCell(1);
+                newCell2.innerHTML = redisSet[$(this).index()][l];
+            }
+        });
     });
 </script>
 
