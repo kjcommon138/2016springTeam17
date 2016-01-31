@@ -2,6 +2,7 @@ package hello;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,10 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisClusterConnection;
 import com.lambdaworks.redis.RedisConnection;
 import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.cluster.RedisAdvancedClusterConnection;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
+import com.lambdaworks.redis.support.RedisClientFactoryBean;
+import com.lambdaworks.redis.support.RedisClusterClientFactoryBean;
 
 @RestController
 public class GreetingController {
@@ -26,6 +30,31 @@ public class GreetingController {
     public String greeting2(@RequestBody String greeting) {
         return "TEST POSTT"+greeting.toString();
     }
+    
+    @RequestMapping(method=RequestMethod.POST, value="/addServers")
+    public String addServers(@RequestBody String count) {
+    	
+    	RedisURI initialUri = new RedisURI();
+    	initialUri.setHost("127.0.0.1");
+    	initialUri.setPort(30002);
+    	
+    	RedisClusterClient redisClusterClient = new RedisClusterClient(initialUri);
+    	RedisAdvancedClusterConnection<String,String> connection = redisClusterClient.connectCluster();
+    	
+    	
+    	
+    	RedisURI uri = new RedisURI("127.0.0.1", 30009, 60, TimeUnit.SECONDS);
+    	
+    	RedisClientFactoryBean bean1 = new RedisClientFactoryBean();
+
+
+    	connection.clusterMeet("127.0.0.1", 30009);
+
+    	
+    	
+        return "Count: "+count;
+        
+    }
 
     @RequestMapping("/greeting")
     public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name) {
@@ -35,8 +64,6 @@ public class GreetingController {
     
     @RequestMapping("/servers")
     public Servers servers() {
-    	List<String> s = new ArrayList<String>();
-    	s.add("SNEHA");
     	
     	//RedisClient redisClient = new RedisClient("127.0.0.1", 6379);
     	RedisClient redisClient = new RedisClient("127.0.0.1", 30002);
@@ -54,6 +81,10 @@ public class GreetingController {
     	
     	String nodes = connection.clusterNodes();
     	String nodesArray[] = nodes.split("\\r?\\n");
+    	
+    	for(int i = 0; i < nodesArray.length; i++){
+    		System.out.println(nodesArray[i]);
+    	}
 
 
     	String info = connection.clusterInfo();
@@ -61,10 +92,9 @@ public class GreetingController {
     	System.out.println(info);
     	String infoArray[] = info.split("\\r?\\n");
 
-
     	
     	redisClient.shutdown();
     	
-        return new Servers(4,nodesArray);
+        return new Servers(nodesArray.length,nodesArray);
     }
 }
