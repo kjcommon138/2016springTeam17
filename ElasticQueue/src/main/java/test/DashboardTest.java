@@ -101,7 +101,6 @@ public class DashboardTest extends SeleniumTest {
     }
 
 
-/**
     @After
     public void tearDown() throws Exception {
         driver.quit();
@@ -110,5 +109,5 @@ public class DashboardTest extends SeleniumTest {
             fail(verificationErrorString);
         }
     }
-    */
+
 }
