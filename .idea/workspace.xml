@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ebd5bbbc-56b7-46f2-a19d-38f28fe763f1" name="Default" comment="Optimiazed">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT.war" afterPath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT.war" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT/WEB-INF/classes/cluster/ServerStatus.class" afterPath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT/WEB-INF/classes/cluster/ServerStatus.class" />
+    <list default="true" id="ebd5bbbc-56b7-46f2-a19d-38f28fe763f1" name="Default" comment="Add mac chrome driver and updated testcase">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ElasticQueue/lib/chromedriver" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/ElasticQueue_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/ElasticQueue_war_exploded.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/ElasticQueue.iml" afterPath="$PROJECT_DIR$/ElasticQueue/ElasticQueue.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/pom.xml" afterPath="$PROJECT_DIR$/ElasticQueue/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp" afterPath="$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT/index.jsp" afterPath="$PROJECT_DIR$/ElasticQueue/target/ElasticQueue-1.0-SNAPSHOT/index.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java" afterPath="$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java" />
     </list>
     <ignored path="2016springTeam17.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,11 +30,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.jsp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.jsp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.16032064">
-              <caret line="194" column="48" selection-start-line="194" selection-start-column="48" selection-end-line="194" selection-end-column="48" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="213" column="31" selection-start-line="213" selection-start-column="31" selection-end-line="213" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -49,9 +45,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -59,18 +53,30 @@
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ElasticQueue/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.433962">
-              <caret line="82" column="17" selection-start-line="82" selection-start-column="17" selection-end-line="82" selection-end-column="17" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="111" column="21" selection-start-line="111" selection-start-column="21" selection-end-line="111" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ServerStatusTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/ServerStatusTest.java">
+      <file leaf-file-name="SeleniumTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/SeleniumTest.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+              <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DashboardTest.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.8672199">
+              <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -84,6 +90,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit4 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -100,9 +107,11 @@
       <list>
         <option value="$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatusTest.java" />
         <option value="$PROJECT_DIR$/ElasticQueue/src/main/java/test/ServerStatusTest.java" />
-        <option value="$PROJECT_DIR$/ElasticQueue/pom.xml" />
         <option value="$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatus.java" />
         <option value="$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp" />
+        <option value="$PROJECT_DIR$/ElasticQueue/src/main/java/test/SeleniumTest.java" />
+        <option value="$PROJECT_DIR$/ElasticQueue/pom.xml" />
+        <option value="$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java" />
       </list>
     </option>
   </component>
@@ -132,9 +141,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="960" />
+    <option name="x" value="249" />
+    <option name="y" value="23" />
     <option name="width" value="960" />
-    <option name="height" value="1032" />
+    <option name="height" value="828" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -161,9 +171,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -179,20 +186,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="ElasticQueue" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="2016springTeam17" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ElasticQueue" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="target" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -292,8 +285,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="2016springTeam17" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ElasticQueue" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -312,33 +322,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Tomcat Server.index.jsp">
-    <configuration default="false" name="ServerStatusTest.testGetServerStatus" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="ElasticQueue" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="test" />
-      <option name="MAIN_CLASS_NAME" value="test.ServerStatusTest" />
-      <option name="METHOD_NAME" value="testGetServerStatus" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.DashboardTest">
     <configuration default="false" name="ServerStatusTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -406,6 +390,7 @@
       </deployment>
       <server-settings>
         <option name="BASE_DIRECTORY_NAME" value="_2016springTeam17" />
+        <option name="JNDI_PORT" value="1100" />
       </server-settings>
       <predefined_log_file id="Tomcat" enabled="true" />
       <predefined_log_file id="Tomcat Catalina" enabled="true" />
@@ -466,6 +451,32 @@
           <artifact name="ElasticQueue:war" />
         </option>
       </method>
+    </configuration>
+    <configuration default="false" name="DashboardTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="ElasticQueue" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.DashboardTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
     </configuration>
     <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
       <deployment />
@@ -848,18 +859,6 @@
       <envs />
       <method />
     </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <option name="filePath" />
-      <option name="vmParameters" />
-      <option name="alternativeJrePath" />
-      <option name="programParameters" />
-      <option name="passParentEnvs" value="true" />
-      <option name="workingDirectory" />
-      <option name="isAlternativeJrePathEnabled" value="false" />
-      <envs />
-      <method />
-    </configuration>
     <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
       <method />
     </configuration>
@@ -869,6 +868,36 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="ScalaTestRunConfiguration" factoryName="ScalaTest">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="Specs2RunConfiguration" factoryName="Specs2">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
@@ -1026,6 +1055,21 @@
     <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
       <method />
     </configuration>
+    <configuration default="true" type="uTestRunConfiguration" factoryName="utest">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
     <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="hello.Application" />
@@ -1034,22 +1078,27 @@
       <method />
     </configuration>
     <list size="6">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.ServerStatusTest.testGetServerStatus" />
+      <item index="0" class="java.lang.String" itemvalue="Spring Boot.Application" />
       <item index="1" class="java.lang.String" itemvalue="JUnit.ServerStatusTest" />
       <item index="2" class="java.lang.String" itemvalue="JUnit.ServerStatusTest.testGetList" />
       <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.index.jsp" />
-      <item index="4" class="java.lang.String" itemvalue="Spring Boot.Application" />
-      <item index="5" class="java.lang.String" itemvalue="Tomcat Server.index.jsp" />
+      <item index="4" class="java.lang.String" itemvalue="Tomcat Server.index.jsp" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.DashboardTest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.ServerStatusTest" />
-        <item index="1" class="java.lang.String" itemvalue="Tomcat Server.index.jsp" />
-        <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.index.jsp" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.ServerStatusTest.testGetList" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.ServerStatusTest.testGetServerStatus" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.DashboardTest" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.ServerStatusTest" />
+        <item index="2" class="java.lang.String" itemvalue="Tomcat Server.index.jsp" />
+        <item index="3" class="java.lang.String" itemvalue="JavaScript Debug.index.jsp" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.ServerStatusTest.testGetList" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
@@ -1067,6 +1116,8 @@
       <workItem from="1454173696318" duration="237000" />
       <workItem from="1454252702922" duration="1622000" />
       <workItem from="1454261078059" duration="9019000" />
+      <workItem from="1454430111004" duration="11899000" />
+      <workItem from="1454542949954" duration="452000" />
     </task>
     <task id="LOCAL-00001" summary="Added ability to hide and reveal tables accordingly;&#10;For example, only the servers table will show up initially.  If you click on one of the servers, only the servers and queue table for that server will show up.  If you click on a row in the queue table, you will see the redis set on the redis table.">
       <created>1454021414171</created>
@@ -1092,61 +1143,73 @@
       <option name="project" value="LOCAL" />
       <updated>1454173068380</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added Selenium tests to test our dashboard GUI.">
+      <created>1454450665694</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1454450665694</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Uncommented the Tear down method to close the driver and browser">
+      <created>1454451108554</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1454451108554</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 22m 24s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 15m 37s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 23m 02s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 16m 34s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 23m 27s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 17m 38s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 41m 12s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 18m 23s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 41m 40s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 20m 20s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 49m 13s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 17h 29m 00s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.30 at 11h 54m 08s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 23h 08m 40s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.31 at 14h 57m 55s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 23h 10m 31s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest - 2016.01.31 at 14h 58m 48s.xml">
-      <configuration name="ServerStatusTest" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.02 at 23h 10m 49s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="ServerStatusTest_testGetList - 2016.01.30 at 11h 19m 20s.xml">
-      <configuration name="ServerStatusTest.testGetList" configurationId="JUnit" />
+    <history-entry file="DashboardTest - 2016.02.03 at 18h 45m 10s.xml">
+      <configuration name="DashboardTest" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73602000" />
+    <option name="totallyTimeSpent" value="85953000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="0" width="960" height="1032" extended-state="0" />
-    <editor active="true" />
+    <frame x="249" y="23" width="960" height="828" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32806325" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34797296" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32806325" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3478261" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1180,7 +1243,10 @@
     <MESSAGE value="Made nested table reveal function work and figured we could use a hidden input html value to keep track of the server that is clicked on." />
     <MESSAGE value="Added basic JUnit tests for Redis-client class.  Will need to find out how to get cachekeys to key names." />
     <MESSAGE value="Fixed jsp to have more efficient way to get queue into array from redis server.  Also fixed test cases." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed jsp to have more efficient way to get queue into array from redis server.  Also fixed test cases." />
+    <MESSAGE value="Added Selenium test to test our dashboard" />
+    <MESSAGE value="Added Selenium tests to test our dashboard GUI." />
+    <MESSAGE value="Uncommented the Tear down method to close the driver and browser" />
+    <option name="LAST_COMMIT_MESSAGE" value="Uncommented the Tear down method to close the driver and browser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1194,6 +1260,84 @@
     <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="213" column="31" selection-start-line="213" selection-start-column="31" selection-end-line="213" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="111" column="21" selection-start-line="111" selection-start-column="21" selection-end-line="111" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/SeleniumTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="82" column="17" selection-start-line="82" selection-start-column="17" selection-end-line="82" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/ServerStatusTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
           <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
           <folding />
         </state>
@@ -1203,9 +1347,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1231,9 +1373,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1259,9 +1399,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="43" selection-start-line="15" selection-start-column="43" selection-end-line="15" selection-end-column="43" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1287,9 +1425,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="55" column="44" selection-start-line="55" selection-start-column="44" selection-end-line="55" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1315,9 +1451,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="33" column="28" selection-start-line="33" selection-start-column="28" selection-end-line="33" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1335,17 +1469,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ElasticQueue/pom.xml">
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.433962">
-          <caret line="82" column="17" selection-start-line="82" selection-start-column="17" selection-end-line="82" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="213" column="31" selection-start-line="213" selection-start-column="31" selection-end-line="213" selection-end-column="31" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/ServerStatusTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="0.19700214">
           <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1353,21 +1495,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/cluster/ServerStatus.java">
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+          <caret line="111" column="21" selection-start-line="111" selection-start-column="21" selection-end-line="111" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/SeleniumTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/webapp/index.jsp">
+    <entry file="file://$PROJECT_DIR$/ElasticQueue/src/main/java/test/DashboardTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.16032064">
-          <caret line="194" column="48" selection-start-line="194" selection-start-column="48" selection-end-line="194" selection-end-column="48" />
-          <folding />
+        <state vertical-scroll-proportion="-0.8672199">
+          <caret line="24" column="5" selection-start-line="24" selection-start-column="5" selection-end-line="24" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1431,7 +1583,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

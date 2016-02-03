@@ -46,15 +46,15 @@ public class DashboardTest extends SeleniumTest {
 
         assertTextPresent("Server", driver);
 
-        // find the customer table
+        // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
-        // find the row
+        // find the row containing Server1
         WebElement row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server1')]"));
         row.click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals(serverSelected.getText(), "Server1");
+        assertEquals("Server1", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -82,7 +82,7 @@ public class DashboardTest extends SeleniumTest {
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals(serverSelected.getText(), "Server1");
+        assertEquals("Server1", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -93,13 +93,46 @@ public class DashboardTest extends SeleniumTest {
 
         serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals(serverSelected.getText(), "Server2");
+        assertEquals("Server2", serverSelected.getText());
 
         queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
     }
 
+    /**
+     * Test for selecting a single server from the table
+     * and then selecting a queue from the new table.
+     * Expect to get two new tables to appear and message stating what
+     * Server's queues are being displayed and what the queue's items are.
+     * @throws Exception
+     */
+    @Test
+    public void testSelectAServerQueue() throws Exception {
+        driver.get(baseUrl + "/index.jsp");
+
+        assertTextPresent("Server", driver);
+
+        // find the customer table
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        // find the row
+        WebElement row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server1')]"));
+        row.click();
+
+        WebElement serverSelected = driver.findElement(By.className("serverValue"));
+        assertTextPresent("Showing queues for:", driver);
+        assertEquals("Server1", serverSelected.getText());
+
+        WebElement queueTable = driver.findElement(By.id("queueTable"));
+        assertNotNull(queueTable);
+
+        row = queueTable.findElement(By.xpath("//tr/td[contains(text(), 'Test2')]"));
+        row.click();
+
+        WebElement redisTable = driver.findElement(By.id("redisTable"));
+        assertNotNull(redisTable);
+
+    }
 
     @After
     public void tearDown() throws Exception {
