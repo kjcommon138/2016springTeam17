@@ -9,9 +9,7 @@ import org.junit.After;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 
 /**
@@ -105,6 +103,7 @@ public class DashboardTest extends SeleniumTest {
     @Test
     public void testCheckInvalidServerStatus() throws Exception {
         //TO DO
+        //NEED INVALID SERVER DATA
     }
 
     /**
@@ -115,7 +114,18 @@ public class DashboardTest extends SeleniumTest {
      */
     @Test
     public void testCheckValidServerStatus() throws Exception {
-        //TO DO
+        driver.get(baseUrl + "/index.jsp");
+
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+        //Get the row for Server1
+        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server1']"));
+        //Get the server's data
+        List<WebElement> cells = row.findElements(By.tagName("td"));
+        assertTrue(row.getText().contains("Server1"));
+        assertEquals("Server1", cells.get(0).getText());
+        assertEquals("Active", cells.get(1).getText());
     }
 
     /**
@@ -126,7 +136,18 @@ public class DashboardTest extends SeleniumTest {
      */
     @Test
     public void testCheckMasterNode() throws Exception {
-        //TO DO
+        driver.get(baseUrl + "/index.jsp");
+
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+        //Get the row for Server1
+        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server1']"));
+        //Get the server's data
+        List<WebElement> cells = row.findElements(By.tagName("td"));
+        assertTrue(row.getText().contains("Server1"));
+        assertEquals("Server1", cells.get(0).getText());
+        assertEquals("Master", cells.get(2).getText());
     }
 
     /**
@@ -137,7 +158,16 @@ public class DashboardTest extends SeleniumTest {
      */
     @Test
     public void testCheckSlaveNode() throws Exception {
-        //TO DO
+        driver.get(baseUrl + "/index.jsp");
+
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server2']"));
+        List<WebElement> cells = row.findElements(By.tagName("td"));
+        assertTrue(row.getText().contains("Server2"));
+        assertEquals("Server2", cells.get(0).getText());
+        assertEquals("Slave", cells.get(2).getText());
     }
 
 
