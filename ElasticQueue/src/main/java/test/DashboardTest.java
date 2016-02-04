@@ -1,6 +1,7 @@
 package test;
 
 import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,15 +34,15 @@ public class DashboardTest extends SeleniumTest {
 
     }
 
-
     /**
-     * Test for selecting a single Server from the table.
+     * Test for selecting a server from the table.
+     * Expect to see the server's load adjusted in the progress bar.
      * Expect to get a new table to appear and message stating what
      * Server's queues are being displayed.
      * @throws Exception
      */
     @Test
-    public void testSelectASingleServer() throws Exception {
+    public void testCheckServerLoad() throws Exception {
         driver.get(baseUrl + "/index.jsp");
 
         assertTextPresent("Server", driver);
@@ -59,7 +60,86 @@ public class DashboardTest extends SeleniumTest {
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
+        assertTextPresent("Load: High", driver);
+        WebElement loadPercent = driver.findElement(By.className("progress-bar"));
+        assertEquals("70%", loadPercent.getText());
     }
+
+
+    /**
+     * Test for checking the contents of the server list.
+     * Expect to see the complete list of servers both active and inactive.
+     * @throws Exception
+     */
+    @Test
+    public void testCheckServerList() throws Exception {
+        driver.get(baseUrl + "/index.jsp");
+
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+
+        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(2, rowCount);
+
+        // find the row 1
+        List<WebElement> rows = serverTable.findElements(By.tagName("tr"));
+        List<WebElement> rowOne = rows.get(1).findElements(By.tagName("td"));
+        assertEquals("Server1", rowOne.get(0).getText());
+        assertEquals("Active", rowOne.get(1).getText());
+        assertEquals("Master", rowOne.get(2).getText());
+
+        // find the row 2
+        List<WebElement> rowTwo = rows.get(2).findElements(By.tagName("td"));
+        assertEquals("Server2", rowTwo.get(0).getText());
+        assertEquals("Active", rowTwo.get(1).getText());
+        assertEquals("Slave", rowTwo.get(2).getText());
+
+    }
+
+    /**
+     * Test that information is available for a failed server.
+     * Expects to view selected inactive server's information.
+     * @throws Exception
+     */
+    @Test
+    public void testCheckInvalidServerStatus() throws Exception {
+        //TO DO
+    }
+
+    /**
+     * Test that information is available for active servers.
+     * Expects to view selected active server's information
+     * including queues and server load.
+     * @throws Exception
+     */
+    @Test
+    public void testCheckValidServerStatus() throws Exception {
+        //TO DO
+    }
+
+    /**
+     * Test that master nodes are displayed in the table of servers.
+     * Expect that master servers are displayed in the table and that
+     * selecting them displays their information.
+     * @throws Exception
+     */
+    @Test
+    public void testCheckMasterNode() throws Exception {
+        //TO DO
+    }
+
+    /**
+     * Test that slave nodes are displayed in the table of servers.
+     * Expect that slave servers are displayed in the table and that
+     * selecting them displays their information.
+     * @throws Exception
+     */
+    @Test
+    public void testCheckSlaveNode() throws Exception {
+        //TO DO
+    }
+
 
     /**
      * Test for selecting a single server from the table and
@@ -131,7 +211,6 @@ public class DashboardTest extends SeleniumTest {
 
         WebElement redisTable = driver.findElement(By.id("redisTable"));
         assertNotNull(redisTable);
-
     }
 
     @After
