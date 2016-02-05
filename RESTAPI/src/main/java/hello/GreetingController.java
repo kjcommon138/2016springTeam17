@@ -1,5 +1,8 @@
 package hello;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,7 +19,23 @@ public class GreetingController {
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody ServerRequest request) {
 		
-		return null;
+		RedisURI initialUri = new RedisURI();
+		initialUri.setHost("127.0.0.1");
+		initialUri.setPort(7000);
+
+
+
+		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
+		RedisConnection<String, String> connection = redisClient.connect();
+		
+		System.out.println("Node ID: " + request.getNodeID());
+		
+		String result = connection.clusterForget(request.getNodeID());
+		
+		redisClient.shutdown();
+		
+		
+		return result;
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
@@ -29,44 +48,18 @@ public class GreetingController {
 
 
 		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
-		RedisConnection<String, String> connect = redisClient.connect();
+		RedisConnection<String, String> connection = redisClient.connect();
 		
-		String result = connect.clusterMeet(request.getHost(), request.getPort());
-
-
-		//RedisClusterClient redisClusterClient = new RedisClusterClient(initialUri);
-		//	RedisAdvancedClusterConnection<String,String> connection = redisClusterClient.connectCluster();
-
-
-
-		//RedisURI uri = new RedisURI("127.0.0.1", 30009, 60, TimeUnit.SECONDS);
-		//RedisURI.create("redis://127.0.0.1:30009");
-
-		//RedisClientFactoryBean bean2 = new RedisClientFactoryBean();
-
-		//RedisClientFactoryBeanExtended bean = new RedisClientFactoryBeanExtended();
-		//bean.setRedisURI(initialUri);
-
-		//RedisClient client = bean.createClusterInstance();
-
-		//System.out.println(client.toString());
-		//RedisConnection<String, String> connect = client.connect();
-		//System.out.println(connect.clusterMeet("127.0.0.1", 30001));
-		//	client
-
-		//connection2.clusterM
-
-		//String clusterMeet = connection.clusterMeet("127.0.0.1", 30009);
-		//System.out.println(clusterMeet);
-
-
+		String result = connection.clusterMeet(request.getHost(), request.getPort());
+		
+		redisClient.shutdown();
 
 		return result;
 
 	}
 
 	@RequestMapping("/servers")
-	public Servers servers() {
+	public List<Server> servers() {
 
 		//RedisClient redisClient = new RedisClient("127.0.0.1", 6379);
 		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
@@ -84,20 +77,25 @@ public class GreetingController {
 
 		String nodes = connection.clusterNodes();
 		String nodesArray[] = nodes.split("\\r?\\n");
+		
+		List<Server> servers = new ArrayList<Server>();
 
 		for(int i = 0; i < nodesArray.length; i++){
 			System.out.println(nodesArray[i]);
+			int index = nodesArray[i].indexOf(' ');
+			Server server = new Server();
+			server.setNodeID(nodesArray[i].substring(0,index));
+			server.setServerInfo(nodesArray[i].substring(index + 1));
+			servers.add(server);
 		}
 
 
 		String info = connection.clusterInfo();
 		System.out.println("INFO");
 		System.out.println(info);
-		String infoArray[] = info.split("\\r?\\n");
-
 
 		redisClient.shutdown();
 
-		return new Servers(nodesArray.length,nodesArray);
+		return servers;
 	}
 }

@@ -4,6 +4,7 @@ public class ServerRequest {
 	
 	private int port;
 	private String host;
+	private String nodeID;
 	
 	public int getPort(){
 		return port;
@@ -21,4 +22,11 @@ public class ServerRequest {
 		this.host = host;
 	}
 
+	public String getNodeID(){
+		return nodeID;
+	}
+	
+	public void setNodeID(String nodeID){
+		this.nodeID = nodeID;
+	}
 }
