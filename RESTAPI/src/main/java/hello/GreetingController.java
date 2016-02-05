@@ -1,36 +1,42 @@
 package hello;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.api.StatefulRedisConnection;
+import com.lambdaworks.redis.api.sync.RedisCommands;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lambdaworks.redis.RedisClient;
-import com.lambdaworks.redis.RedisConnection;
-import com.lambdaworks.redis.RedisURI;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class GreetingController {
 
+	private final String[] HOST_NAMES = {
+			"sd-vm12.csc.ncsu.edu",
+			"sd-vm19.csc.ncsu.edu",
+			"sd-vm20.csc.ncsu.edu", 
+			"sd-vm33.csc.ncsu.edu"};
 	
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody ServerRequest request) {
 		
 		RedisURI initialUri = new RedisURI();
-		initialUri.setHost("127.0.0.1");
-		initialUri.setPort(7000);
+		initialUri.setHost(HOST_NAMES[0]);
+		initialUri.setPort(7001);
 
 
 
-		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
-		RedisConnection<String, String> connection = redisClient.connect();
-		
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisCommands<String, String> commands = connection.sync();
+
 		System.out.println("Node ID: " + request.getNodeID());
 		
-		String result = connection.clusterForget(request.getNodeID());
+		String result = commands.clusterForget(request.getNodeID());
 		
 		redisClient.shutdown();
 		
@@ -42,15 +48,16 @@ public class GreetingController {
 	public String addServers(@RequestBody ServerRequest request) {
 
 		RedisURI initialUri = new RedisURI();
-		initialUri.setHost("127.0.0.1");
-		initialUri.setPort(7000);
+		initialUri.setHost(HOST_NAMES[0]);
+		initialUri.setPort(7001);
 
 
 
-		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
-		RedisConnection<String, String> connection = redisClient.connect();
-		
-		String result = connection.clusterMeet(request.getHost(), request.getPort());
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisCommands<String, String> commands = connection.sync();
+
+		String result = commands.clusterMeet(request.getHost(), request.getPort());
 		
 		redisClient.shutdown();
 
@@ -61,21 +68,22 @@ public class GreetingController {
 	@RequestMapping("/servers")
 	public List<Server> servers() {
 
-		//RedisClient redisClient = new RedisClient("127.0.0.1", 6379);
-		RedisClient redisClient = new RedisClient("127.0.0.1", 7000);
+		//RedisClient redisClient = new RedisClient(HOST_NAMES[0], 6379);
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
 		//RedisClient redisClient = new RedisClient();
 
 		/*RedisURI initialUri = new RedisURI();
-    	initialUri.setHost("127.0.0.1");
+    	initialUri.setHost(HOST_NAMES[0]);
     	initialUri.setPort(30002);
     	RedisClusterClient c = new RedisClusterClient(initialUri);
     	RedisAdvancedClusterConnection<String, String> connection2 = c.connectCluster();
 
     	System.out.println("CLUSTER INFO:" + connection2.clusterInfo());*/
 
-		RedisConnection<String, String> connection = redisClient.connect();
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisCommands<String, String> commands = connection.sync();
 
-		String nodes = connection.clusterNodes();
+		String nodes = commands.clusterNodes();
 		String nodesArray[] = nodes.split("\\r?\\n");
 		
 		List<Server> servers = new ArrayList<Server>();
@@ -90,7 +98,7 @@ public class GreetingController {
 		}
 
 
-		String info = connection.clusterInfo();
+		String info = commands.clusterInfo();
 		System.out.println("INFO");
 		System.out.println(info);
 

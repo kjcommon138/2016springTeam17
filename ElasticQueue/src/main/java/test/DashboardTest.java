@@ -1,15 +1,15 @@
 package test;
 
-import java.util.concurrent.TimeUnit;
-import java.util.List;
-
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.After;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -25,7 +25,7 @@ public class DashboardTest extends SeleniumTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        System.setProperty("webdriver.chrome.driver", "lib/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "lib/chromedriver.exe");
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);

@@ -22,15 +22,50 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="bronto-commons" />
         <module name="ElasticQueue" />
         <module name="gs-rest-service (1)" />
         <module name="gs-rest-service (2)" />
       </profile>
+      <profile default="false" name="Annotation profile for redis-test" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="redis-test" />
+      </profile>
+      <profile default="false" name="Annotation profile for redis-client" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="redis-client" />
+      </profile>
+      <profile default="false" name="Annotation profile for redis-benchmark" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="redis-benchmark" />
+      </profile>
+      <profile default="false" name="Annotation profile for redis-reliablequeue" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="redis-reliablequeue" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="bronto-commons" target="1.5" />
       <module name="ElasticQueue" target="1.5" />
       <module name="gs-rest-service (1)" target="1.8" />
       <module name="gs-rest-service (2)" target="1.8" />
+      <module name="redis-benchmark" target="1.7" />
+      <module name="redis-client" target="1.7" />
+      <module name="redis-parent" target="1.5" />
+      <module name="redis-reliablequeue" target="1.7" />
+      <module name="redis-test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -16,6 +16,10 @@ public class ServerStatus {
     private String serverStatus = "Active";
     private String[] elements;
     private String[] queueList;
+    private String[] hostNames = {"sd-vm12.csc.ncsu.edu",
+            "sd-vm19.csc.ncsu.edu",
+            "sd-vm20.csc.ncsu.edu",
+            "sd-vm33.csc.ncsu.edu"};
 
     //set redis connection
     private RedisClient redisClient;
