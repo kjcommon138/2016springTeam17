@@ -6,6 +6,7 @@
 *.o
 *.so
 *.idea
+*.class
 workspace.xml
 
 # Packages #
