@@ -3,12 +3,6 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/RESTAPI" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/RESTHelloApp" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src-commons" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src/redis-benchmark" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src/redis-client" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src/redis-reliablequeue" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../bronto-redis/src/redis-test" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

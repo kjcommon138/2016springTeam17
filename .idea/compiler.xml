@@ -25,7 +25,6 @@
         <module name="bronto-commons" />
         <module name="ElasticQueue" />
         <module name="gs-rest-service (1)" />
-        <module name="gs-rest-service (2)" />
       </profile>
       <profile default="false" name="Annotation profile for redis-test" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
