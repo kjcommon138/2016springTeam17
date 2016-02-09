@@ -31,7 +31,7 @@ public class ServerStatus {
 
     public ServerStatus() {
         //set redis connection
-        redisClient = new RedisClient(RedisURI.create("redis://localhost/"));
+        redisClient = new RedisClient(RedisURI.create("redis://localhost:7002/"));
         stateful = redisClient.connect();
         syncApi = stateful.sync();
         queueList = new String[2];
