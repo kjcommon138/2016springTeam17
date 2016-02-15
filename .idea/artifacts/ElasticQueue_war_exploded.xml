@@ -79,6 +79,8 @@
           <element id="library" level="project" name="Maven: org.apache.commons:commons-exec:1.3" />
           <element id="library" level="project" name="Maven: org.seleniumhq.selenium:selenium-chrome-driver:2.50.1" />
           <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.4.01" />
+          <element id="library" level="project" name="Maven: com.eclipsesource.j2v8:j2v8_win32_x86_64:2.2.1" />
+          <element id="library" level="project" name="Maven: org.directwebremoting:dwr:3.0.1-RELEASE" />
         </element>
       </element>
       <element id="directory" name="META-INF">
