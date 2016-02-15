@@ -23,14 +23,8 @@ public class GreetingController {
 	
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody ServerRequest request) {
-		
-		RedisURI initialUri = new RedisURI();
-		initialUri.setHost(HOST_NAMES[0]);
-		initialUri.setPort(7001);
 
-
-
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		RedisClient redisClient = new RedisClient(request.getHostCluster(), request.getPortCluster());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
@@ -47,13 +41,7 @@ public class GreetingController {
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
 	public String addServers(@RequestBody ServerRequest request) {
 
-		RedisURI initialUri = new RedisURI();
-		initialUri.setHost(HOST_NAMES[0]);
-		initialUri.setPort(7001);
-
-
-
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		RedisClient redisClient = new RedisClient(request.getHostCluster(), request.getPortCluster());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
@@ -65,20 +53,10 @@ public class GreetingController {
 
 	}
 
-	@RequestMapping("/servers")
-	public List<Server> servers() {
+	@RequestMapping(method=RequestMethod.POST, value="/servers")
+	public List<Server> servers(@RequestBody Server server1) {
 
-		//RedisClient redisClient = new RedisClient(HOST_NAMES[0], 6379);
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
-		//RedisClient redisClient = new RedisClient();
-
-		/*RedisURI initialUri = new RedisURI();
-    	initialUri.setHost(HOST_NAMES[0]);
-    	initialUri.setPort(30002);
-    	RedisClusterClient c = new RedisClusterClient(initialUri);
-    	RedisAdvancedClusterConnection<String, String> connection2 = c.connectCluster();
-
-    	System.out.println("CLUSTER INFO:" + connection2.clusterInfo());*/
+		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
 
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
