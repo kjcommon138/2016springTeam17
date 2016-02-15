@@ -31,9 +31,10 @@
         </ul>
     </div>
 </nav>
+
 <%
     ServerStatus myServer = new ServerStatus();
-    //String selectedServer = request.getParameter("selectedServer");
+    String selectedServer;
 %>
 
 <!-- Latest compiled JavaScript -->
@@ -64,16 +65,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Server1</td>
-                    <td>Active</td>
-                    <td>Master</td>
-                </tr>
-                <tr>
-                    <td>Server2</td>
-                    <td>Active</td>
-                    <td>Slave</td>
-                </tr>
                 </tbody>
             </table>
         </div>
@@ -124,9 +115,12 @@
 </div>
 
 <script>
+
+
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
     var rTable = document.getElementById("redisTable");
+    var sTable = document.getElementById("serverTable");
 
     function toggleQueueTable() {
         var qTable = document.getElementById("queueTable");
@@ -148,6 +142,36 @@
             rTable.style.display = "table";
     }
 
+
+    <%
+      String[][] serverList = myServer.getServerList();
+      %>
+    var numberServers = <%=serverList.length%>;
+    var serverList = [numberServers];
+
+    //clears entire server table
+    $('#serverTable > tbody').remove();
+    $('#serverTable').append("<tbody></tbody>");
+
+    //Initialize list of servers
+    var serverSet = new Array(<%=serverList.length%>);
+    <%
+      for(int j = 0; j < serverList.length; j++) {
+    %>
+    serverList[<%=j%>] = <%=JSONSerializer.toJSON(serverList[j])%>;
+    <%}%>
+
+    newServerRows = sTable.getElementsByTagName("tbody")[0];
+    for (var l = 0; l < serverList.length; l++) {
+        var newRow = newServerRows.insertRow(l);
+        var newCell1 = newRow.insertCell(0);
+        newCell1.innerText = serverList[l][0];
+        var newCell2 = newRow.insertCell(1);
+        newCell2.innerText = serverList[l][1];
+        var newCell3 = newRow.insertCell(2);
+        newCell3.innerText = serverList[l][2];
+    }
+
     $('#serverTable > tbody').find('tr').click(function () {
         var table = document.getElementById("serverTable");
         var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
@@ -163,7 +187,7 @@
 
         rows[$(this).index()].style.backgroundColor = 'lightblue';
         toggleQueueTable();
-        var Cells = table.rows[$(this).index()+1].getElementsByTagName("td");
+        var Cells = table.rows[$(this).index() + 1].getElementsByTagName("td");
 
         selectedServer = Cells[0].innerText;
 
@@ -174,12 +198,16 @@
         $('#queueTable > tbody').remove();
         $('#queueTable').append("<tbody></tbody>");
 
+        //Initializes javascript arrays for series of lists
         var queueList = [];
         var itemLength = [];
+
+        //Initialize java arrays for queue and server list
         <%
           String[] arr = myServer.getQueueList();
           %>
 
+        //Initialize list of queues
         var redisSet = new Array(<%=arr.length%>);
         <%
           for(int i = 0; i < arr.length; i++) {
@@ -205,7 +233,7 @@
                 rows[i].style.backgroundColor = 'white';
             }
             rows[$(this).index()].style.backgroundColor = 'lightblue';
-            var Cells = table.rows[$(this).index()+1].getElementsByTagName("td");
+            var Cells = table.rows[$(this).index() + 1].getElementsByTagName("td");
             //window.location.href = "index.jsp?selectedServer=" + Cells[0].innerText;
 
             selectedQueue = Cells[0].innerText;
@@ -223,7 +251,7 @@
             for (l = 0; l < redisSet[$(this).index()].length; l++) {
                 var newRow = newRedisRows.insertRow(l);
                 var newCell1 = newRow.insertCell(0);
-                newCell1.innerHTML = l+1;
+                newCell1.innerHTML = l + 1;
                 var newCell2 = newRow.insertCell(1);
                 newCell2.innerHTML = redisSet[$(this).index()][l];
             }

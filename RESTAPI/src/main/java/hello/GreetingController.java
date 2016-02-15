@@ -18,29 +18,29 @@ public class GreetingController {
 	private final String[] HOST_NAMES = {
 			"sd-vm12.csc.ncsu.edu",
 			"sd-vm19.csc.ncsu.edu",
-			"sd-vm20.csc.ncsu.edu", 
+			"sd-vm20.csc.ncsu.edu",
 			"sd-vm33.csc.ncsu.edu"};
-	
+
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody ServerRequest request) {
-		
+
 		RedisURI initialUri = new RedisURI();
 		initialUri.setHost(HOST_NAMES[0]);
-		initialUri.setPort(7001);
+		initialUri.setPort(30001);
 
 
 
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 30001);
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
 		System.out.println("Node ID: " + request.getNodeID());
-		
+
 		String result = commands.clusterForget(request.getNodeID());
-		
+
 		redisClient.shutdown();
-		
-		
+
+
 		return result;
 	}
 
@@ -49,16 +49,16 @@ public class GreetingController {
 
 		RedisURI initialUri = new RedisURI();
 		initialUri.setHost(HOST_NAMES[0]);
-		initialUri.setPort(7001);
+		initialUri.setPort(30001);
 
 
 
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 30001);
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
 		String result = commands.clusterMeet(request.getHost(), request.getPort());
-		
+
 		redisClient.shutdown();
 
 		return result;
@@ -69,7 +69,7 @@ public class GreetingController {
 	public List<Server> servers() {
 
 		//RedisClient redisClient = new RedisClient(HOST_NAMES[0], 6379);
-		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 7001);
+		RedisClient redisClient = new RedisClient(HOST_NAMES[0], 30001);
 		//RedisClient redisClient = new RedisClient();
 
 		/*RedisURI initialUri = new RedisURI();
@@ -85,7 +85,7 @@ public class GreetingController {
 
 		String nodes = commands.clusterNodes();
 		String nodesArray[] = nodes.split("\\r?\\n");
-		
+
 		List<Server> servers = new ArrayList<Server>();
 
 		for(int i = 0; i < nodesArray.length; i++){
