@@ -118,15 +118,16 @@ public class GreetingController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/getItems")
-	public String getItems(@RequestBody Server server) {
+	public List<String> getItems(@RequestBody Server server) {
 		
 		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 		
-		String items = commands.get(server.getKey());
+		//String items = commands.get(server.getKey());
+		List<String> itemsList = commands.lrange(server.getKey(), 0, -1);
 		
-		return items;
+		return itemsList;
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
