@@ -9,6 +9,24 @@ public class Server {
     private String nodeID;
     private String serverInfo;
     private String key;
+    private int beginningSlot;
+    private int endSlot;
+    
+	public int getBeginningSlot(){
+		return beginningSlot;
+	}
+	
+	public void setBeginningSlot(int beginningSlot){
+		this.beginningSlot = beginningSlot;
+	}
+	
+	public int getEndSlot(){
+		return endSlot;
+	}
+	
+	public void setEndSlot(int endSlot){
+		this.endSlot = endSlot;
+	}
     
 	public int getPort(){
 		return port;

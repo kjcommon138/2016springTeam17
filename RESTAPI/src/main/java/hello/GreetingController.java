@@ -52,8 +52,8 @@ public class GreetingController {
 
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/servers")
-	public List<Server> servers(@RequestBody Server server1) {
+	@RequestMapping(method=RequestMethod.POST, value="/getServers")
+	public List<Server> getServers(@RequestBody Server server1) {
 
 		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
 
@@ -137,22 +137,51 @@ public class GreetingController {
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
-		int[] slots = new int[84];
+		int beginningSlot = server1.getBeginningSlot();
+		int endSlot = server1.getEndSlot();
+		int numSlots = endSlot - beginningSlot + 1;
+		
+		int[] slots = new int[numSlots];
 
-
-		for(int i = 16300; i < 16384; i ++){
-			slots[i-16300] = i;
-			System.out.println(i-16300);
-			System.out.println(i);
+		for(int i = beginningSlot; i < endSlot + 1; i ++){
+			slots[i-beginningSlot] = i;
+			//System.out.println(i-beginningSlot);
+			//System.out.println(i);
 		}
-
 
 		String a = commands.clusterAddSlots(slots);
 		System.out.println(a);
 
-
 		redisClient.shutdown();
 
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
+	public void removeSlots(@RequestBody Server server1) {
+		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
+
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisCommands<String, String> commands = connection.sync();
+
+		int beginningSlot = server1.getBeginningSlot();
+		System.out.println(beginningSlot);
+		int endSlot = server1.getEndSlot();
+		System.out.println(endSlot);
+		int numSlots = endSlot - beginningSlot + 1;
+		
+		System.out.println(numSlots);
+		int[] slots = new int[numSlots];
+
+		for(int i = beginningSlot; i < endSlot + 1; i ++){
+			slots[i-beginningSlot] = i;
+			//System.out.println(i-beginningSlot);
+			//System.out.println(i);
+		}
+
+		String a = commands.clusterDelSlots(slots);
+		System.out.println(a);
+
+		redisClient.shutdown();
 
 	}
 }
