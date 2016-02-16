@@ -131,7 +131,7 @@ public class GreetingController {
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
-	public void addSlots(@RequestBody Server server1) {
+	public String addSlots(@RequestBody Server server1) {
 		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
 
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
@@ -153,11 +153,13 @@ public class GreetingController {
 		System.out.println(a);
 
 		redisClient.shutdown();
+		
+		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + server1.getPort());
 
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
-	public void removeSlots(@RequestBody Server server1) {
+	public String removeSlots(@RequestBody Server server1) {
 		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
 
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
@@ -182,6 +184,8 @@ public class GreetingController {
 		System.out.println(a);
 
 		redisClient.shutdown();
+		
+		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + server1.getPort());
 
 	}
 }
