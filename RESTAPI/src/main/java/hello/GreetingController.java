@@ -27,14 +27,29 @@ public class GreetingController {
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
-		System.out.println("Node ID: " + request.getNodeID());
+		//System.out.println("Node ID: " + request.getNodeID());
+		
+		List<Object> clusterSlots = commands.clusterSlots();
 
-		String result = commands.clusterForget(request.getNodeID());
+		String serversInfo[][] = new String[clusterSlots.size()][4];
+		String clusterSlotsArray[] = null;
+		for(int i = 0; i < clusterSlots.size(); i++){
+			String clusterSlotsInfo = clusterSlots.get(i).toString();
+			clusterSlotsInfo = clusterSlotsInfo.replace("[", "").replace("]", "");
+			clusterSlotsArray = clusterSlotsInfo.split("\\s*,\\s*");
+			for(int j = 0; j < clusterSlotsArray.length; j++){
+				System.out.println(clusterSlotsArray[j]);
+				serversInfo[i][j] = clusterSlotsArray[j];
+			}
+
+		}
+
+		//String result = commands.clusterForget(request.getNodeID());
 
 		redisClient.shutdown();
 
 
-		return result;
+		return null;
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
@@ -61,17 +76,40 @@ public class GreetingController {
 		RedisCommands<String, String> commands = connection.sync();
 
 		String nodes = commands.clusterNodes();
+		//splits on new line
 		String nodesArray[] = nodes.split("\\r?\\n");
 
 		List<Server> servers = new ArrayList<Server>();
 
 		for(int i = 0; i < nodesArray.length; i++){
 			System.out.println(nodesArray[i]);
-			int index = nodesArray[i].indexOf(' ');
+			
+			//String info [] = nodesArray[i].split("\\s*,\\s*");
+			String info [] = nodesArray[i].split("\\s+");
+			
 			Server server = new Server();
-			server.setNodeID(nodesArray[i].substring(0,index));
-			server.setServerInfo(nodesArray[i].substring(index + 1));
+			
+			server.setNodeID(info[0]);
+			
+			String hostAndPort = info[1];
+			int index = info[1].indexOf(":");
+			System.out.println(info[1]);
+			System.out.println(index);
+			server.setHost(info[1].substring(0, index));
+			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
+			server.setType(info[2]);
+			
+			index = info[8].indexOf("-");
+			server.setBeginningSlot(Integer.parseInt(info[8].substring(0, index)));
+			server.setEndSlot(Integer.parseInt(info[8].substring(index + 1)));
+			
 			servers.add(server);
+			
+			//int index = nodesArray[i].indexOf(' ');
+			//Server server = new Server();
+			//server.setNodeID(nodesArray[i].substring(0,index));
+			//server.setServerInfo(nodesArray[i].substring(index + 1));
+			//servers.add(server);
 		}
 
 
@@ -154,7 +192,7 @@ public class GreetingController {
 
 		redisClient.shutdown();
 		
-		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + server1.getPort());
+		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
 	}
 	
@@ -185,7 +223,7 @@ public class GreetingController {
 
 		redisClient.shutdown();
 		
-		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + server1.getPort());
+		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + ":" + server1.getPort());
 
 	}
 }

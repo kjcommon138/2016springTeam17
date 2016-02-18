@@ -7,6 +7,7 @@ public class Server {
 	private int port;
 	private String host;
     private String nodeID;
+    private String type;
     private String serverInfo;
     private String key;
     private int beginningSlot;
@@ -42,6 +43,14 @@ public class Server {
 	
 	public void setKey(String key){
 		this.key = key;
+	}
+	
+	public String getType(){
+		return type;
+	}
+	
+	public void setType(String type){
+		this.type = type;
 	}
 	
 	public String getHost(){
