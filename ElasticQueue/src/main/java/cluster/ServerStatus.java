@@ -147,14 +147,16 @@ public class ServerStatus {
     public String[][] getServerList() {
         String nodes = syncApi.clusterNodes();
         String nodesArray[] = nodes.split("\\r?\\n");
-        String nodeIdArray[][] = new String[nodesArray.length][3];
+        String nodeIdArray[][] = new String[nodesArray.length][5];
 
         for (int i = 0; i < nodesArray.length; i++) {
             int index = nodesArray[i].indexOf(' ');
-
+            int portIndex = nodesArray[i].indexOf(':') + 1;
             nodeIdArray[i][0] = nodesArray[i].substring(0, index);
             nodeIdArray[i][1] = nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled";
             nodeIdArray[i][2] = nodesArray[i].indexOf("master") == -1 ? "Slave" : "Master";
+            nodeIdArray[i][3] = nodesArray[i].substring(index + 1, portIndex - 1);
+            nodeIdArray[i][4] = nodesArray[i].substring(portIndex, nodesArray[i].indexOf(" ", portIndex));
         }
 
         return nodeIdArray;

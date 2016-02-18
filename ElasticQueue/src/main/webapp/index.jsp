@@ -62,6 +62,8 @@
                     <th>Server</th>
                     <th>Status</th>
                     <th>Server Type</th>
+                    <th>IP Address</th>
+                    <th>Port Number</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -170,6 +172,10 @@
         newCell2.innerText = serverList[l][1];
         var newCell3 = newRow.insertCell(2);
         newCell3.innerText = serverList[l][2];
+        var newCell4 = newRow.insertCell(3);
+        newCell4.innerText = serverList[l][3];
+        var newCell5 = newRow.insertCell(4);
+        newCell5.innerText = serverList[l][4];
     }
 
     $('#serverTable > tbody').find('tr').click(function () {
