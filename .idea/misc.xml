@@ -43,6 +43,7 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/ElasticQueue" />
+    <file type="web" url="file://$PROJECT_DIR$/ElasticQueueSpring" />
     <file type="web" url="file://$PROJECT_DIR$/../SpringElasticQueue" />
   </component>
   <component name="MavenProjectsManager">
@@ -52,7 +53,7 @@
         <option value="$PROJECT_DIR$/ElasticQueue/pom.xml" />
         <option value="$PROJECT_DIR$/../bronto-redis/src/pom.xml" />
         <option value="$PROJECT_DIR$/../bronto-redis/src-commons/pom.xml" />
-        <option value="$PROJECT_DIR$/../SpringElasticQueue/pom.xml" />
+        <option value="$PROJECT_DIR$/ElasticQueueSpring/pom.xml" />
       </list>
     </option>
   </component>

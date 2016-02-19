@@ -61,10 +61,18 @@
         <processorPath useClasspath="true" />
         <module name="spring4-mvc-maven-ajax-example" />
       </profile>
+      <profile default="false" name="Annotation profile for ElasticQueueSpring" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="ElasticQueueSpring" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bronto-commons" target="1.5" />
       <module name="ElasticQueue" target="1.5" />
+      <module name="ElasticQueueSpring" target="1.8" />
       <module name="gs-rest-service (1)" target="1.8" />
       <module name="gs-rest-service (2)" target="1.8" />
       <module name="redis-benchmark" target="1.7" />
