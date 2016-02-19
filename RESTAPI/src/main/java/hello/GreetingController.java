@@ -21,46 +21,103 @@ public class GreetingController {
 	"sd-vm33.csc.ncsu.edu"};
 
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
-	public String removeServers(@RequestBody ServerRequest request) {
+	public String removeServers(@RequestBody ServerRequest2 request) {
+		Server server = request.getServer();
+		Server serverToRemove = request.getServerRemove();
 
-		RedisClient redisClient = new RedisClient(request.getHostCluster(), request.getPortCluster());
+		//connection to node we want to remove
+		RedisClient redisClient2 = new RedisClient(serverToRemove.getHost(), serverToRemove.getPort());
+		StatefulRedisConnection<String, String> connection2 = redisClient2.connect();
+		RedisCommands<String, String> commands2 = connection2.sync();
+
+		int beginningSlots = 0;
+		int endSlots = 0;
+		String nodeID = "";
+
+		List<Server> allServers = getServers(serverToRemove);
+		for(int i = 0 ; i < allServers.size(); i++){
+			if(allServers.get(i).getPort() == serverToRemove.getPort()){
+				Server serverRemoveInfo = allServers.get(i);
+				beginningSlots = serverRemoveInfo.getBeginningSlot();
+				endSlots = serverRemoveInfo.getEndSlot();
+				nodeID = serverRemoveInfo.getNodeID();
+			}
+		}
+
+		System.out.println(beginningSlots);
+		System.out.println(endSlots);
+		//remove slots from the node we want to remove
+		int[] slotsToRemove = getSlots(beginningSlots, endSlots);
+		commands2.clusterDelSlots(slotsToRemove);
+		connection2.close();
+		redisClient2.shutdown();
+
+		//get every node in the cluster to delete/forget the slot
+		for(int i = 0 ; i < allServers.size(); i++){
+
+			if(allServers.get(i).getPort() != serverToRemove.getPort()){
+
+				RedisClient redisClient3 = new RedisClient(allServers.get(i).getHost(), allServers.get(i).getPort());
+				StatefulRedisConnection<String, String> connection3 = redisClient3.connect();
+				RedisCommands<String, String> commands3 = connection3.sync();
+
+				//add removed slots  to the other node
+				commands3.clusterDelSlots(slotsToRemove);
+				commands3.clusterForget(nodeID);
+
+				connection3.close();
+				redisClient3.shutdown();
+
+			}
+		}
+
+		//connection to node we want to keep
+		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
-		//System.out.println("Node ID: " + request.getNodeID());
-		
-		List<Object> clusterSlots = commands.clusterSlots();
+		commands.clusterAddSlots(slotsToRemove);
 
-		String serversInfo[][] = new String[clusterSlots.size()][4];
-		String clusterSlotsArray[] = null;
-		for(int i = 0; i < clusterSlots.size(); i++){
-			String clusterSlotsInfo = clusterSlots.get(i).toString();
-			clusterSlotsInfo = clusterSlotsInfo.replace("[", "").replace("]", "");
-			clusterSlotsArray = clusterSlotsInfo.split("\\s*,\\s*");
-			for(int j = 0; j < clusterSlotsArray.length; j++){
-				System.out.println(clusterSlotsArray[j]);
-				serversInfo[i][j] = clusterSlotsArray[j];
-			}
 
-		}
-
-		//String result = commands.clusterForget(request.getNodeID());
-
+		connection.close();
 		redisClient.shutdown();
+
 
 
 		return null;
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
-	public String addServers(@RequestBody ServerRequest request) {
+	public String addServers(@RequestBody Server server) {
 
-		RedisClient redisClient = new RedisClient(request.getHostCluster(), request.getPortCluster());
+		//Server server = request.getServer();
+		//Server serverToAdd = request.getServerAdd();
+
+		//connection to node we want to keep
+		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
 
-		String result = commands.clusterMeet(request.getHost(), request.getPort());
 
+		int beginningSlots = 0;
+		int endSlots = 0;
+		String nodeID = "";
+
+		List<Server> allServers = getServers(server);
+		for(int i = 0 ; i < allServers.size(); i++){
+			//make sure not to get info for server to add
+			if(allServers.get(i).getPort() != server.getPort()){
+				Server serverRemoveInfo = allServers.get(i);
+				beginningSlots = serverRemoveInfo.getBeginningSlot();
+				endSlots = serverRemoveInfo.getEndSlot();
+				nodeID = serverRemoveInfo.getNodeID();
+			}
+		}
+
+
+		String result = commands.clusterMeet(server.getHost(), server.getPort());
+
+		connection.close();
 		redisClient.shutdown();
 
 		return result;
@@ -83,33 +140,29 @@ public class GreetingController {
 
 		for(int i = 0; i < nodesArray.length; i++){
 			System.out.println(nodesArray[i]);
-			
-			//String info [] = nodesArray[i].split("\\s*,\\s*");
+
 			String info [] = nodesArray[i].split("\\s+");
-			
+
 			Server server = new Server();
-			
+
 			server.setNodeID(info[0]);
-			
+
 			String hostAndPort = info[1];
 			int index = info[1].indexOf(":");
 			System.out.println(info[1]);
-			System.out.println(index);
+
 			server.setHost(info[1].substring(0, index));
 			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
 			server.setType(info[2]);
-			
+
+			System.out.println(info[7]);
+			System.out.println(info[8]);
 			index = info[8].indexOf("-");
 			server.setBeginningSlot(Integer.parseInt(info[8].substring(0, index)));
 			server.setEndSlot(Integer.parseInt(info[8].substring(index + 1)));
-			
+
 			servers.add(server);
-			
-			//int index = nodesArray[i].indexOf(' ');
-			//Server server = new Server();
-			//server.setNodeID(nodesArray[i].substring(0,index));
-			//server.setServerInfo(nodesArray[i].substring(index + 1));
-			//servers.add(server);
+
 		}
 
 
@@ -154,17 +207,17 @@ public class GreetingController {
 		return keys;
 
 	}
-	
+
 	@RequestMapping(method=RequestMethod.POST, value="/getItems")
 	public List<String> getItems(@RequestBody Server server) {
-		
+
 		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
 		StatefulRedisConnection<String, String> connection = redisClient.connect();
 		RedisCommands<String, String> commands = connection.sync();
-		
+
 		//String items = commands.get(server.getKey());
 		List<String> itemsList = commands.lrange(server.getKey(), 0, -1);
-		
+
 		return itemsList;
 	}
 
@@ -178,7 +231,7 @@ public class GreetingController {
 		int beginningSlot = server1.getBeginningSlot();
 		int endSlot = server1.getEndSlot();
 		int numSlots = endSlot - beginningSlot + 1;
-		
+
 		int[] slots = new int[numSlots];
 
 		for(int i = beginningSlot; i < endSlot + 1; i ++){
@@ -190,12 +243,28 @@ public class GreetingController {
 		String a = commands.clusterAddSlots(slots);
 		System.out.println(a);
 
+		connection.close();
 		redisClient.shutdown();
-		
+
 		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
 	}
-	
+
+	public int[] getSlots(int beginningSlot, int endSlot) {
+
+		int numSlots = endSlot - beginningSlot + 1;
+
+		System.out.println(numSlots);
+		int[] slots = new int[numSlots];
+
+		for(int i = beginningSlot; i < endSlot + 1; i ++){
+			slots[i-beginningSlot] = i;
+		}
+
+		return slots;
+
+	}
+
 	@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
 	public String removeSlots(@RequestBody Server server1) {
 		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
@@ -208,21 +277,20 @@ public class GreetingController {
 		int endSlot = server1.getEndSlot();
 		System.out.println(endSlot);
 		int numSlots = endSlot - beginningSlot + 1;
-		
+
 		System.out.println(numSlots);
 		int[] slots = new int[numSlots];
 
 		for(int i = beginningSlot; i < endSlot + 1; i ++){
 			slots[i-beginningSlot] = i;
-			//System.out.println(i-beginningSlot);
-			//System.out.println(i);
 		}
 
 		String a = commands.clusterDelSlots(slots);
 		System.out.println(a);
 
+		connection.close();
 		redisClient.shutdown();
-		
+
 		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + ":" + server1.getPort());
 
 	}
