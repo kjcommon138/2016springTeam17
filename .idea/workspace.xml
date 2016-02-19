@@ -5,34 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebd5bbbc-56b7-46f2-a19d-38f28fe763f1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/lib/chromedriver" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/SpringElasticQueue.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/cluster/ServerStatus.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/hello/Application.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/hello/GreetingController.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/hello/Server.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/hello/ServerRequest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/test/DashboardTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/test/SeleniumTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/test/ServerStatusTest.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/webapp/WEB-INF/views/jsp/index.jsp" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/LICENSE" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/README.md" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/config/SpringWebConfig.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/config/SpringWebConfig.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/servlet3/MyWebInitializer.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/servlet3/MyWebInitializer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/controller/AjaxController.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/controller/AjaxController.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/controller/WelcomeController.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/controller/WelcomeController.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/jsonview/Views.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/jsonview/Views.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/model/AjaxResponseBody.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/model/AjaxResponseBody.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/model/SearchCriteria.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/model/SearchCriteria.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/com/mkyong/web/model/User.java" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/java/edu/ncsu/csc492/group17/web/model/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpringElasticQueue/pom.xml" afterPath="$PROJECT_DIR$/../SpringElasticQueue/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpringElasticQueue/src/main/resources/logback.xml" afterPath="$PROJECT_DIR$/../SpringElasticQueue/src/main/resources/logback.xml" />
     </list>
     <ignored path="2016springTeam17.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -1699,7 +1672,7 @@
       <workItem from="1455290519141" duration="347000" />
       <workItem from="1455307760452" duration="30254000" />
       <workItem from="1455401947072" duration="34266000" />
-      <workItem from="1455853434075" duration="5035000" />
+      <workItem from="1455853434075" duration="5199000" />
     </task>
     <task id="LOCAL-00001" summary="Added ability to hide and reveal tables accordingly;&#10;For example, only the servers table will show up initially.  If you click on one of the servers, only the servers and queue table for that server will show up.  If you click on a row in the queue table, you will see the redis set on the redis table.">
       <created>1454021414171</created>
@@ -1725,7 +1698,13 @@
       <option name="project" value="LOCAL" />
       <updated>1454173068380</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Converted project to AJAX template project.">
+      <created>1455858858729</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1455858858729</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1761,7 +1740,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="164871000" />
+    <option name="totallyTimeSpent" value="165035000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="960" height="1032" extended-state="0" />
@@ -1769,6 +1748,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32882884" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -1792,7 +1772,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32882884" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1843,7 +1822,8 @@
     <MESSAGE value="Added basic JUnit tests for Redis-client class.  Will need to find out how to get cachekeys to key names." />
     <MESSAGE value="Fixed jsp to have more efficient way to get queue into array from redis server.  Also fixed test cases." />
     <MESSAGE value="Got a list from a cluster connection and displayed a cluster list on jsp page.  Must find a way to use AJAX JQuery to call a Spring method that will execute Java code to get Redis data" />
-    <option name="LAST_COMMIT_MESSAGE" value="Got a list from a cluster connection and displayed a cluster list on jsp page.  Must find a way to use AJAX JQuery to call a Spring method that will execute Java code to get Redis data" />
+    <MESSAGE value="Converted project to AJAX template project." />
+    <option name="LAST_COMMIT_MESSAGE" value="Converted project to AJAX template project." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
