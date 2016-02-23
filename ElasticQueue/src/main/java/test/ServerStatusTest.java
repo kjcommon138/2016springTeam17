@@ -42,8 +42,23 @@ public class ServerStatusTest {
         System.out.println(testArray3[0]);
         System.out.println(testArray3[1]);
         assertEquals(testArray3.length, 2);
-        assertEquals(testArray3[0], "Test2");
-        assertEquals(testArray3[1], "Test1");
+        assertEquals(testArray3[0], "Test1");
+        assertEquals(testArray3[1], "Test2");
+    }
+
+    @org.junit.Test
+    public void testGetServerList() throws Exception {
+        String[][] testServers = myServer.getServerList();
+
+        //Check Single Complete Line
+        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", testServers[0][0]);
+        assertEquals("Active", testServers[0][1]);
+        assertEquals("Slave", testServers[0][2]);
+        assertEquals("152.14.106.22", testServers[0][3]);
+        assertEquals("30009", testServers[0][4]);
+
+        //Check that all servers are there.
+        assertEquals(9, testServers.length);
     }
 
 }
