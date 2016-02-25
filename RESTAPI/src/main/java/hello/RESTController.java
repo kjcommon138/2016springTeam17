@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-public class GreetingController {
+public class RESTController {
 
 	private final String[] HOST_NAMES = {
 			"sd-vm12.csc.ncsu.edu",
