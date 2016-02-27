@@ -1,7 +1,5 @@
 package com.ncsu.csc492.group17.web.model;
 
-import java.util.List;
-
 public class Server {
 
 	private int port;
@@ -10,6 +8,16 @@ public class Server {
     private String type;
     private String serverInfo;
     private String key;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	private String status;
     private int beginningSlot;
     private int endSlot;
     

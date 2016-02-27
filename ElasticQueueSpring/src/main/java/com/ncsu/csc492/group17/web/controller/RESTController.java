@@ -230,7 +230,8 @@ public class RESTController {
 
 			server.setHost(info[1].substring(0, index));
 			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
-			server.setType(info[2]);
+			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
+			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
 
 			System.out.println(info[7]);
 
@@ -289,6 +290,10 @@ public class RESTController {
 		List<String> items = commands.clusterGetKeysInSlot(0, 15999);
 		System.out.println("servers info: " + items);
 		List<String> keys = commands.keys("*");
+		int size = keys.size();
+
+		for(int i = 0; i < size; i++)
+			keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
 
 		redisClient.shutdown();
 
