@@ -5,10 +5,10 @@ import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.lambdaworks.redis.cluster.ClusterClientOptions;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
 import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -93,17 +93,17 @@ public class ServerStatus {
         //else
         //set serverstatus as "Disabled"
         if (syncApi != null) {
-            RedisCommands<String, String> syncCommand = connection.getConnection(HOST_NAMES[0], 30001).sync();
-            setServerStatus(!syncCommand.ping().isEmpty() ? "Active" : "Disabled");
+            RedisAdvancedClusterCommands<String, String> syncCommand = connection.sync();
+            setServerStatus(syncCommand.clusterInfo().indexOf("deactivated") == -1 ? "Active" : "Disabled");
 
             System.out.println("Connected to Redis");
 
             syncApi.flushdb();
 
-            syncApi.sadd(queueList[0], "Test1", "Test2", "Test3");
-            syncApi.sadd(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
+            syncApi.lpush(queueList[0], "Test1", "Test2", "Test3");
+            syncApi.lpush(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
 
-            Set<String> tempSet = syncApi.smembers(queueList[0]);
+            List<String> tempSet = syncApi.lrange(queueList[0], 0, -1);
             elements = tempSet.toArray(new String[tempSet.size()]);
             System.out.println(elements[0]);
 
