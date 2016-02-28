@@ -162,7 +162,6 @@
             url: "${home}getServers",
             data: JSON.stringify(server),
             dataType: 'json',
-            timeout: 4500,
             success: function (data) {
                 console.log("SUCCESS: ", data);
                 initializeTable(data);
@@ -181,7 +180,6 @@
             url: "${home}getQueues",
             data: JSON.stringify(data2),
             dataType: 'json',
-            timeout: 4500,
             success: function (data) {
                 console.log("SUCCESS: ", data);
                 initializeQueueTable(data, data2);
@@ -198,7 +196,6 @@
             url: "${home}getItems",
             data: JSON.stringify(sData),
             dataType: 'json',
-            timeout: 4500,
             success: function (data) {
                 console.log("SUCCESS: ", data);
                 initializeItemsTable(data);

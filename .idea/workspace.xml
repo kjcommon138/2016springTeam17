@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebd5bbbc-56b7-46f2-a19d-38f28fe763f1" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/AjaxController.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/AjaxResponseBody.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/SearchCriteria.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/User.java" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/cluster/ServerStatus.java" afterPath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/cluster/ServerStatus.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java" afterPath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/Server.java" afterPath="$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/Server.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ElasticQueueSpring/src/main/webapp/WEB-INF/views/jsp/index.jsp" afterPath="$PROJECT_DIR$/ElasticQueueSpring/src/main/webapp/WEB-INF/views/jsp/index.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RESTAPI/gs-rest-service (1).iml" afterPath="$PROJECT_DIR$/RESTAPI/gs-rest-service (1).iml" />
     </list>
     <ignored path="2016springTeam17.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -50,8 +42,8 @@
       <file leaf-file-name="index.jsp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/webapp/WEB-INF/views/jsp/index.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5">
-              <caret line="214" column="48" selection-start-line="214" selection-start-column="48" selection-end-line="214" selection-end-column="48" />
+            <state vertical-scroll-proportion="3.594203">
+              <caret line="198" column="0" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -60,7 +52,7 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.8148148">
+            <state vertical-scroll-proportion="0.0">
               <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
               <folding>
                 <element signature="e#243#244#0" expanded="true" />
@@ -77,7 +69,7 @@
       <file leaf-file-name="RESTController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.384615">
+            <state vertical-scroll-proportion="0.0">
               <caret line="295" column="32" selection-start-line="295" selection-start-column="32" selection-end-line="295" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -278,9 +270,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="960" />
-    <option name="width" value="960" />
-    <option name="height" value="1032" />
+    <option name="x" value="-9" />
+    <option name="y" value="-9" />
+    <option name="width" value="1938" />
+    <option name="height" value="1050" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -307,6 +300,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -821,9 +815,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -873,7 +866,8 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/pom.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/hello/RESTController.java</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/hello/Server.java</PATH>
           <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/target/gs-rest-service-0.1.0.jar.original</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
@@ -882,14 +876,6 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="CREATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/Server.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/ServerRequest.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/hello/RESTController.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/hello/ServerRequest.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/test/RESTControllerTest.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/test/ServerRequestTest.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/test/ServerTest.java</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Deleted" />
@@ -897,9 +883,6 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="true" />
           <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/src/main/java/hello/GreetingController.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/target/classes/hello/Greeting.class</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/RESTAPI/target/classes/hello/GreetingController.class</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Restored" />
@@ -1775,7 +1758,9 @@
       <workItem from="1456368904732" duration="92000" />
       <workItem from="1456409861085" duration="244000" />
       <workItem from="1456410427752" duration="7465000" />
-      <workItem from="1456539907481" duration="18030000" />
+      <workItem from="1456539907481" duration="18095000" />
+      <workItem from="1456589103875" duration="288000" />
+      <workItem from="1456672371729" duration="1204000" />
     </task>
     <task id="LOCAL-00001" summary="Added ability to hide and reveal tables accordingly;&#10;For example, only the servers table will show up initially.  If you click on one of the servers, only the servers and queue table for that server will show up.  If you click on a row in the queue table, you will see the redis set on the redis table.">
       <created>1454021414171</created>
@@ -1819,7 +1804,13 @@
       <option name="project" value="LOCAL" />
       <updated>1456256665031</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fully integrated AJAX cluster support on JSP page">
+      <created>1456558187735</created>
+      <option name="number" value="00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1456558187735</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1855,11 +1846,11 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="208787000" />
+    <option name="totallyTimeSpent" value="210344000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="0" width="960" height="1032" extended-state="0" />
-    <editor active="true" />
+    <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1867,16 +1858,15 @@
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995495" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36373875" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33783785" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15814696" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3704955" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33112583" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5311111" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25452608" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3245033" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1888,6 +1878,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32882884" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39977476" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3245033" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1939,7 +1930,8 @@
     <MESSAGE value="Got a list from a cluster connection and displayed a cluster list on jsp page.  Must find a way to use AJAX JQuery to call a Spring method that will execute Java code to get Redis data" />
     <MESSAGE value="Converted project to AJAX template project." />
     <MESSAGE value="Redo of AJAX project" />
-    <option name="LAST_COMMIT_MESSAGE" value="Redo of AJAX project" />
+    <MESSAGE value="Fully integrated AJAX cluster support on JSP page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fully integrated AJAX cluster support on JSP page" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1956,10 +1948,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-          <folding>
-            <element signature="e#413#414#0" expanded="false" />
-            <element signature="e#434#435#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1967,10 +1955,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding>
-            <element signature="e#356#357#0" expanded="false" />
-            <element signature="e#407#408#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2197,7 +2181,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="129" column="34" selection-start-line="129" selection-start-column="34" selection-end-line="129" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2213,9 +2196,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2237,7 +2217,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="39" column="52" selection-start-line="39" selection-start-column="52" selection-end-line="39" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2245,7 +2224,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2261,7 +2239,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2269,10 +2246,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.265625">
           <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-          <folding>
-            <element signature="e#413#414#0" expanded="false" />
-            <element signature="e#434#435#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2280,10 +2253,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.265625">
           <caret line="11" column="39" selection-start-line="11" selection-start-column="39" selection-end-line="11" selection-end-column="39" />
-          <folding>
-            <element signature="e#356#357#0" expanded="false" />
-            <element signature="e#407#408#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2291,7 +2260,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="11.181004">
           <caret line="430" column="28" selection-start-line="430" selection-start-column="28" selection-end-line="430" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2299,13 +2267,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.20588236">
           <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/webapp/WEB-INF/views/jsp/index.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.594203">
+          <caret line="198" column="0" selection-start-line="198" selection-start-column="0" selection-end-line="198" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/model/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.8148148">
+        <state vertical-scroll-proportion="0.0">
           <caret line="15" column="21" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
           <folding>
             <element signature="e#243#244#0" expanded="true" />
@@ -2314,6 +2289,16 @@
             <element signature="e#331#332#0" expanded="true" />
             <element signature="e#1414#1415#0" expanded="true" />
             <element signature="e#1455#1456#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="295" column="32" selection-start-line="295" selection-start-column="32" selection-end-line="295" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2330,24 +2315,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="96" column="82" selection-start-line="96" selection-start-column="82" selection-end-line="96" selection-end-column="82" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/java/com/ncsu/csc492/group17/web/controller/RESTController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.384615">
-          <caret line="295" column="32" selection-start-line="295" selection-start-column="32" selection-end-line="295" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ElasticQueueSpring/src/main/webapp/WEB-INF/views/jsp/index.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5">
-          <caret line="214" column="48" selection-start-line="214" selection-start-column="48" selection-end-line="214" selection-end-column="48" />
           <folding />
         </state>
       </provider>
