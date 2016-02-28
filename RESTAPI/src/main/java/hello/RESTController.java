@@ -351,7 +351,7 @@ public class RESTController {
 		//int beginningSlot = server1.getBeginningSlot();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
 		//int endSlot = server1.getEndSlot();
-		int endSlot = server1.getSlots()[0].getBeginningSlot();
+		int endSlot = server1.getSlots()[0].getEndSlot();
 		int numSlots = endSlot - beginningSlot + 1;
 
 		int[] slots = new int[numSlots];

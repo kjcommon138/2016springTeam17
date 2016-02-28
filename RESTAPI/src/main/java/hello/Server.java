@@ -15,7 +15,7 @@ public class Server {
 	private Slots slots[];
 	
 
-	static class Slots{
+	public static class Slots{
 		private int beginningSlot;
 		private int endSlot;
 

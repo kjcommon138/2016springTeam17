@@ -1,6 +1,7 @@
 package test;
 
 import hello.Server;
+import hello.Server.Slots;
 
 import org.junit.*;
 
@@ -12,29 +13,30 @@ import static junit.framework.TestCase.assertEquals;
 public class ServerTest {
 
     Server myServer = new Server();
+    Slots slot[] = new Slots[1];
 
     @Test
     public void testSetBeginningSlot() throws Exception {
-        myServer.setBeginningSlot(1001);
-        assertEquals(myServer.getBeginningSlot(), 1001);
+    	myServer.getSlots()[0].setBeginningSlot(1001);
+        assertEquals(myServer.getSlots()[0].getBeginningSlot(), 1001);
     }
 
     @Test
     public void testGetBeginningSlot() throws Exception {
-        myServer.setBeginningSlot(2001);
-        assertEquals(myServer.getBeginningSlot(), 2001);
+        myServer.getSlots()[0].setBeginningSlot(2001);
+        assertEquals(myServer.getSlots()[0].getBeginningSlot(), 2001);
     }
 
     @Test
     public void testSetEndSlot() throws Exception {
-        myServer.setEndSlot(1001);
-        assertEquals(myServer.getEndSlot(), 1001);
+    	myServer.getSlots()[0].setEndSlot(1001);
+        assertEquals(myServer.getSlots()[0].getEndSlot(), 1001);
     }
 
     @Test
     public void testGetEndSlot() throws Exception {
-        myServer.setEndSlot(2001);
-        assertEquals(myServer.getEndSlot(), 2001);
+    	myServer.getSlots()[0].setEndSlot(2001);
+        assertEquals(myServer.getSlots()[0].getEndSlot(), 2001);
     }
 
     @Test
