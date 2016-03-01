@@ -63,7 +63,6 @@
             <table id="serverTable" class="table" width="100%">
                 <thead>
                 <tr>
-                    <th>Server</th>
                     <th>Status</th>
                     <th>Server Type</th>
                     <th>IP Address</th>
@@ -101,23 +100,12 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-5" style="overflow:scroll;margin-left:100px;height:100px;overflow:auto">
-            <table style="display:none" class="table" width:100% id="redisTable">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Item</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
     </div>
 </div>
 
 <script>
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
-    var rTable = document.getElementById("redisTable");
     var sTable = document.getElementById("serverTable");
 
     function toggleQueueTable() {
@@ -133,17 +121,9 @@
         if (qTable.style.display == "none")
             qTable.style.display = "table";
 
-        if (rTable.style.display == "table")
-            rTable.style.display = "none";
-
         var heading = document.getElementById("queueHeading");
         if (heading.style.display == "none")
             heading.style.display = "inline";
-    }
-
-    function toggleRedisTable() {
-        if (rTable.style.display == "none")
-            rTable.style.display = "table";
     }
 
     //clears entire server table
@@ -187,22 +167,6 @@
         });
     }
 
-    function getItems(key, sData) {
-        sData.key = key;
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "${home}getItems",
-            data: JSON.stringify(sData),
-            dataType: 'json',
-            success: function (data) {
-                console.log("SUCCESS: ", data);
-                initializeItemsTable(data);
-            }
-        });
-    }
-
     function initializeQueueTable(queueData, serverData) {
         //clears entire table
         $('#queueTable > tbody').remove();
@@ -228,27 +192,7 @@
 
             selectedQueue = Cells[0].innerText;
             $(".queueValue").html(selectedQueue);
-
-            toggleRedisTable();
-
-            //output table of values inside of queue
-            getItems(selectedQueue, serverData);
         });
-    }
-
-    function initializeItemsTable(listData) {
-        //clears entire table
-        $('#redisTable > tbody').remove();
-        $('#redisTable').append("<tbody></tbody>");
-        newRedisRows = rTable.getElementsByTagName("tbody")[0];
-
-        for (l = 0; l < listData.length; l++) {
-            var newRow = newRedisRows.insertRow(l);
-            var newCell1 = newRow.insertCell(0);
-            newCell1.innerHTML = l + 1;
-            var newCell2 = newRow.insertCell(1);
-            newCell2.innerHTML = listData[l];
-        }
     }
 
     function initializeTable(data) {
@@ -260,15 +204,13 @@
         for (var i = 0; i < data.length; i++) {
             var newRow = newServerRows.insertRow(i);
             var newCell1 = newRow.insertCell(0);
-            newCell1.innerText = data[i].nodeID;
+            newCell1.innerText = data[i].status;
             var newCell2 = newRow.insertCell(1);
-            newCell2.innerText = data[i].status;
+            newCell2.innerText = data[i].type;
             var newCell3 = newRow.insertCell(2);
-            newCell3.innerText = data[i].type;
+            newCell3.innerText = data[i].host;
             var newCell4 = newRow.insertCell(3);
-            newCell4.innerText = data[i].host;
-            var newCell5 = newRow.insertCell(4);
-            newCell5.innerText = data[i].port;
+            newCell4.innerText = data[i].port;
         }
 
         $('#serverTable > tbody').find('tr').click(function () {

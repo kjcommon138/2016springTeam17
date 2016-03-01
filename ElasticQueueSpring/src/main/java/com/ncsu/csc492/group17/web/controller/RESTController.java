@@ -301,27 +301,6 @@ public class RESTController {
 
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/getItems")
-	public List<String> getItems(@RequestBody Server server) {
-
-		/*RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();*/
-
-		RedisURI uri = new RedisURI();
-		uri.setHost(server.getHost());
-		uri.setPort(server.getPort());
-		RedisClusterClient redisClient = new RedisClusterClient(uri);
-
-		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
-
-		//String items = commands.get(server.getKey());
-		List<String> itemsList = commands.lrange(server.getKey(), 0, -1);
-
-		return itemsList;
-	}
-
 	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
 	public String addSlots(@RequestBody Server server1) {
 		RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
