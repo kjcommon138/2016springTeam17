@@ -28,13 +28,13 @@
         <dependency>
   			<groupId>biz.paluch.redis</groupId>
   			<artifactId>lettuce</artifactId>
-  			<version>3.3.2.Final</version>
+  			<version>4.0.2.Final</version>
 		</dependency>
 		
 		<dependency>
   <groupId>biz.paluch.redis</groupId>
   <artifactId>lettuce</artifactId>
-  <version>3.3.2.Final</version>
+  <version>4.0.2.Final</version>
   <classifier>shaded</classifier>
   
   <exclusions>

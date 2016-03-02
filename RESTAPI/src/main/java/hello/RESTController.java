@@ -12,6 +12,7 @@ import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
 import com.lambdaworks.redis.cluster.api.async.RedisAdvancedClusterAsyncCommands;
 import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
+import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,7 @@ public class RESTController {
 
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody Server server) {
-		
+
 
 		int serverRemovePort = server.getPort();
 		String serverRemoveHost = server.getHost();
@@ -51,9 +52,9 @@ public class RESTController {
 		RedisClusterClient redisClient1 = RedisClusterClient.create(uri1);
 
 		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
-		
+
 		RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
-		
+
 		/*RedisClient client11 = new RedisClient(uri1);
 		 StatefulRedisConnection<String,String> connection11 = client11.connect();
 		 RedisCommands<String, String> commands11 = connection11.sync();*/
@@ -112,7 +113,7 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection3 = redisClient3.connect();
 		RedisAdvancedClusterCommands<String, String> commands3 = connection3.sync();
-		
+
 		for(int k = 0; k < allSlotsToRemove.length; k++){
 			//Destination node has to issue the importing command
 			System.out.println("Importing");
@@ -127,7 +128,7 @@ public class RESTController {
 
 		connection1.close();
 		redisClient1.shutdown();
-		
+
 
 		System.out.println("Cluster Forget");
 		System.out.println(commands3.clusterForget(serverRemove.getNodeID()));
@@ -363,8 +364,14 @@ public class RESTController {
 		uri1.setPort(server1.getPort());
 		RedisClusterClient redisClient = RedisClusterClient.create(uri1);
 
-		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+		/*StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+		
+		RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
+		StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
+
+		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
+
 
 		//int beginningSlot = server1.getBeginningSlot();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
@@ -407,36 +414,72 @@ public class RESTController {
 
 	@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
 	public String removeSlots(@RequestBody Server server1) {
-		RedisURI uri1 = new RedisURI();
+		/*RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
 		uri1.setPort(server1.getPort());
 		RedisClusterClient redisClient = RedisClusterClient.create(uri1);
-		
+
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+		int beginningSlot = 0;
+		int endSlot = 0;
 
 
-		//int beginningSlot = server1.getBeginningSlot();
-		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
-		System.out.println(beginningSlot);
-		//int endSlot = server1.getEndSlot();
-		int endSlot = server1.getSlots()[0].getEndSlot();
-		System.out.println(endSlot);
-		int numSlots = endSlot - beginningSlot + 1;
+		List<Server> allServers = getServers(server1);
+		for(int i = 0 ; i < allServers.size(); i++){
+			Server currentServer = allServers.get(i);
+			if(currentServer.getPort() == server1.getPort()){
+				beginningSlot = currentServer.getSlots()[0].getBeginningSlot();
+				endSlot = currentServer.getSlots()[0].getEndSlot();
+			}
 
-		System.out.println(numSlots);
-		int[] slots = new int[numSlots];
-
-		for(int i = beginningSlot; i < endSlot + 1; i ++){
-			slots[i-beginningSlot] = i;
 		}
 
-		String a = commands.clusterDelSlots(slots);
-		System.out.println(a);
+		int[] slots = getSlots(beginningSlot, endSlot);
 
-		connection.close();
-		redisClient.shutdown();
+
+		for(int i = 0 ; i < allServers.size(); i++){
+			Server currentServer = allServers.get(i);
+
+			RedisClient redisClient = new RedisClient(currentServer.getHost(), currentServer.getPort());
+
+			StatefulRedisConnection<String, String> connection = redisClient.connect();
+			RedisCommands<String, String> commands = connection.sync();
+			
+			/*RedisURI uri1 = new RedisURI();
+			uri1.setHost(currentServer.getHost());
+			uri1.setPort(currentServer.getPort());
+			//RedisClusterClient redisClient = RedisClusterClient.create(uri1);
+			RedisClusterClient redisClient = new RedisClusterClient(uri1);
+
+
+			StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+			RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+			//StatefulRedisConnection<String, String> a = connection.getConnection(currentServer.getHost(), currentServer.getPort());
+
+
+			commands.clusterDelSlots(slots);
+
+			//connection.close();
+			redisClient.shutdown();
+
+		}
+
+
+		/*int beginningSlot = server1.getSlots()[0].getBeginningSlot();
+		System.out.println(beginningSlot);
+		int endSlot = server1.getSlots()[0].getEndSlot();
+		System.out.println(endSlot);
+
+		int[] slots = getSlots(beginningSlot, endSlot);*/
+
+		//String a = commands.clusterDelSlots(slots);
+		//System.out.println(a);
+
+		//connection.close();
+		//redisClient.shutdown();
+		//return null;
 
 		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + ":" + server1.getPort());
 
