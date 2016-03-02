@@ -422,21 +422,12 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
-		int beginningSlot = 0;
-		int endSlot = 0;
-
+		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
+		int endSlot = server1.getSlots()[0].getEndSlot();
+		int[] slots = getSlots(beginningSlot, endSlot);
+		
 
 		List<Server> allServers = getServers(server1);
-		for(int i = 0 ; i < allServers.size(); i++){
-			Server currentServer = allServers.get(i);
-			if(currentServer.getPort() == server1.getPort()){
-				beginningSlot = currentServer.getSlots()[0].getBeginningSlot();
-				endSlot = currentServer.getSlots()[0].getEndSlot();
-			}
-
-		}
-
-		int[] slots = getSlots(beginningSlot, endSlot);
 
 
 		for(int i = 0 ; i < allServers.size(); i++){
