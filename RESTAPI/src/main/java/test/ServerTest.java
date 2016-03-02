@@ -17,25 +17,65 @@ public class ServerTest {
 
     @Test
     public void testSetBeginningSlot() throws Exception {
-    	myServer.getSlots()[0].setBeginningSlot(1001);
-        assertEquals(myServer.getSlots()[0].getBeginningSlot(), 1001);
+        Slots s = new Slots();
+        s.setBeginningSlot(1001);
+        assertEquals(s.getBeginningSlot(), 1001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        Slots results[] = myServer.getSlots();
+        assertEquals(results[0].getBeginningSlot(), 1001);
     }
 
     @Test
     public void testGetBeginningSlot() throws Exception {
-        myServer.getSlots()[0].setBeginningSlot(2001);
-        assertEquals(myServer.getSlots()[0].getBeginningSlot(), 2001);
+        Slots s = new Slots();
+        s.setBeginningSlot(2001);
+        assertEquals(s.getBeginningSlot(), 2001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        Slots results[] = myServer.getSlots();
+        assertEquals(results[0].getBeginningSlot(), 2001);
     }
 
     @Test
     public void testSetEndSlot() throws Exception {
-    	myServer.getSlots()[0].setEndSlot(1001);
-        assertEquals(myServer.getSlots()[0].getEndSlot(), 1001);
+        Slots s = new Slots();
+        s.setEndSlot(1001);
+        assertEquals(s.getEndSlot(), 1001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        Slots results[] = myServer.getSlots();
+        assertEquals(results[0].getEndSlot(), 1001);
     }
 
     @Test
     public void testGetEndSlot() throws Exception {
-    	myServer.getSlots()[0].setEndSlot(2001);
+        Slots s = new Slots();
+        s.setEndSlot(2001);
+        assertEquals(s.getEndSlot(), 2001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        Slots results[] = myServer.getSlots();
+        assertEquals(results[0].getEndSlot(), 2001);
+    }
+
+    @Test
+    public void testSetSlots() throws Exception {
+        Slots s = new Slots();
+        s.setBeginningSlot(1001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        assertEquals(myServer.getSlots(), slot);
+        assertEquals(myServer.getSlots()[0].getBeginningSlot(), 1001);
+    }
+
+    @Test
+    public void testGetSlots() throws Exception {
+        Slots s = new Slots();
+        s.setEndSlot(2001);
+        slot[0] = s;
+        myServer.setSlots(slot);
+        assertEquals(myServer.getSlots(), slot);
         assertEquals(myServer.getSlots()[0].getEndSlot(), 2001);
     }
 
