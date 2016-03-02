@@ -53,7 +53,8 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
 
-		RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
+		//RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
+		RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
 
 		/*RedisClient client11 = new RedisClient(uri1);
 		 StatefulRedisConnection<String,String> connection11 = client11.connect();
@@ -112,7 +113,8 @@ public class RESTController {
 		RedisClusterClient redisClient3 = RedisClusterClient.create(uri3);
 
 		StatefulRedisClusterConnection<String, String> connection3 = redisClient3.connect();
-		RedisAdvancedClusterCommands<String, String> commands3 = connection3.sync();
+		RedisAdvancedClusterCommands<String, String> commands4 = connection3.sync();
+		RedisClusterCommands<String, String> commands3 = connection3.getConnection(serverKeep.getHost(), serverKeep.getPort()).sync();
 
 		for(int k = 0; k < allSlotsToRemove.length; k++){
 			//Destination node has to issue the importing command
@@ -123,6 +125,7 @@ public class RESTController {
 			System.out.println(commands1.clusterSetSlotMigrating(allSlotsToRemove[k], serverKeep.getNodeID()));
 			System.out.println("Setting");
 			System.out.println(commands1.clusterSetSlotNode(allSlotsToRemove[k], serverKeep.getNodeID()));
+			System.out.println(commands3.clusterSetSlotNode(allSlotsToRemove[k], serverKeep.getNodeID()));
 			//System.out.println(commands1.clusterSetSlotStable(allSlotsToRemove[k]));
 		}
 
@@ -132,6 +135,7 @@ public class RESTController {
 
 		System.out.println("Cluster Forget");
 		System.out.println(commands3.clusterForget(serverRemove.getNodeID()));
+		System.out.println(commands4.clusterForget(serverRemove.getNodeID()));
 
 		connection3.close();
 		redisClient3.shutdown();
@@ -432,27 +436,23 @@ public class RESTController {
 
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
-
-			RedisClient redisClient = new RedisClient(currentServer.getHost(), currentServer.getPort());
-
-			StatefulRedisConnection<String, String> connection = redisClient.connect();
-			RedisCommands<String, String> commands = connection.sync();
 			
-			/*RedisURI uri1 = new RedisURI();
+			RedisURI uri1 = new RedisURI();
 			uri1.setHost(currentServer.getHost());
 			uri1.setPort(currentServer.getPort());
-			//RedisClusterClient redisClient = RedisClusterClient.create(uri1);
-			RedisClusterClient redisClient = new RedisClusterClient(uri1);
+			RedisClusterClient redisClient = RedisClusterClient.create(uri1);
+			//RedisClusterClient redisClient = new RedisClusterClient(uri1);
 
+			//RedisClient redisClient = new RedisClient(currentServer.getHost(), currentServer.getPort());
 
 			StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-			RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
-			//StatefulRedisConnection<String, String> a = connection.getConnection(currentServer.getHost(), currentServer.getPort());
+			//RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+			RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
 
 
 			commands.clusterDelSlots(slots);
 
-			//connection.close();
+			connection.close();
 			redisClient.shutdown();
 
 		}
