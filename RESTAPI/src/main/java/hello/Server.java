@@ -9,6 +9,7 @@ public class Server {
 	private String type;
 	private String serverInfo;
 	private String key;
+	private String status;
 
 	private Slots slots[];
 
@@ -58,6 +59,14 @@ public class Server {
 
 	public void setKey(String key){
 		this.key = key;
+	}
+	
+	public String getStatus(){
+		return status;
+	}
+
+	public void setStatus(String status){
+		this.status = status;
 	}
 
 	public String getType(){

@@ -304,9 +304,10 @@ public class RESTController {
 
 			server.setHost(info[1].substring(0, index));
 			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
-			server.setType(info[2]);
-
-			System.out.println(info[7]);
+			//server.setType(info[2]);
+			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
+			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
+			
 
 
 			Slots slots[] = new Slots[info.length - 8];
@@ -319,8 +320,6 @@ public class RESTController {
 				slot.setEndSlot(Integer.parseInt(info[k].substring(index + 1)));
 				slots[k - 8] = slot;
 
-				//server.setBeginningSlot(Integer.parseInt(info[8].substring(0, index)));
-				//server.setEndSlot(Integer.parseInt(info[8].substring(index + 1)));
 			}
 
 			server.setSlots(slots);
