@@ -163,64 +163,105 @@ public class RESTController {
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
 	public String addServers(@RequestBody ServerRequest request) {
 
-		Server server = request.getServerAdd();
+		//node we are adding
+		Server serverAdd = request.getServerAdd();
+		String serverAddHost = serverAdd.getHost();
+		int serverAddPort = serverAdd.getPort();
+
+		//node that already exists in the cluster
 		Server existingServer = request.getServer();
-		//RedisURI uri = new RedisURI();
-		//uri.setHost(server.getHost());
-		//uri.setPort(server.getPort());
-		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
+		String existingServerHost = existingServer.getHost();
+		int existingServerPort = existingServer.getPort();
+		
+		//connection to node to add
+		RedisURI uri = new RedisURI();
+		uri.setHost(serverAddHost);
+		uri.setPort(serverAddPort);
+		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();
+		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+		RedisClusterCommands<String, String> commands = connection.getConnection(serverAddHost, serverAddPort).sync();
 
+		//connection to existing cluster node
+		RedisURI uriExisting = new RedisURI();
+		uriExisting.setHost(existingServerHost);
+		uriExisting.setPort(existingServerPort);
+		RedisClusterClient redisClientExisting = RedisClusterClient.create(uriExisting);
 
-		int beginningSlots = 0;
-		int endSlots = 0;
-
-		RedisURI uri1 = new RedisURI();
-		uri1.setHost(existingServer.getHost());
-		uri1.setPort(existingServer.getPort());
-		RedisClusterClient redisClient1 = new RedisClusterClient(uri1);
-
-		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
-		RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
+		StatefulRedisClusterConnection<String, String> connectionExisting = redisClientExisting.connect();
+		RedisClusterCommands<String, String> commandsExisting1 = connectionExisting.sync();
+		RedisClusterCommands<String, String> commandsExisting = connectionExisting.getConnection(existingServerHost, existingServerPort).sync();
+		
+		System.out.println(commandsExisting1.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+		System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+		
+		/*try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 
 		List<Server> allServers = getServers(existingServer);
 		for(int i = 0 ; i < allServers.size(); i++){
-			if(allServers.get(i).getPort() == existingServer.getPort() && allServers.get(i).getType() != "slave"){
-				Server currentServer = allServers.get(i);
-				//beginningSlots = currentServer.getBeginningSlot();
-				//endSlots = currentServer.getEndSlot();
-				beginningSlots = currentServer.getSlots()[0].getBeginningSlot();
-				endSlots = currentServer.getSlots()[0].getEndSlot();
-				System.out.println("Slots: ");
-				System.out.println(beginningSlots);
-				System.out.println(endSlots);
-
-				int [] slots = getSlots(beginningSlots, endSlots);
-				int[] firstHalf = Arrays.copyOfRange(slots, 0, slots.length/2);
-
-				//deleting slots from existing node
-				System.out.println(commands1.clusterDelSlots(firstHalf));
-
-				//adding slots to connection with new node
-				//System.out.println(commands.clusterAddSlots(firstHalf));
-
-
-				System.out.println(commands1.clusterMeet(server.getHost(), server.getPort()));
-
-				commands1.close();
-				connection1.close();
-				redisClient1.shutdown();
-
-				System.out.println(commands.clusterAddSlots(firstHalf));
-				break;
+			Server currentServer = allServers.get(i);
+			System.out.println("Current Server: " + currentServer.getPort());
+			if(currentServer.getPort() == serverAddPort){
+				serverAdd = currentServer;
+				System.out.println("Server Add: " + currentServer.getPort());
+			}else if(currentServer.getPort() == existingServerPort){
+				existingServer = currentServer;
+				System.out.println("Existing Server: " + currentServer.getPort());
 			}
 		}
 
 
+		int[] allSlots = new int[0];
+		Slots[] existingSlots = existingServer.getSlots();
+		//gets all the slots to remove in one array
+		for(int i = existingSlots.length - 1; i >= 0; i --){
+			int beginningSlots = existingSlots[i].getBeginningSlot();
+			int endSlots = existingSlots[i].getEndSlot();
+
+			//one range of slots
+			int[] slotsRange = getSlots(beginningSlots, endSlots);
+
+			int[] existingSlotsList = allSlots;
+			allSlots = new int[allSlots.length + slotsRange.length];
+
+			System.arraycopy(slotsRange, 0, allSlots, 0, slotsRange.length);
+			System.arraycopy(existingSlotsList, 0, allSlots, slotsRange.length, existingSlotsList.length);
+
+		}
+		System.out.println("SLOTS!!!!!!");
+		System.out.println(allSlots[0]);
+		System.out.println(allSlots[allSlots.length-1]);
+		
+		//System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+
+		//slots we are migrating from existing to new node
+		int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length/2);
+		
+		//resharding/migration of slots
+		for(int k = 0; k < firstHalf.length; k++){
+			//Destination node has to issue the importing command
+			System.out.println("Importing");
+			System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
+			//Source node issues migrate command
+			System.out.println("Migrating");
+			System.out.println(serverAdd.getNodeID());
+			System.out.println(commandsExisting.clusterSetSlotMigrating(firstHalf[k], serverAdd.getNodeID()));
+			//Both nodes set the slot node to the node to keep in the cluster
+			System.out.println("Setting");
+			System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+			System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+		}
+
 		connection.close();
 		redisClient.shutdown();
+
+		connectionExisting.close();
+		redisClientExisting.shutdown();
 
 		return null;
 

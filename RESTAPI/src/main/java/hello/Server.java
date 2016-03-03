@@ -1,7 +1,5 @@
 package hello;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Server {
 
@@ -13,7 +11,7 @@ public class Server {
 	private String key;
 
 	private Slots slots[];
-	
+
 
 	public static class Slots{
 		private int beginningSlot;
@@ -86,12 +84,11 @@ public class Server {
 		this.nodeID = nodeID;
 	}
 
-	//public List<String> getServersList() {
-		public String getServerInfo() {
-			return serverInfo;
-		}
+	public String getServerInfo() {
+		return serverInfo;
+	}
 
-		public void setServerInfo(String serverInfo){
-			this.serverInfo = serverInfo;
-		}
+	public void setServerInfo(String serverInfo){
+		this.serverInfo = serverInfo;
+	}
 }
