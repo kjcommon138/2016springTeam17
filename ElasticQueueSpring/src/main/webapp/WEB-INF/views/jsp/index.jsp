@@ -205,6 +205,7 @@
         newServerRows = sTable.getElementsByTagName("tbody")[0];
         for (var i = 0; i < data.length; i++) {
             var newRow = newServerRows.insertRow(i);
+            newRow.id = "row" + i;
             var newCell1 = newRow.insertCell(0);
             newCell1.innerText = data[i].status;
             var newCell2 = newRow.insertCell(1);
@@ -230,7 +231,7 @@
             toggleQueueTable();
             var Cells = sTable.rows[$(this).index() + 1].getElementsByTagName("td");
 
-            $("#queueHeading .serverValue").html(Cells[2].innerText + ", port " + Cells[3].innerText);
+            $("#queueHeading .serverValue").html(Cells[2].innerText + ":" + Cells[3].innerText);
 
             //Initialize queue list
             getQueues(data[$(this).index()]);

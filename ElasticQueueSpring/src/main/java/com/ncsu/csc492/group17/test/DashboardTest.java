@@ -25,7 +25,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
     protected void setUp() throws Exception {
         super.setUp();
 
-        System.setProperty("webdriver.chrome.driver", "lib/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "lib/chromedriver");
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080";
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
@@ -41,19 +41,21 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckServerLoad() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
         assertTextPresent("Server", driver);
 
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
-        // find the row containing Server1
-        WebElement row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server1')]"));
-        row.click();
+
+        //Get the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+
+        tableRows.get(1).click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("Server1", serverSelected.getText());
+        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -71,27 +73,29 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckServerList() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
 
         int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
-        assertEquals(2, rowCount);
+        assertEquals(9, rowCount);
 
         // find the row 1
         List<WebElement> rows = serverTable.findElements(By.tagName("tr"));
         List<WebElement> rowOne = rows.get(1).findElements(By.tagName("td"));
-        assertEquals("Server1", rowOne.get(0).getText());
         assertEquals("Active", rowOne.get(1).getText());
-        assertEquals("Master", rowOne.get(2).getText());
+        assertEquals("Slave", rowOne.get(2).getText());
+        assertEquals("152.14.106.22", rowOne.get(3).getText());
+        assertEquals("30009", rowOne.get(4).getText());
 
-        // find the row 2
-        List<WebElement> rowTwo = rows.get(2).findElements(By.tagName("td"));
-        assertEquals("Server2", rowTwo.get(0).getText());
-        assertEquals("Active", rowTwo.get(1).getText());
-        assertEquals("Slave", rowTwo.get(2).getText());
+        // find the row 6
+        List<WebElement> rowSix = rows.get(6).findElements(By.tagName("td"));
+        assertEquals("Active", rowSix.get(1).getText());
+        assertEquals("Master", rowSix.get(2).getText());
+        assertEquals("152.14.106.22", rowSix.get(3).getText());
+        assertEquals("30002", rowSix.get(4).getText());
 
     }
 
@@ -114,17 +118,19 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckValidServerStatus() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
-        //Get the row for Server1
-        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server1']"));
+
+        //Get the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+
         //Get the server's data
-        List<WebElement> cells = row.findElements(By.tagName("td"));
-        assertTrue(row.getText().contains("Server1"));
-        assertEquals("Server1", cells.get(0).getText());
+        List<WebElement> cells = tableRows.get(5).findElements(By.tagName("td"));
+        assertEquals("30003", cells.get(4).getText());
+        assertEquals("152.14.106.22", cells.get(3).getText());
         assertEquals("Active", cells.get(1).getText());
     }
 
@@ -136,18 +142,21 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckMasterNode() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
+        Thread.sleep(3000);
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
-        //Get the row for Server1
-        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server1']"));
-        //Get the server's data
-        List<WebElement> cells = row.findElements(By.tagName("td"));
-        assertTrue(row.getText().contains("Server1"));
-        assertEquals("Server1", cells.get(0).getText());
-        assertEquals("Master", cells.get(2).getText());
+
+        WebElement rowLoad = serverTable.findElement(By.xpath("//tr[string(td[3]) = '152.14.106.22']"));
+
+        //Get the first Master which is the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+        List<WebElement> cells = tableRows.get(5).findElements(By.tagName("td"));
+        assertEquals("30003", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        assertEquals("Master", cells.get(1).getText());
     }
 
     /**
@@ -158,15 +167,16 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckSlaveNode() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
-        WebElement row = serverTable.findElement(By.xpath("//tr[string(td[1]) = 'Server2']"));
-        List<WebElement> cells = row.findElements(By.tagName("td"));
-        assertTrue(row.getText().contains("Server2"));
-        assertEquals("Server2", cells.get(0).getText());
+        //Get the first Slave which is the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+        List<WebElement> cells = tableRows.get(1).findElements(By.tagName("td"));
+        assertEquals("30009", cells.get(4).getText());
+        assertEquals("152.14.106.22", cells.get(3).getText());
         assertEquals("Slave", cells.get(2).getText());
     }
 
@@ -180,30 +190,30 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testChangeServerSelection() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
+        driver.get(baseUrl + "/ElasticQueue");
 
         assertTextPresent("Server", driver);
 
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
-        // find the row containing Server1
-        WebElement row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server1')]"));
-        row.click();
+
+        // find the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+        tableRows.get(1).click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("Server1", serverSelected.getText());
+        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
-        //Change server selection.
-        row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server2')]"));
-        row.click();
+        //Change server selection to the 5th row.
+        tableRows.get(5).click();
 
         serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("Server2", serverSelected.getText());
+        assertEquals("a7da2b4dcf7ca5760713a16a566c067389228ebc", serverSelected.getText());
 
         queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -219,24 +229,25 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testSelectAServerQueue() throws Exception {
-        driver.get(baseUrl + "/index.jsp");
-
+        driver.get(baseUrl + "/ElasticQueue");
+        
         assertTextPresent("Server", driver);
 
         // find the customer table
         WebElement serverTable = driver.findElement(By.id("serverTable"));
-        // find the row
-        WebElement row = serverTable.findElement(By.xpath("//tr/td[contains(text(), 'Server1')]"));
-        row.click();
+
+        //Find the first row.
+        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+        tableRows.get(1).click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("Server1", serverSelected.getText());
+        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
-        row = queueTable.findElement(By.xpath("//tr/td[contains(text(), 'Test2')]"));
+        WebElement row = queueTable.findElement(By.xpath("//tr/td[contains(text(), 'Test2')]"));
         row.click();
 
         WebElement redisTable = driver.findElement(By.id("redisTable"));
