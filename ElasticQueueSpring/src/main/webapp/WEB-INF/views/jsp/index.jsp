@@ -12,6 +12,8 @@
 <%@ page import="com.ncsu.csc492.group17.cluster.ServerStatus, net.sf.json.JSONSerializer" %>
 <html>
 <head>
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
     <link rel="stylesheet" href="resources/core/css/bootstrap.css"/>
     <title>ElasticQueue</title>
 </head>
@@ -162,12 +164,12 @@
             dataType: 'json',
             success: function (data) {
                 console.log("SUCCESS: ", data);
-                initializeQueueTable(data, data2);
+                initializeQueueTable(data);
             }
         });
     }
 
-    function initializeQueueTable(queueData, serverData) {
+    function initializeQueueTable(queueData) {
         //clears entire table
         $('#queueTable > tbody').remove();
         $('#queueTable').append("<tbody></tbody>");
@@ -228,9 +230,7 @@
             toggleQueueTable();
             var Cells = sTable.rows[$(this).index() + 1].getElementsByTagName("td");
 
-            selectedServer = Cells[0].innerText;
-
-            $("#queueHeading .serverValue").html(selectedServer);
+            $("#queueHeading .serverValue").html(Cells[2].innerText + ", port " + Cells[3].innerText);
 
             //Initialize queue list
             getQueues(data[$(this).index()]);

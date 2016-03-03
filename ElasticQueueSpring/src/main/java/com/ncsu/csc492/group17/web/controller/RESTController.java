@@ -1,24 +1,21 @@
 package com.ncsu.csc492.group17.web.controller;
 
-import hello.Server.Slots;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.cluster.RedisClusterClient;
+import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
+import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
+import com.ncsu.csc492.group17.web.model.Server;
+import com.ncsu.csc492.group17.web.model.Server.Slots;
+import com.ncsu.csc492.group17.web.model.ServerRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lambdaworks.redis.RedisClient;
-import com.lambdaworks.redis.RedisURI;
-import com.lambdaworks.redis.api.StatefulRedisConnection;
-import com.lambdaworks.redis.api.sync.RedisCommands;
-import com.lambdaworks.redis.cluster.RedisClusterClient;
-import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
-import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
-import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class RESTController {
@@ -343,22 +340,21 @@ public class RESTController {
 	@RequestMapping(method=RequestMethod.POST, value="/getQueues")
 	public List<String> getQueues(@RequestBody Server server) {
 
-		RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();
 
-		//Use the cluster client to get all of the queues in the cluster
-		/*RedisURI uri = new RedisURI();
+		/*RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisCommands<String, String> commands = connection.sync();*/
+
+		RedisURI uri = new RedisURI();
 		uri.setHost(server.getHost());
 		uri.setPort(server.getPort());
 		RedisClusterClient redisClient = new RedisClusterClient(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
 
 		//gets slots distribution for all servers in cluster
 		/*List<Object> clusterSlots = commands.clusterSlots();
-
 		String serversInfo[][] = new String[clusterSlots.size()][4];
 		String clusterSlotsArray[] = null;
 		for(int i = 0; i < clusterSlots.size(); i++){
@@ -369,12 +365,15 @@ public class RESTController {
 				System.out.println(clusterSlotsArray[j]);
 				serversInfo[i][j] = clusterSlotsArray[j];
 			}
-
 		}*/
 
 		List<String> items = commands.clusterGetKeysInSlot(0, 15999);
 		System.out.println("servers info: " + items);
 		List<String> keys = commands.keys("*");
+		int size = keys.size();
+
+		for(int i = 0; i < size; i++)
+			keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
 
 		redisClient.shutdown();
 

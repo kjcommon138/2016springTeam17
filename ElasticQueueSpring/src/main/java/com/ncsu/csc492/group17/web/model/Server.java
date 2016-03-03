@@ -9,6 +9,40 @@ public class Server {
     private String serverInfo;
     private String key;
 
+
+	private Slots slots[];
+
+
+	public static class Slots{
+		private int beginningSlot;
+		private int endSlot;
+
+		public int getBeginningSlot(){
+			return beginningSlot;
+		}
+
+		public void setBeginningSlot(int beginningSlot){
+			this.beginningSlot = beginningSlot;
+		}
+
+		public int getEndSlot(){
+			return endSlot;
+		}
+
+		public void setEndSlot(int endSlot){
+			this.endSlot = endSlot;
+		}
+
+	};
+
+	public Slots[] getSlots(){
+		return slots;
+	}
+
+	public void setSlots(Slots [] slots){
+		this.slots = slots;
+	}
+
 	public String getStatus() {
 		return status;
 	}
