@@ -28,8 +28,9 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         System.setProperty("webdriver.chrome.driver", "lib/chromedriver");
         driver = new ChromeDriver();
         baseUrl = "http://localhost:8080";
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
+        //Make sure to wait for items to load before throwing exception
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
 
     /**
@@ -48,6 +49,9 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
 
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
         //Get the first row.
         List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
 
@@ -55,7 +59,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
+        assertEquals("152.14.106.22:30009", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -79,23 +83,26 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
 
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
         int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
         assertEquals(9, rowCount);
 
         // find the row 1
         List<WebElement> rows = serverTable.findElements(By.tagName("tr"));
         List<WebElement> rowOne = rows.get(1).findElements(By.tagName("td"));
-        assertEquals("Active", rowOne.get(1).getText());
-        assertEquals("Slave", rowOne.get(2).getText());
-        assertEquals("152.14.106.22", rowOne.get(3).getText());
-        assertEquals("30009", rowOne.get(4).getText());
+        assertEquals("Active", rowOne.get(0).getText());
+        assertEquals("Slave", rowOne.get(1).getText());
+        assertEquals("152.14.106.22", rowOne.get(2).getText());
+        assertEquals("30009", rowOne.get(3).getText());
 
         // find the row 6
         List<WebElement> rowSix = rows.get(6).findElements(By.tagName("td"));
-        assertEquals("Active", rowSix.get(1).getText());
-        assertEquals("Master", rowSix.get(2).getText());
-        assertEquals("152.14.106.22", rowSix.get(3).getText());
-        assertEquals("30002", rowSix.get(4).getText());
+        assertEquals("Active", rowSix.get(0).getText());
+        assertEquals("Master", rowSix.get(1).getText());
+        assertEquals("152.14.106.22", rowSix.get(2).getText());
+        assertEquals("30002", rowSix.get(3).getText());
 
     }
 
@@ -124,14 +131,17 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
 
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
         //Get the first row.
         List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
 
         //Get the server's data
         List<WebElement> cells = tableRows.get(5).findElements(By.tagName("td"));
-        assertEquals("30003", cells.get(4).getText());
-        assertEquals("152.14.106.22", cells.get(3).getText());
-        assertEquals("Active", cells.get(1).getText());
+        assertEquals("30003", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        assertEquals("Active", cells.get(0).getText());
     }
 
     /**
@@ -149,7 +159,8 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
 
-        WebElement rowLoad = serverTable.findElement(By.xpath("//tr[string(td[3]) = '152.14.106.22']"));
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
         //Get the first Master which is the first row.
         List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
@@ -172,12 +183,16 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
+
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
         //Get the first Slave which is the first row.
         List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
         List<WebElement> cells = tableRows.get(1).findElements(By.tagName("td"));
-        assertEquals("30009", cells.get(4).getText());
-        assertEquals("152.14.106.22", cells.get(3).getText());
-        assertEquals("Slave", cells.get(2).getText());
+        assertEquals("30009", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        assertEquals("Slave", cells.get(1).getText());
     }
 
 
@@ -197,13 +212,16 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
 
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
         // find the first row.
         List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
         tableRows.get(1).click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
+        assertEquals("152.14.106.22:30009", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -213,45 +231,11 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
         serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("a7da2b4dcf7ca5760713a16a566c067389228ebc", serverSelected.getText());
+        assertEquals("152.14.106.22:30003", serverSelected.getText());
 
         queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
-    }
-
-    /**
-     * Test for selecting a single server from the table
-     * and then selecting a queue from the new table.
-     * Expect to get two new tables to appear and message stating what
-     * Server's queues are being displayed and what the queue's items are.
-     * @throws Exception
-     */
-    @Test
-    public void testSelectAServerQueue() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-        
-        assertTextPresent("Server", driver);
-
-        // find the customer table
-        WebElement serverTable = driver.findElement(By.id("serverTable"));
-
-        //Find the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
-        tableRows.get(1).click();
-
-        WebElement serverSelected = driver.findElement(By.className("serverValue"));
-        assertTextPresent("Showing queues for:", driver);
-        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", serverSelected.getText());
-
-        WebElement queueTable = driver.findElement(By.id("queueTable"));
-        assertNotNull(queueTable);
-
-        WebElement row = queueTable.findElement(By.xpath("//tr/td[contains(text(), 'Test2')]"));
-        row.click();
-
-        WebElement redisTable = driver.findElement(By.id("redisTable"));
-        assertNotNull(redisTable);
     }
 
     @After
