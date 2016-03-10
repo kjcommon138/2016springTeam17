@@ -101,16 +101,17 @@ public class RESTController {
 		RedisClusterCommands<String, String> commands3 = connection3.getConnection(serverKeep.getHost(), serverKeep.getPort()).sync();
 
 		for(int k = 0; k < allSlotsToRemove.length; k++){
-			//Destination node has to issue the importing command
-			System.out.println("Set Importing");
-			System.out.println(commands3.clusterSetSlotImporting(allSlotsToRemove[k], serverRemove.getNodeID()));
-			//Source node issues set migrate command
-			System.out.println("Set Migrating");
-			System.out.println(commands1.clusterSetSlotMigrating(allSlotsToRemove[k], serverKeep.getNodeID()));
 			//Source node gets keys
 			int numKeys = (int) (long) commands1.clusterCountKeysInSlot(allSlotsToRemove[k]);
 			//only migrate keys if there are keys
 			if(numKeys > 0){
+				//Destination node has to issue the importing command
+				System.out.println("Set Importing");
+				System.out.println(commands3.clusterSetSlotImporting(allSlotsToRemove[k], serverRemove.getNodeID()));
+				//Source node issues set migrate command
+				System.out.println("Set Migrating");
+				System.out.println(commands1.clusterSetSlotMigrating(allSlotsToRemove[k], serverKeep.getNodeID()));
+				//Get all the keys in the current slot
 				System.out.println("Getting Keys");
 				List<String> keys = commands1.clusterGetKeysInSlot(allSlotsToRemove[k], numKeys);
 				//Source node sends migrate command
@@ -253,16 +254,16 @@ public class RESTController {
 
 		//resharding/migration of slots
 		for(int k = 0; k < firstHalf.length; k++){
-			//Destination node has to issue the importing command
-			System.out.println("Importing");
-			System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
-			//Source node issues migrate command
-			System.out.println("Migrating");
-			System.out.println(commandsExisting.clusterSetSlotMigrating(firstHalf[k], serverAdd.getNodeID()));
 			//Source node gets keys
 			int numKeys = (int) (long) commandsExisting.clusterCountKeysInSlot(firstHalf[k]);
 			//only migrate keys if there are keys
 			if(numKeys > 0){
+				//Destination node has to issue the importing command
+				System.out.println("Set Importing");
+				System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
+				//Source node issues migrate command
+				System.out.println("Set Migrating");
+				System.out.println(commandsExisting.clusterSetSlotMigrating(firstHalf[k], serverAdd.getNodeID()));
 				System.out.println("Getting Keys");
 				List<String> keys = commandsExisting.clusterGetKeysInSlot(firstHalf[k], numKeys);
 				//Source node sends migrate command
@@ -432,7 +433,7 @@ public class RESTController {
 		//String items = commands.get(server.getKey());
 		List<String> itemsList = commands.lrange(server.getKey(), 0, -1);
 
-		
+
 		connection.close();
 		redisClient.shutdown();
 		return itemsList;
