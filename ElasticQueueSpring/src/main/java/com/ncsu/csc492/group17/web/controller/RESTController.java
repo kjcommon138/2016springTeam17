@@ -167,7 +167,7 @@ public class RESTController {
 		//int[] slotsToAdd = getSlots(beginningSlotsToAdd, endSlotsToAdd);
 
 
-
+		System.out.println("Server " + server.getHost() + server.getPort() + " removed.");
 		return null;
 	}
 
@@ -207,24 +207,44 @@ public class RESTController {
 		System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
 		/*try {
-			Thread.sleep(5000);
+			Thread.sleep(7500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 
-		List<Server> allServers = getServers(existingServer);
-		for(int i = 0 ; i < allServers.size(); i++){
-			Server currentServer = allServers.get(i);
-			System.out.println("Current Server: " + currentServer.getPort());
-			if(currentServer.getPort() == serverAddPort){
-				serverAdd = currentServer;
-				System.out.println("Server Add: " + currentServer.getPort());
-			}else if(currentServer.getPort() == existingServerPort){
-				existingServer = currentServer;
-				System.out.println("Existing Server: " + currentServer.getPort());
+
+		while(serverAdd.getNodeID() == null){
+			List<Server> allServers = getServers(existingServer);
+			for(int i = 0 ; i < allServers.size(); i++){
+				Server currentServer = allServers.get(i);
+				System.out.println("Current Server: " + currentServer.getPort());
+				if(currentServer.getPort() == serverAddPort){
+					serverAdd = currentServer;
+					System.out.println("Server Add: " + currentServer.getPort());
+				}else if(currentServer.getPort() == existingServerPort){
+					existingServer = currentServer;
+					System.out.println("Existing Server: " + currentServer.getPort());
+				}
+			}
+			try {
+				Thread.sleep(1000);
+				System.out.println("Sleep");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
+
+		/*synchronized(serverAdd.getNodeID()){
+			try {
+				serverAdd.getNodeID().wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
+
 
 
 		int[] allSlots = new int[0];
@@ -284,7 +304,9 @@ public class RESTController {
 
 		connectionExisting.close();
 		redisClientExisting.shutdown();
-
+		
+		
+		System.out.println("Server " + request.getServerAdd().getHost() + request.getServerAdd().getPort() + " added.");
 		return null;
 
 	}
