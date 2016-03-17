@@ -97,6 +97,11 @@
 			<artifactId>json-lib</artifactId>
 			<version>0.9</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>3.2.4.RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

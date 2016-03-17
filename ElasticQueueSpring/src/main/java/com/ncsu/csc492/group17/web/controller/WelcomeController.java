@@ -12,5 +12,4 @@ public class WelcomeController {
 	public String printWelcome(ModelMap model) {
 		return "index";
 	}
-
 }

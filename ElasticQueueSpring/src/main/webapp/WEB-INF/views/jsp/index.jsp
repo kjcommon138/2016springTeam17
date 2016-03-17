@@ -10,16 +10,16 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.ncsu.csc492.group17.cluster.ServerStatus, net.sf.json.JSONSerializer" %>
+<c:url var="home" value="/" scope="request"/>
 <html>
 <head>
-    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
     <link rel="stylesheet" href="resources/core/css/bootstrap.css"/>
+    <link rel="icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
+
     <title>ElasticQueue</title>
 </head>
 <body>
-
-<c:url var="home" value="/" scope="request"/>
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -50,13 +50,6 @@
     var selectedServer = "";
     var selectedQueue = "";
 </script>
-
-<div class="container">
-    <% if (myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
-    <div class="alert alert-danger">
-        <strong>Server down!</strong> One or more servers are down.
-    </div>
-    <% } %>
 
 </div>
 <div class="container">
@@ -169,6 +162,25 @@
         });
     }
 
+    function removeServer(host, port) {
+        var sendObject = {
+            host: host,
+            port: port
+        }
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "${home}removeServers",
+            data: JSON.stringify(sendObject),
+            dataType: 'json',
+            success: function (data) {
+                console.log("SUCCESS: ", data);
+                initializeTable(data);
+            }
+        });
+    }
+
     function initializeQueueTable(queueData) {
         //clears entire table
         $('#queueTable > tbody').remove();
@@ -180,7 +192,7 @@
             var newCell1 = newRow.insertCell(0);
             newCell1.innerText = queueData[l];
             var newCell2 = newRow.insertCell(1);
-            newCell2.innerText = queueData[l+(queueData.length/2)];
+            newCell2.innerText = queueData[l + (queueData.length / 2)];
         }
 
         $('#queueTable > tbody').find('tr').click(function () {
@@ -214,6 +226,9 @@
             newCell3.innerText = data[i].host;
             var newCell4 = newRow.insertCell(3);
             newCell4.innerText = data[i].port;
+            var newCell5 = newRow.insertCell(4);
+            newCell5.innerHTML = "<span class=\"glyphicon glyphicon-trash\"></span>";
+            //newCell5.click(removeServer(data[i].host, data[i].port));
         }
 
         $('#serverTable > tbody').find('tr').click(function () {
