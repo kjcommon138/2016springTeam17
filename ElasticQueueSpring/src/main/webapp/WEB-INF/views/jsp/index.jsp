@@ -51,13 +51,6 @@
     var selectedQueue = "";
 </script>
 
-<div class="container">
-    <% if (myServer.getRedisConnection().equalsIgnoreCase("Disabled")) { %>
-    <div class="alert alert-danger">
-        <strong>Server down!</strong> One or more servers are down.
-    </div>
-    <% } %>
-
 </div>
 <div class="container">
     <div class="row">
@@ -169,6 +162,25 @@
         });
     }
 
+    function removeServer(host, port) {
+        var sendObject = {
+            host: host,
+            port: port
+        }
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "${home}removeServers",
+            data: JSON.stringify(sendObject),
+            dataType: 'json',
+            success: function (data) {
+                console.log("SUCCESS: ", data);
+                initializeTable(data);
+            }
+        });
+    }
+
     function initializeQueueTable(queueData) {
         //clears entire table
         $('#queueTable > tbody').remove();
@@ -214,6 +226,9 @@
             newCell3.innerText = data[i].host;
             var newCell4 = newRow.insertCell(3);
             newCell4.innerText = data[i].port;
+            var newCell5 = newRow.insertCell(4);
+            newCell5.innerHTML = "<span class=\"glyphicon glyphicon-trash\"></span>";
+            //newCell5.click(removeServer(data[i].host, data[i].port));
         }
 
         $('#serverTable > tbody').find('tr').click(function () {
