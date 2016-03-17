@@ -58,13 +58,13 @@ public class RESTController {
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
 			System.out.println("Current Server: " + currentServer.getPort());
-			if(currentServer.getPort() == serverRemovePort && currentServer.getType() != "slave"){
+			if(currentServer.getPort() == serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
 				serverRemove = allServers.get(i);
 				nodeID = serverRemove.getNodeID();
 				slots = serverRemove.getSlots();
 				System.out.println("Server Remove: " + serverRemove.getPort());
 				System.out.println(nodeID);
-			}else if(!currentServer.getType().equals("slave") && !currentServer.getType().equals("handshake") && serverKeep == null){
+			}else if(!currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null){
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
 
@@ -136,7 +136,7 @@ public class RESTController {
 		//forget the node to remove from every node except for the node itself
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
-			if(currentServer.getPort() != serverRemovePort){
+			if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
 
 				RedisURI uri = new RedisURI();
 				uri.setHost(currentServer.getHost());
@@ -349,10 +349,12 @@ public class RESTController {
 
 			server.setHost(info[1].substring(0, index));
 			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
-			//server.setType(info[2]);
 			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
 			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
 
+			if(server.getType() == "Slave"){
+				server.setSlaveOf(info[3]);
+			}
 
 
 			Slots slots[] = new Slots[info.length - 8];

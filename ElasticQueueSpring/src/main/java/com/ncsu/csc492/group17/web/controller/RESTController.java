@@ -1,22 +1,21 @@
 package com.ncsu.csc492.group17.web.controller;
 
-import com.lambdaworks.redis.RedisURI;
-import com.lambdaworks.redis.cluster.RedisClusterClient;
-import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
-import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
-import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
-import com.ncsu.csc492.group17.web.model.Server;
-import com.ncsu.csc492.group17.web.model.Server.Slots;
-import com.ncsu.csc492.group17.web.model.ServerRequest;
+import hello.Server.Slots;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.cluster.RedisClusterClient;
+import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
+import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 
 @RestController
 public class RESTController {
@@ -350,10 +349,12 @@ public class RESTController {
 
 			server.setHost(info[1].substring(0, index));
 			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
-			//server.setType(info[2]);
 			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
 			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
 
+			if(server.getType() == "Slave"){
+				server.setSlaveOf(info[3]);
+			}
 
 
 			Slots slots[] = new Slots[info.length - 8];

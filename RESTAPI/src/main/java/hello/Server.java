@@ -10,6 +10,7 @@ public class Server {
 	private String serverInfo;
 	private String key;
 	private String status;
+	private String slaveOf;
 
 	private Slots slots[];
 
@@ -60,7 +61,7 @@ public class Server {
 	public void setKey(String key){
 		this.key = key;
 	}
-	
+
 	public String getStatus(){
 		return status;
 	}
@@ -99,5 +100,13 @@ public class Server {
 
 	public void setServerInfo(String serverInfo){
 		this.serverInfo = serverInfo;
+	}
+
+	public String getSlaveOf() {
+		return slaveOf;
+	}
+
+	public void setSlaveOf(String slaveOf){
+		this.slaveOf = slaveOf;
 	}
 }
