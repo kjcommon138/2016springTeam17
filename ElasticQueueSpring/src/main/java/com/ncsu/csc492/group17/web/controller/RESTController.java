@@ -1,21 +1,22 @@
 package com.ncsu.csc492.group17.web.controller;
 
-import hello.Server.Slots;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.cluster.RedisClusterClient;
+import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
+import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
+import com.ncsu.csc492.group17.web.model.Server;
+import com.ncsu.csc492.group17.web.model.Server.Slots;
+import com.ncsu.csc492.group17.web.model.ServerRequest;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lambdaworks.redis.RedisURI;
-import com.lambdaworks.redis.cluster.RedisClusterClient;
-import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
-import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
-import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class RESTController {
