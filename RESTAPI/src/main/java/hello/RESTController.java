@@ -67,7 +67,17 @@ public class RESTController {
 			}else if(!currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null){
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
+			}
+		}
 
+		//gets all the slaves for the server to remove
+		//Server [] slaves = new Server[0];
+		List<Server> slaves = new ArrayList<Server>();
+		for(int i = 0 ; i < allServers.size(); i++){
+			Server currentServer = allServers.get(i);
+			if(currentServer.getType().equalsIgnoreCase("slave") && currentServer.getSlaveOf().equals(serverRemove.getNodeID())){
+				slaves.add(currentServer);
+				System.out.println("Slave: " + currentServer.getPort());
 			}
 		}
 
@@ -133,10 +143,38 @@ public class RESTController {
 		redisClient3.shutdown();
 
 
+		//forget all the slaves of node to remove from every node
+		if(slaves.size() > 0){
+			for(int i = 0 ; i < allServers.size(); i++){
+				Server currentServer = allServers.get(i);
+
+				RedisURI uri = new RedisURI();
+				uri.setHost(currentServer.getHost());
+				uri.setPort(currentServer.getPort());
+				RedisClusterClient redisClient = RedisClusterClient.create(uri);
+
+				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
+
+				//System.out.println(slaves.size());
+
+				for(int k=0; k < slaves.size(); k++){
+					//System.out.println(currentServer.getPort());
+					if(currentServer.getPort() != slaves.get(k).getPort()){
+						commands.clusterForget(slaves.get(k).getNodeID());
+					}
+				}
+
+				connection.close();
+				redisClient.shutdown();
+			}
+		}
+
 		//forget the node to remove from every node except for the node itself
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
-			if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
+			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
+			if(currentServer.getPort() != serverRemovePort){
 
 				RedisURI uri = new RedisURI();
 				uri.setHost(currentServer.getHost());
