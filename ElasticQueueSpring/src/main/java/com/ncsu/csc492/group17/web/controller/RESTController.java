@@ -65,7 +65,7 @@ public class RESTController {
 				slots = serverRemove.getSlots();
 				System.out.println("Server Remove: " + serverRemove.getPort());
 				System.out.println(nodeID);
-			}else if(!currentServer.getType().equals("slave") && !currentServer.getType().equals("handshake") && serverKeep == null){
+			}else if(!currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null){
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
 
