@@ -65,7 +65,7 @@ public class RESTController {
 				slots = serverRemove.getSlots();
 				System.out.println("Server Remove: " + serverRemove.getPort());
 				System.out.println(nodeID);
-			}else if(!currentServer.getType().equalsIgnoreCase("Slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null){
+			}else if(!currentServer.getType().equals("slave") && !currentServer.getType().equals("handshake") && serverKeep == null){
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
 
@@ -167,8 +167,8 @@ public class RESTController {
 		//int[] slotsToAdd = getSlots(beginningSlotsToAdd, endSlotsToAdd);
 
 
-		System.out.println("Server " + server.getHost() + ":" + server.getPort() + " removed.");
-		return null;
+		System.out.println("Server " + server.getHost() + " " + server.getPort() + " removed.");
+		return "Server " + server.getHost() + " " + server.getPort() + " removed.";
 	}
 
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
@@ -215,6 +215,7 @@ public class RESTController {
 
 
 		while(serverAdd.getNodeID() == null){
+			System.out.println("Searching for node");
 			List<Server> allServers = getServers(existingServer);
 			for(int i = 0 ; i < allServers.size(); i++){
 				Server currentServer = allServers.get(i);
@@ -304,10 +305,10 @@ public class RESTController {
 
 		connectionExisting.close();
 		redisClientExisting.shutdown();
-		
-		
-		System.out.println("Server " + request.getServerAdd().getHost() + request.getServerAdd().getPort() + " added.");
-		return null;
+
+
+		System.out.println("Server " + request.getServerAdd().getHost() + " " + request.getServerAdd().getPort() + " added.");
+		return "Server " + request.getServerAdd().getHost() + request.getServerAdd().getPort() + " added.";
 
 	}
 
