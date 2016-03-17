@@ -46,7 +46,22 @@
 <!-- Latest compiled JavaScript -->
 <script src="resources/core/js/jquery.min.js"></script>
 <script src="resources/core/js/bootstrap.min.js"></script>
+<script src="resources/core/js/konami.js"></script>
 <script>
+    var easter_egg = new Konami(function() {
+        alert('Konami code!');
+        document.getElementById('konami').style.display="inline-block";
+        var itemTable = document.getElementById('konamiTable');
+
+        var newRows = itemTable.getElementsByTagName("tbody")[0];
+        var picRow = newRows.insertRow(0);
+        var onePic = picRow.insertCell(0);
+        onePic.innerHTML = "<img src=\"resources/pug1.gif\">";
+
+        var textRow = newRows.insertRow(1);
+        var oneText = textRow.insertCell(0);
+        oneText.innerText = "By Sneha Bhalodia, Kevin Commons, Michael Goff, and Laurel Timko";
+    });
     var selectedServer = "";
     var selectedQueue = "";
 </script>
@@ -96,6 +111,14 @@
             </table>
         </div>
     </div>
+</div>
+
+<div id="konami" style="display: none">
+    <table border="0" id="konamiTable">
+        <tbody>
+        </tbody>
+    </table>
+
 </div>
 
 <script>
