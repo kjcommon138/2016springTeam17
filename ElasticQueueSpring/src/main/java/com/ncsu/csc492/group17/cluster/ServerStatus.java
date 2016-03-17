@@ -13,9 +13,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by laureltimko on 1/26/16.
+ *
+ * This class serves as the Lettuce Interface used to
+ * access Redis Databases for use in JSP webpage.
  */
 public class ServerStatus {
-    //public variables...
+    //Private variables for ServerStatus class containing host names
     private String serverStatus = "Active";
     private String[] elements;
     private String[] queueList;
@@ -24,14 +27,14 @@ public class ServerStatus {
             "152.14.106.30",
             "152.14.106.43"};
 
-    //set redis connection
+    //Private variables containing Redis connection components
     private RedisClusterClient redisClient;
     private StatefulRedisClusterConnection<String, String> connection;
     private RedisClusterCommands<String, String> syncApi;
 
-    public static void main(String[] args) {
-    }
-
+    /**
+     * Initializer class
+     */
     public ServerStatus() {
         RedisURI initialUri = new RedisURI();
         initialUri.setHost(HOST_NAMES[0]);
