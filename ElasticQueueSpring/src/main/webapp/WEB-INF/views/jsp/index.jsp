@@ -32,7 +32,7 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Servers
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Add a Server</a></li>
+                    <li>Add a Server</li>
                 </ul>
             </li>
         </ul>
@@ -162,25 +162,6 @@
         });
     }
 
-    function removeServer(host, port) {
-        var sendObject = {
-            host: host,
-            port: port
-        }
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            url: "${home}removeServers",
-            data: JSON.stringify(sendObject),
-            dataType: 'json',
-            success: function (data) {
-                console.log("SUCCESS: ", data);
-                initializeTable(data);
-            }
-        });
-    }
-
     function initializeQueueTable(queueData) {
         //clears entire table
         $('#queueTable > tbody').remove();
@@ -228,7 +209,27 @@
             newCell4.innerText = data[i].port;
             var newCell5 = newRow.insertCell(4);
             newCell5.innerHTML = "<span class=\"glyphicon glyphicon-trash\"></span>";
-            //newCell5.click(removeServer(data[i].host, data[i].port));
+            newCell5.id = "trash";
+            newCell5.onclick = (function(host, port) {
+                return function () {
+                    alert('hello');
+                    var sendObject = {
+                        host: host,
+                        port: port
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json",
+                        url: "${home}removeServers",
+                        data: JSON.stringify(sendObject),
+                        success: function (data) {
+                            console.log("SUCCESS: ", data);
+                            window.location.reload(true);
+                        }
+                    });
+                };
+            }) (data[i].host, data[i].port);
         }
 
         $('#serverTable > tbody').find('tr').click(function () {
@@ -251,6 +252,11 @@
             //Initialize queue list
             getQueues(data[$(this).index()]);
         });
+
+        function addServerMenu() {
+
+        }
+
     }
 
     getServerList();
