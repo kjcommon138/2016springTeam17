@@ -73,6 +73,7 @@ public class ServerStatus {
         queueList[0] = "Test1";
         queueList[1] = "Test2";
 
+        getRedisConnection();
         //set redis connection
         /*redisClient = new RedisClient(RedisURI.create("redis://localhost:7002/"));
         stateful = redisClient.connect();

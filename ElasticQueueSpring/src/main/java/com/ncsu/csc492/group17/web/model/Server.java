@@ -14,6 +14,25 @@ public class Server {
 
 	private Slots slots[];
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Server server = (Server) o;
+
+		if (port != server.port) return false;
+		return host.equals(server.host);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = port;
+		result = 31 * result + host.hashCode();
+		return result;
+	}
+
 
 	public static class Slots{
 		private int beginningSlot;

@@ -77,6 +77,7 @@
                     <th>Server Type</th>
                     <th>IP Address</th>
                     <th>Port Number</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

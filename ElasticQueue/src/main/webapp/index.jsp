@@ -120,6 +120,7 @@
 
 <script>
 
+    console.log(<%=myServer.getList()%>);
 
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
