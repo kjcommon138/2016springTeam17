@@ -10,7 +10,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 
 public class QueueGenerator {
-    public static final int NUM_QUEUES = 10;
+    public static final int NUM_QUEUES = 100;
     public static final int QUEUE_SIZE = 20;
 
     //public static final String DEFAULT_ADDR = "127.0.0.1:7000";
