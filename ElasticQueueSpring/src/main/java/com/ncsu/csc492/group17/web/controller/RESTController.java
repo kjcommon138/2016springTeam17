@@ -359,7 +359,10 @@ public class RESTController {
 
         for (int i = 0; i < size; i++) {
             try {
-                keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
+                if(commands.type(keys.get(i)).equalsIgnoreCase("hash"))
+                    keys.add(Long.toString(commands.hlen(keys.get(i))));
+                else
+                    keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
             } catch(RedisCommandExecutionException e) {
                 System.out.println(e.getMessage());
                 connection.close();
