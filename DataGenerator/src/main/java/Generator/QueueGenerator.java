@@ -12,17 +12,15 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class QueueGenerator {
     public static final int NUM_QUEUES = 10;
     public static final int QUEUE_SIZE = 20;
-    public static final int DEFAULT_PORT = 5004;
-    public static final String DEFAULT_IP = "sd-vm19.csc.ncsu.edu";
-    //public static final int DEFAULT_PORT = 30001;
-    //public static final String DEFAULT_IP = "sd-vm12.csc.ncsu.edu";
 
-    //public static final int DEFAULT_PORT = 7000;
-    //public static final String DEFAULT_IP = "127.0.0.1";
+    //public static final String DEFAULT_ADDR = "127.0.0.1:7000";
+    public static final String DEFAULT_ADDR = "sd-vm12.csc.ncsu.edu:30001";
+    //public static final String DEFAULT_ADDR = "sd-vm19.csc.ncsu.edu:5004";
+
     RedisConnection conn;
 
     public QueueGenerator() {
-        conn = Redis.newConnection(DEFAULT_IP, DEFAULT_PORT);
+        conn = Redis.newClusterConnection(DEFAULT_ADDR);
     }
 
     public synchronized void run() {
@@ -38,11 +36,12 @@ public class QueueGenerator {
 
         //generating the queues on the node
         for(int i = 0; i < NUM_QUEUES; i++) {
-            ReliableQueue<String> queue = ReliableQueues.newQueue(conn, "Queue_" + i, new StringSerializer(), new ReliableQueueParameters());
+            ReliableQueue<String> queue = ReliableQueues.newQueue(conn, "{Queue_" + i +"}", new StringSerializer(), new ReliableQueueParameters());
             System.out.println(queue.size());
             System.out.println("______________Queue " + i + "_________________");
             //loading items into the queue
             for(int j = 0; j < QUEUE_SIZE; j++) {
+
                 ListenableFuture<Item<String>> item = queue.enqueue("Q_"+ i +"::Item_" + j);
                 //print as we go to debug for now
                 try {
