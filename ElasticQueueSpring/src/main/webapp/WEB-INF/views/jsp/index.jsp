@@ -32,7 +32,7 @@
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Servers
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li>Add a Server</li>
+                    <li id="addOption">Add a Server</li>
                 </ul>
             </li>
         </ul>
@@ -47,6 +47,10 @@
 <script src="resources/core/js/jquery.min.js"></script>
 <script src="resources/core/js/bootstrap.min.js"></script>
 <script src="resources/core/js/konami.js"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/ui-darkness/jquery-ui.css" rel="stylesheet">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="js/dialog.js"></script>
 <script>
     var easter_egg = new Konami(function() {
         alert('Konami code!');
@@ -120,6 +124,18 @@
         </tbody>
     </table>
 
+</div>
+
+<div id="dialog" title="Dialog Form">
+    <label>New Host IP Address:</label>
+    <input id="newHost" name="newHost" type="text" style="color:black;">
+    <label>New Host Port Number:</label>
+    <input id="newPort" name="newPort" type="text" style="color:black;">
+    <label>Existing MASTER Host IP Address:</label>
+    <input id="oldHost" name="oldHost" type="text" style="color:black;">
+    <label>Existing MASTER Port Number:</label>
+    <input id="oldPort" name="oldPort" type="text" style="color:black;">
+    <input id="submit" type="submit" value="Submit" style="color:red;">
 </div>
 
 <script>
@@ -277,11 +293,50 @@
             getQueues(data[$(this).index()]);
         });
 
-        function addServerMenu() {
-
-        }
-
     }
+
+    //Adding a server function
+
+    $(document).ready(function() {
+        $(function() {
+            $("#dialog2").dialog({
+                autoOpen: false
+            });
+            $("#addOption").on("click", function() {
+                $("#dialog").dialog("open");
+            });
+        });
+
+        $("#submit").click(function(e) {
+            var newHost = $("#newHost").val();
+            var newPort = $("#newPort").val();
+            var oldHost = $("#oldHost").val();
+            var oldPort = $("#oldPort").val();
+            if (newHost === '' || newPort === '' || oldHost === '' || oldPort === '') {
+                alert("Please fill all fields.");
+                e.preventDefault();
+            } else {
+                alert("Adding " + newHost + ":" + newPort + ".");
+                var sendObject = {
+                    server: {host:oldHost, port:oldPort},
+                    serverAdd: {host:newHost, port:newPort}
+                }
+
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: "${home}addServers",
+                    data: JSON.stringify(sendObject),
+                    success: function (data) {
+                        console.log("SUCCESS: ", data);
+                        window.location.reload(true);
+                    }
+                });
+
+                $("#dialog").dialog("close");
+            }
+        });
+    });
 
     getServerList();
 </script>
