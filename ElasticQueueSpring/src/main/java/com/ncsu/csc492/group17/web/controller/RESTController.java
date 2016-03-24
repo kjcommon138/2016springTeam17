@@ -511,8 +511,8 @@ public class RESTController {
 		uri1.setPort(server1.getPort());
 		RedisClusterClient redisClient = RedisClusterClient.create(uri1);
 
-		/*StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+		//StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+		//RedisAdvancedClusterCommands<String, String> commands = connection.sync();
 
 		RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
 		StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
@@ -557,7 +557,7 @@ public class RESTController {
 
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
+	/*@RequestMapping(method=RequestMethod.POST, value="/removeSlots")
 	public String removeSlots(@RequestBody Server server1) {
 		/*RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
@@ -566,7 +566,7 @@ public class RESTController {
 
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
+		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
 		int endSlot = server1.getSlots()[0].getEndSlot();
 		int[] slots = getSlots(beginningSlot, endSlot);
@@ -604,7 +604,7 @@ public class RESTController {
 		int endSlot = server1.getSlots()[0].getEndSlot();
 		System.out.println(endSlot);
 
-		int[] slots = getSlots(beginningSlot, endSlot);*/
+		int[] slots = getSlots(beginningSlot, endSlot);
 
 		//String a = commands.clusterDelSlots(slots);
 		//System.out.println(a);
@@ -615,5 +615,5 @@ public class RESTController {
 
 		return("Slots " + beginningSlot + " to " + endSlot + " removed from " + server1.getHost() + ":" + server1.getPort());
 
-	}
+	}*/
 }
