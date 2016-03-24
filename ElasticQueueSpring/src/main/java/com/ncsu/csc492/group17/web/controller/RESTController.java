@@ -479,12 +479,12 @@ public class RESTController {
 
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/getItems")
+	/*@RequestMapping(method=RequestMethod.POST, value="/getItems")
 	public List<String> getItems(@RequestBody Server server) {
 
-		/*RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();*/
+		//RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
+		//StatefulRedisConnection<String, String> connection = redisClient.connect();
+		//RedisCommands<String, String> commands = connection.sync();
 
 		RedisURI uri = new RedisURI();
 		uri.setHost(server.getHost());
@@ -502,7 +502,7 @@ public class RESTController {
 		connection.close();
 		redisClient.shutdown();
 		return itemsList;
-	}
+	}*/
 
 	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
 	public String addSlots(@RequestBody Server server1) {
