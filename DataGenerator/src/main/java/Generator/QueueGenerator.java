@@ -23,7 +23,7 @@ public class QueueGenerator {
         conn = Redis.newClusterConnection(DEFAULT_ADDR);
     }
 
-    public synchronized void run() {
+    public void run() {
         //testing a PING to sanity check that a connection was established
         RedisRequest req = Redis.req(RedisCommands.PING);
         RedisResponse response = conn.execute(req);
@@ -37,21 +37,14 @@ public class QueueGenerator {
         //generating the queues on the node
         for(int i = 0; i < NUM_QUEUES; i++) {
             ReliableQueue<String> queue = ReliableQueues.newQueue(conn, "{Queue_" + i +"}", new StringSerializer(), new ReliableQueueParameters());
-            System.out.println(queue.size());
-            System.out.println("______________Queue " + i + "_________________");
+            //System.out.println("______________Queue " + i + "_________________");
             //loading items into the queue
             for(int j = 0; j < QUEUE_SIZE; j++) {
-
-                ListenableFuture<Item<String>> item = queue.enqueue("Q_"+ i +"::Item_" + j);
-                //print as we go to debug for now
-                try {
-                    System.out.println("Item: " + item.get().getValue());
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
+                queue.enqueue("Q_"+ i +"::Item_" + j);
             }
             System.out.println("Created Queue_" + i);
-            System.out.println();
         }
+
+        conn.close();
     }
 }
