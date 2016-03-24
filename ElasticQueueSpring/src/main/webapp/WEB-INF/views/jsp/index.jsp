@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="resources/core/css/bootstrap.css"/>
     <link rel="icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
     <link rel="shortcut icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
-
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <title>ElasticQueue</title>
 </head>
 <body>
@@ -71,6 +71,11 @@
 </script>
 
 </div>
+
+<div class="loading">
+    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-5" style="overflow:scroll;margin-bottom:30px;height:240px;width:100%;overflow:auto">
@@ -253,6 +258,13 @@
             newCell5.onclick = (function(host, port) {
                 return function () {
                     alert('hello');
+                    var r = confirm("Are you sure you want to remove " + host + ":" + port + "?");
+                    if (r == true) {
+                        alert('Deleting ' + host + ':' + port);
+                    } else {
+                        return;
+                    }
+
                     var sendObject = {
                         host: host,
                         port: port
@@ -299,7 +311,7 @@
 
     $(document).ready(function() {
         $(function() {
-            $("#dialog2").dialog({
+            $("#dialog").dialog({
                 autoOpen: false
             });
             $("#addOption").on("click", function() {
