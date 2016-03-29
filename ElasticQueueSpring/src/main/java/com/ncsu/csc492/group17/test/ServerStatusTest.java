@@ -27,9 +27,9 @@ public class ServerStatusTest {
     public void testGetList() throws Exception {
         String[] testArray = myServer.getList("Test1");
         assertEquals(testArray.length, 3);
-        assertEquals(testArray[0], "Test1");
-        assertEquals(testArray[1], "Test3");
-        assertEquals(testArray[2], "Test2");
+        assertEquals("Test3", testArray[0]);
+        assertEquals("Test2", testArray[1]);
+        assertEquals("Test1", testArray[2]);
 
         String[] testArray2 = myServer.getList("randomStuff");
         assertEquals(testArray2.length, 0);
@@ -42,8 +42,8 @@ public class ServerStatusTest {
         System.out.println(testArray3[0]);
         System.out.println(testArray3[1]);
         assertEquals(testArray3.length, 2);
-        assertEquals(testArray3[0], "Test1");
-        assertEquals(testArray3[1], "Test1");
+        assertEquals("Test2", testArray3[0]);
+        assertEquals("Test1", testArray3[1]);
     }
 
     @org.junit.Test

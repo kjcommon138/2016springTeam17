@@ -72,10 +72,6 @@
 
 </div>
 
-<div class="loading">
-    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-</div>
-
 <div class="container">
     <div class="row">
         <div class="col-md-5" style="overflow:scroll;margin-bottom:30px;height:240px;width:100%;overflow:auto">
@@ -92,6 +88,9 @@
                 <tbody>
                 </tbody>
             </table>
+            <div class="loading" id="serverLoadIcon" align="center">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -119,6 +118,9 @@
                 <tbody>
                 </tbody>
             </table>
+            <div class="loading" id="queueLoadIcon" align="center" style="display: none">
+                <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+            </div>
         </div>
     </div>
 </div>
@@ -147,6 +149,7 @@
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
     var sTable = document.getElementById("serverTable");
+    var serverLoadIcon = document.getElementById("serverLoadIcon");
 
     function toggleQueueTable() {
 
@@ -164,6 +167,11 @@
         var heading = document.getElementById("queueHeading");
         if (heading.style.display == "none")
             heading.style.display = "inline";
+
+        var queueLoadIcon = document.getElementById("queueLoadIcon");
+        if (queueLoadIcon.style.display = "none") {
+            queueLoadIcon.style.display = "block";
+        }
     }
 
     //clears entire server table
@@ -211,6 +219,7 @@
         //clears entire table
         $('#queueTable > tbody').remove();
         $('#queueTable').append("<tbody></tbody>");
+        document.getElementById("queueLoadIcon").style.display = "inline";
 
         newQueueRows = qTable.getElementsByTagName("tbody")[0];
         for (var l = 0; l < queueData.length / 2; l++) {
@@ -220,6 +229,8 @@
             var newCell2 = newRow.insertCell(1);
             newCell2.innerText = queueData[l + (queueData.length / 2)];
         }
+
+        document.getElementById("queueLoadIcon").style.display = "none";
 
         $('#queueTable > tbody').find('tr').click(function () {
             var rows = qTable.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
@@ -278,11 +289,14 @@
                         success: function (data) {
                             console.log("SUCCESS: ", data);
                             window.location.reload(true);
+
                         }
                     });
                 };
             }) (data[i].host, data[i].port);
         }
+
+        document.getElementById("serverLoadIcon").style.display = "none";
 
         $('#serverTable > tbody').find('tr').click(function () {
             var rows = sTable.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
