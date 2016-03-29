@@ -252,6 +252,7 @@ public class RESTController {
 
 		System.out.println(commandsExisting1.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 		System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+		System.out.println(commands.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
 		/*try {
 			Thread.sleep(7500);
