@@ -17,42 +17,29 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
-      <profile default="false" name="Maven default annotation processors profile" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="true" />
-        <module name="bronto-commons" />
-        <module name="ElasticQueue" />
-        <module name="gs-rest-service (1)" />
-      </profile>
       <profile default="false" name="Annotation profile for redis-test" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="redis-test" />
       </profile>
       <profile default="false" name="Annotation profile for redis-client" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="redis-client" />
       </profile>
       <profile default="false" name="Annotation profile for redis-benchmark" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="redis-benchmark" />
       </profile>
       <profile default="false" name="Annotation profile for redis-reliablequeue" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="redis-reliablequeue" />
       </profile>
       <profile default="false" name="Annotation profile for ElasticQueueSpring" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -67,9 +54,20 @@
         <processorPath useClasspath="true" />
         <module name="spring4-mvc-maven-ajax-example" />
       </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="bronto-commons" />
+        <module name="DataGenerator" />
+        <module name="ElasticQueue" />
+        <module name="gs-rest-service (1)" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bronto-commons" target="1.5" />
+      <module name="DataGenerator" target="1.5" />
       <module name="ElasticQueue" target="1.5" />
       <module name="ElasticQueueSpring" target="1.8" />
       <module name="gs-rest-service (1)" target="1.8" />

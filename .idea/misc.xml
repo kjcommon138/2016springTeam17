@@ -54,6 +54,7 @@
         <option value="$PROJECT_DIR$/../bronto-redis/src/pom.xml" />
         <option value="$PROJECT_DIR$/../bronto-redis/src-commons/pom.xml" />
         <option value="$PROJECT_DIR$/ElasticQueueSpring/pom.xml" />
+        <option value="$PROJECT_DIR$/DataGenerator/pom.xml" />
       </list>
     </option>
   </component>
