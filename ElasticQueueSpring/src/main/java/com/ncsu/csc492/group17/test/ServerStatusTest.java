@@ -43,7 +43,7 @@ public class ServerStatusTest {
         System.out.println(testArray3[1]);
         assertEquals(testArray3.length, 2);
         assertEquals(testArray3[0], "Test1");
-        assertEquals(testArray3[1], "Test2");
+        assertEquals(testArray3[1], "Test1");
     }
 
     @org.junit.Test
@@ -51,14 +51,15 @@ public class ServerStatusTest {
         String[][] testServers = myServer.getServerList();
 
         //Check Single Complete Line
-        assertEquals("4ff050068853b061ccb5d03ada28f5422e6a97a6", testServers[0][0]);
-        assertEquals("Active", testServers[0][1]);
-        assertEquals("Slave", testServers[0][2]);
-        assertEquals("152.14.106.22", testServers[0][3]);
-        assertEquals("30009", testServers[0][4]);
-
-        //Check that all servers are there.
-        assertEquals(9, testServers.length);
+        //By specific Master values
+        for(int i = 0; i < testServers.length; i++) {
+            if(testServers[0][3] == "152.14.106.22" && testServers[0][4] == "30001") {
+                assertEquals("Active", testServers[0][1]);
+                assertEquals("Master", testServers[0][2]);
+                assertEquals("152.14.106.22", testServers[0][3]);
+                assertEquals("30001", testServers[0][4]);
+            }
+        }
     }
 
 }

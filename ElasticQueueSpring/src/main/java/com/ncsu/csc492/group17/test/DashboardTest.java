@@ -52,14 +52,14 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
+        //Get the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
 
-        tableRows.get(1).click();
+        targetRow.click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("152.14.106.22:30009", serverSelected.getText());
+        assertEquals("152.14.106.22:30001", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
@@ -86,23 +86,21 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
-        assertEquals(9, rowCount);
+        //Get the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30001", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        assertEquals("Master", cells.get(1).getText());
+        assertEquals("Active", cells.get(0).getText());
 
-        // find the row 1
-        List<WebElement> rows = serverTable.findElements(By.tagName("tr"));
-        List<WebElement> rowOne = rows.get(1).findElements(By.tagName("td"));
-        assertEquals("Active", rowOne.get(0).getText());
-        assertEquals("Slave", rowOne.get(1).getText());
-        assertEquals("152.14.106.22", rowOne.get(2).getText());
-        assertEquals("30009", rowOne.get(3).getText());
-
-        // find the row 6
-        List<WebElement> rowSix = rows.get(6).findElements(By.tagName("td"));
-        assertEquals("Active", rowSix.get(0).getText());
-        assertEquals("Master", rowSix.get(1).getText());
-        assertEquals("152.14.106.22", rowSix.get(2).getText());
-        assertEquals("30002", rowSix.get(3).getText());
+        //Get the Slave 30005. Don't delete this one.
+        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30005')]]"));
+        cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30005", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        assertEquals("Slave", cells.get(1).getText());
+        assertEquals("Active", cells.get(0).getText());
 
     }
 
@@ -134,12 +132,10 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
-
-        //Get the server's data
-        List<WebElement> cells = tableRows.get(5).findElements(By.tagName("td"));
-        assertEquals("30003", cells.get(3).getText());
+        //Get the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30001", cells.get(3).getText());
         assertEquals("152.14.106.22", cells.get(2).getText());
         assertEquals("Active", cells.get(0).getText());
     }
@@ -162,12 +158,13 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the first Master which is the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
-        List<WebElement> cells = tableRows.get(5).findElements(By.tagName("td"));
-        assertEquals("30003", cells.get(3).getText());
+        //Get the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30001", cells.get(3).getText());
         assertEquals("152.14.106.22", cells.get(2).getText());
         assertEquals("Master", cells.get(1).getText());
+        assertEquals("Active", cells.get(0).getText());
     }
 
     /**
@@ -187,10 +184,10 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the first Slave which is the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
-        List<WebElement> cells = tableRows.get(1).findElements(By.tagName("td"));
-        assertEquals("30009", cells.get(3).getText());
+        //Get the Slave 30005. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30005')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30005", cells.get(3).getText());
         assertEquals("152.14.106.22", cells.get(2).getText());
         assertEquals("Slave", cells.get(1).getText());
     }
@@ -215,23 +212,24 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        // find the first row.
-        List<WebElement> tableRows = serverTable.findElements(By.tagName("tr"));
-        tableRows.get(1).click();
+        //Click the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
+        targetRow.click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("152.14.106.22:30009", serverSelected.getText());
+        assertEquals("152.14.106.22:30001", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
-        //Change server selection to the 5th row.
-        tableRows.get(5).click();
+        //Change the selection to select the Slave 30005. Don't delete this one.
+        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30005')]]"));
+        targetRow.click();
 
         serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("152.14.106.22:30003", serverSelected.getText());
+        assertEquals("152.14.106.22:30005", serverSelected.getText());
 
         queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);

@@ -2,6 +2,7 @@ package com.ncsu.csc492.group17.test;
 
 import com.ncsu.csc492.group17.web.model.*;
 import com.ncsu.csc492.group17.web.controller.*;
+import com.ncsu.csc492.group17.cluster.*;
 
 import org.junit.*;
 import org.junit.Test;
@@ -32,8 +33,6 @@ public class RESTControllerTest {
     public void testGetServers() {
         List<Server> list = controller.getServers(server1);
         assertEquals(4, list.size());
-        Server testServer = list.get(0);
-
 
         Server test0 = new Server();
         test0.setHost("152.14.106.29");
@@ -56,6 +55,82 @@ public class RESTControllerTest {
         assertEquals(list.contains(test1), true);
         assertEquals(list.contains(test2), true);
         assertEquals(list.contains(test3), true);
+    }
+
+    @Test
+    public void testAddServers() {
+        List<Server> list = controller.getServers(server1);
+        assertEquals(4, list.size());
+
+        //Create the new server we are adding.
+        Server testServer = new Server();
+        testServer.setHost("152.14.106.29");
+        testServer.setPort(6003);
+        //assertEquals(list.contains(testServer), true);
+
+        //Create the server we are adding the new  server to.
+        //Make sure it exists.
+        Server existingServer = new Server();
+        existingServer.setHost("152.14.106.29");
+        existingServer.setPort(6000);
+        assertEquals(list.contains(existingServer), true);
+
+        //remove the server so it may be added.
+        String result = controller.removeServers(testServer);
+        assertEquals("Server 152.14.106.29 6003 removed.", result);
+        list = controller.getServers(server1);
+        assertEquals(3, list.size());
+
+        //Set the servers for the request. We are add the new server
+        //to the existing server.
+        ServerRequest request = new ServerRequest();
+        request.setServer(existingServer);
+        request.setServerAdd(testServer);
+
+        result = controller.addServers(request);
+        assertEquals("Server 152.14.106.296003 added.", result);
+        list = controller.getServers(server1);
+        assertEquals(4, list.size());
+
+    }
+
+    @Test
+    public void testRemoveServers() {
+        List<Server> list = controller.getServers(server1);
+        assertEquals(4, list.size());
+
+        //Create the new server we are removing..
+        Server testServer = new Server();
+        testServer.setHost("152.14.106.29");
+        testServer.setPort(6003);
+        assertEquals(list.contains(testServer), true);
+
+        //Remove the server.
+        String result = controller.removeServers(testServer);
+        assertEquals("Server 152.14.106.29 6003 removed.", result);
+        list = controller.getServers(server1);
+        assertEquals(3, list.size());
+
+
+        //Functionality has been verified, but must reset for future tests.
+
+        //Create the server we are adding the new  server to.
+        //Make sure it exists.
+        Server existingServer = new Server();
+        existingServer.setHost("152.14.106.29");
+        existingServer.setPort(6000);
+        assertEquals(list.contains(existingServer), true);
+
+        //Set the servers for the request. We are add the new server
+        //to the existing server.
+        ServerRequest request = new ServerRequest();
+        request.setServer(existingServer);
+        request.setServerAdd(testServer);
+
+        result = controller.addServers(request);
+        assertEquals("Server 152.14.106.296003 added.", result);
+        list = controller.getServers(server1);
+        assertEquals(4, list.size());
     }
 
     /**
