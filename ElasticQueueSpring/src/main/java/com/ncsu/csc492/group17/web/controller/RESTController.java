@@ -487,15 +487,13 @@ public class RESTController {
 
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
+	/*@RequestMapping(method=RequestMethod.POST, value="/addSlots")
 	public String addSlots(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
 		uri1.setPort(server1.getPort());
 		RedisClusterClient redisClient = RedisClusterClient.create(uri1);
 
-		/*StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();*/
 
 		RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
 		StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
@@ -523,7 +521,7 @@ public class RESTController {
 
 		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
-	}
+	}*/
 
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
