@@ -119,7 +119,7 @@ public class ServerStatus {
     }
 
     public String[] getList(String key) {
-        elements = syncApi.smembers(key).toArray(new String[syncApi.smembers(key).size()]);
+        elements = syncApi.lrange(key, 0, -1).toArray(new String[syncApi.lrange(key, 0, -1).size()]);
         return elements;
     }
 

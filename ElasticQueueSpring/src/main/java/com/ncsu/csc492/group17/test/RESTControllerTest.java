@@ -58,7 +58,7 @@ public class RESTControllerTest {
     }
 
     @Test
-    public void testAddServers() {
+    public void testRemoveThenAddServers() {
         List<Server> list = controller.getServers(server1);
         assertEquals(4, list.size());
 
@@ -66,7 +66,7 @@ public class RESTControllerTest {
         Server testServer = new Server();
         testServer.setHost("152.14.106.29");
         testServer.setPort(6003);
-        //assertEquals(list.contains(testServer), true);
+        assertEquals(list.contains(testServer), true);
 
         //Create the server we are adding the new  server to.
         //Make sure it exists.
@@ -94,45 +94,6 @@ public class RESTControllerTest {
 
     }
 
-    @Test
-    public void testRemoveServers() {
-        List<Server> list = controller.getServers(server1);
-        assertEquals(4, list.size());
-
-        //Create the new server we are removing..
-        Server testServer = new Server();
-        testServer.setHost("152.14.106.29");
-        testServer.setPort(6003);
-        assertEquals(list.contains(testServer), true);
-
-        //Remove the server.
-        String result = controller.removeServers(testServer);
-        assertEquals("Server 152.14.106.29 6003 removed.", result);
-        list = controller.getServers(server1);
-        assertEquals(3, list.size());
-
-
-        //Functionality has been verified, but must reset for future tests.
-
-        //Create the server we are adding the new  server to.
-        //Make sure it exists.
-        Server existingServer = new Server();
-        existingServer.setHost("152.14.106.29");
-        existingServer.setPort(6000);
-        assertEquals(list.contains(existingServer), true);
-
-        //Set the servers for the request. We are add the new server
-        //to the existing server.
-        ServerRequest request = new ServerRequest();
-        request.setServer(existingServer);
-        request.setServerAdd(testServer);
-
-        result = controller.addServers(request);
-        assertEquals("Server 152.14.106.296003 added.", result);
-        list = controller.getServers(server1);
-        assertEquals(4, list.size());
-    }
-
     /**
     @Test
     public void testGetQueues() {
@@ -140,22 +101,6 @@ public class RESTControllerTest {
         assertEquals(1, list.size());
         assertEquals("myList2", list.get(0));
     }
-
-    @Test
-    public void testRemoveSlots() {
-        Server.Slots s = new Server.Slots();
-        s.setBeginningSlot(12000);
-        s.setEndSlot(13000);
-
-        Server.Slots slot[] = new Server.Slots[1];
-        slot[0] = s;
-
-        server1.setSlots(slot);
-        String message = controller.removeSlots(server1);
-        assertEquals("Slots 12000 to 13000 removed from 152.14.106.29:6000", message);
-    }
-
-
 
     @Test
     public void testAddSlots() {
