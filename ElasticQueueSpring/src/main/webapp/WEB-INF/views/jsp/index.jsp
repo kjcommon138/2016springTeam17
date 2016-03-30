@@ -354,7 +354,6 @@
                     success: function (data) {
                         console.log("SUCCESS: ", data);
                         window.location.reload(true);
-                        alert("Successfully added.");
                     }
                 });
 
