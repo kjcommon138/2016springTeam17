@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -233,6 +234,95 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
         queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
+
+    }
+
+    @Test
+    public void testRemoveSever() throws Exception {
+        driver.get(baseUrl + "/ElasticQueue");
+
+        assertTextPresent("Server", driver);
+
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(7, rowCount);
+
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
+        //Click the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30003')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30003", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        cells.get(4).click();
+
+        Thread.sleep(2000);
+
+        Alert alert = driver.switchTo().alert();
+        assertEquals(alert.getText().contains("Are you sure you want to remove 152.14.106.22:30003?"), true);
+
+        /**
+        alert.accept();
+
+        Thread.sleep(2000);
+
+        alert = driver.switchTo().alert();
+        assertEquals(alert.getText().contains("Deleting 152.14.106.22:30003. Press OK to continue."), true);
+        alert.accept();
+
+        Thread.sleep(45000);
+
+        rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(6, rowCount);
+         */
+
+    }
+
+
+    @Test
+    public void testAddServer() throws Exception {
+        driver.get(baseUrl + "/ElasticQueue");
+
+        assertTextPresent("Server", driver);
+
+        WebElement menu = driver.findElement(By.className("dropdown-toggle"));
+        menu.click();
+        //Thread.sleep(1000);
+        WebElement addOption = driver.findElement(By.id("addOption"));
+        addOption.click();
+
+        WebElement newHostInput = driver.findElement(By.id("newHost"));
+        newHostInput.sendKeys("152.14.106.22");
+        WebElement newPortInput = driver.findElement(By.id("newPort"));
+        newPortInput.sendKeys("30003");
+        WebElement oldHostInput = driver.findElement(By.id("oldHost"));
+        oldHostInput.sendKeys("152.14.106.22");
+        WebElement oldPortInput = driver.findElement(By.id("oldPort"));
+        oldPortInput.sendKeys("30001");
+        WebElement submitButton = driver.findElement(By.id("submit"));
+        submitButton.click();
+
+        Thread.sleep(2000);
+
+        /**
+        Alert alert = driver.switchTo().alert();
+        assertEquals(alert.getText().contains("Adding 152.14.106.22:30003."), true);
+        alert.accept();
+
+        Thread.sleep(45000);
+
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
+        //Click the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30003')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30003", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+         */
 
     }
 

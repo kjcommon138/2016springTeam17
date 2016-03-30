@@ -268,10 +268,9 @@
             newCell5.id = "trash";
             newCell5.onclick = (function(host, port) {
                 return function () {
-                    alert('hello');
                     var r = confirm("Are you sure you want to remove " + host + ":" + port + "?");
                     if (r == true) {
-                        alert('Deleting ' + host + ':' + port);
+                        alert('Deleting ' + host + ':' + port + '. Press OK to continue.');
                     } else {
                         return;
                     }
@@ -289,7 +288,6 @@
                         success: function (data) {
                             console.log("SUCCESS: ", data);
                             window.location.reload(true);
-
                         }
                     });
                 };
@@ -342,7 +340,7 @@
                 alert("Please fill all fields.");
                 e.preventDefault();
             } else {
-                alert("Adding " + newHost + ":" + newPort + ".");
+                alert("Adding " + newHost + ":" + newPort + ". Press Ok to continue.");
                 var sendObject = {
                     server: {host:oldHost, port:oldPort},
                     serverAdd: {host:newHost, port:newPort}
@@ -356,6 +354,7 @@
                     success: function (data) {
                         console.log("SUCCESS: ", data);
                         window.location.reload(true);
+                        alert("Successfully added.");
                     }
                 });
 
