@@ -72,6 +72,11 @@
 
 </div>
 
+<div class="alert alert-info" align="center" id="loadingMessage" style="display: none">
+    <p id="LoadText"><strong>Loading.</strong> Please wait operation in progress.</p>
+    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-5" style="overflow:scroll;margin-bottom:30px;height:240px;width:100%;overflow:auto">
@@ -270,7 +275,8 @@
                 return function () {
                     var r = confirm("Are you sure you want to remove " + host + ":" + port + "?");
                     if (r == true) {
-                        alert('Deleting ' + host + ':' + port + '. Press OK to continue.');
+                        document.getElementById("loadingMessage").style.display = "block";
+                        document.getElementById("LoadText").innerText = "Deleting " + host + ":" + port + ". Please wait.";
                     } else {
                         return;
                     }
@@ -341,6 +347,9 @@
                 e.preventDefault();
             } else {
                 alert("Adding " + newHost + ":" + newPort + ". Press Ok to continue.");
+
+                document.getElementById("loadingMessage").style.display = "block";
+                document.getElementById("LoadText").innerText = "Adding " + newHost + ":" + newPort + ". Please wait.";
                 var sendObject = {
                     server: {host:oldHost, port:oldPort},
                     serverAdd: {host:newHost, port:newPort}
