@@ -1,5 +1,7 @@
 package com.ncsu.csc492.group17.web.model;
 
+import hello.Server.Slots;
+
 
 public class Server {
 
@@ -11,27 +13,10 @@ public class Server {
 	private String key;
 	private String status;
 	private String slaveOf;
+	private String memory;
+	private String cpu;
 
 	private Slots slots[];
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Server server = (Server) o;
-
-		if (port != server.port) return false;
-		return host.equals(server.host);
-
-	}
-
-	@Override
-	public int hashCode() {
-		int result = port;
-		result = 31 * result + host.hashCode();
-		return result;
-	}
 
 
 	public static class Slots{
@@ -127,5 +112,21 @@ public class Server {
 
 	public void setSlaveOf(String slaveOf){
 		this.slaveOf = slaveOf;
+	}
+	
+	public String getMemory() {
+		return memory;
+	}
+
+	public void setMemory(String memory){
+		this.memory = memory;
+	}
+	
+	public String getCpu() {
+		return cpu;
+	}
+
+	public void setCpu(String cpu){
+		this.cpu = cpu;
 	}
 }

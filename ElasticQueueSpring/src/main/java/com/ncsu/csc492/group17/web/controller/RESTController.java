@@ -182,7 +182,7 @@ public class RESTController {
 			}else{
 				a = currentServer.getSlaveOf();
 			}
-			
+
 			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
 			if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
 
@@ -376,6 +376,7 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+		
 
 		String nodes = commands.clusterNodes();
 		//splits on new line
@@ -488,7 +489,49 @@ public class RESTController {
 
 	}
 
-	/*@RequestMapping(method=RequestMethod.POST, value="/addSlots")
+	@RequestMapping(method=RequestMethod.POST, value="/getMemory")
+	public Server getMemory(@RequestBody Server server1) {
+		RedisURI uri1 = new RedisURI();
+		uri1.setHost(server1.getHost());
+		uri1.setPort(server1.getPort());
+
+		RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
+		StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
+
+		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+
+		String info = commands.info();
+		System.out.println(info);
+
+		int beginningMem = info.indexOf("# Memory");
+		int endMem = info.indexOf("# Persistence");
+
+		String memory = info.substring(beginningMem, endMem);
+
+		String memoryArray[] = memory.split("\\r?\\n");
+		String memoryUsage[] = memoryArray[1].split(":");
+		
+		System.out.println("Memory Used: "+memoryArray[1]);
+
+		int beginningCPU = info.indexOf("# CPU");
+		int endCPU = info.indexOf("# Cluster");
+
+		String cpu = info.substring(beginningCPU, endCPU);
+
+		String cpuArray[] = cpu.split("\\r?\\n");
+		String cpuUsage[] = cpuArray[1].split(":");
+		
+		System.out.println("CPU Used: "+cpuArray[1]);
+		
+		Server server = new Server();
+		server = server1;
+		server.setCpu(cpuUsage[1]);
+		server.setMemory(memoryUsage[1]);
+
+		return server;
+	}
+
+	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
 	public String addSlots(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
@@ -522,7 +565,7 @@ public class RESTController {
 
 		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
-	}*/
+	}
 
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
