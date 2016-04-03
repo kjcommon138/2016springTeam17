@@ -219,6 +219,25 @@
         });
     }
 
+    function softRemoveServer(data2) {
+        console.log(data2.port);
+        console.log(data2.host);
+
+        $.ajax({
+           type: "POST",
+            contentType: "application/json",
+            url: "${home}softRemoveServer",
+            data: JSON.stringify(data2),
+            dataType: 'json',
+            success: function (data) {
+                console.log("SUCCESS: ", data);
+                alert(data);
+                if(data.contains("Successful Failover of "))
+                        getServerList();
+            }
+        });
+    }
+
     function initializeQueueTable(queueData) {
         //clears entire table
         $('#queueTable > tbody').remove();
