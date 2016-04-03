@@ -14,8 +14,8 @@
 <html>
 <head>
     <link rel="stylesheet" href="resources/core/css/bootstrap.css"/>
-    <link rel="icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
-    <link rel="shortcut icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon" />
+    <link rel="icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon"/>
+    <link rel="shortcut icon" href="<c:url value="/resources/favicon.ico"/>" type="image/x-icon"/>
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <title>ElasticQueue</title>
 </head>
@@ -52,9 +52,9 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
 <script type="text/javascript" src="js/dialog.js"></script>
 <script>
-    var easter_egg = new Konami(function() {
+    var easter_egg = new Konami(function () {
         alert('Konami code!');
-        document.getElementById('konami').style.display="inline-block";
+        document.getElementById('konami').style.display = "inline-block";
         var itemTable = document.getElementById('konamiTable');
 
         var newRows = itemTable.getElementsByTagName("tbody")[0];
@@ -79,7 +79,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-5" style="overflow:scroll;margin-bottom:30px;height:240px;width:100%;overflow:auto">
+        <div class="col-md-5" margin-bottom:30px;height:240px;width:100%;>
             <table id="serverTable" class="table" width="100%">
                 <thead>
                 <tr>
@@ -179,12 +179,11 @@
         }
     }
 
-    //clears entire server table
-    $('#serverTable > tbody').remove();
-    $('#serverTable').append("<tbody></tbody>");
-
-
     function getServerList() {
+        //clears entire server table
+        $('#serverTable > tbody').remove();
+        $('#serverTable').append("<tbody></tbody>");
+
         var server = {};
         server["port"] = "30001";
         server["host"] = "152.14.106.22";
@@ -271,13 +270,13 @@
             var newCell5 = newRow.insertCell(4);
             newCell5.innerHTML = "<span class=\"glyphicon glyphicon-trash\"></span>";
             newCell5.id = "trash";
-            newCell5.onclick = (function(host, port) {
+            newCell5.onclick = (function (host, port) {
                 return function () {
                     var r = confirm("Are you sure you want to remove " + host + ":" + port + "?");
-                    if (r == true) {
+                    if (r) {  //Say yes to remove server
                         document.getElementById("loadingMessage").style.display = "block";
                         document.getElementById("LoadText").innerText = "Deleting " + host + ":" + port + ". Please wait.";
-                    } else {
+                    } else {  //Say no to cancel request
                         return;
                     }
 
@@ -293,11 +292,11 @@
                         data: JSON.stringify(sendObject),
                         success: function (data) {
                             console.log("SUCCESS: ", data);
-                            window.location.reload(true);
+                            getServerList();
                         }
                     });
                 };
-            }) (data[i].host, data[i].port);
+            })(data[i].host, data[i].port);
         }
 
         document.getElementById("serverLoadIcon").style.display = "none";
@@ -327,17 +326,17 @@
 
     //Adding a server function
 
-    $(document).ready(function() {
-        $(function() {
+    $(document).ready(function () {
+        $(function () {
             $("#dialog").dialog({
                 autoOpen: false
             });
-            $("#addOption").on("click", function() {
+            $("#addOption").on("click", function () {
                 $("#dialog").dialog("open");
             });
         });
 
-        $("#submit").click(function(e) {
+        $("#submit").click(function (e) {
             var newHost = $("#newHost").val();
             var newPort = $("#newPort").val();
             var oldHost = $("#oldHost").val();
@@ -346,14 +345,20 @@
                 alert("Please fill all fields.");
                 e.preventDefault();
             } else {
-                alert("Adding " + newHost + ":" + newPort + ". Press Ok to continue.");
+                var yes = confirm("Do you want to add " + newHost + ":" + newPort + "?");
 
-                document.getElementById("loadingMessage").style.display = "block";
-                document.getElementById("LoadText").innerText = "Adding " + newHost + ":" + newPort + ". Please wait.";
-                var sendObject = {
-                    server: {host:oldHost, port:oldPort},
-                    serverAdd: {host:newHost, port:newPort}
+                if (yes) {
+                    document.getElementById("loadingMessage").style.display = "block";
+                    document.getElementById("LoadText").innerText = "Adding " + newHost + ":" + newPort + ". Please wait.";
+                } else {
+                    return;
                 }
+                var sendObject = {
+                    server: {host: oldHost, port: oldPort},
+                    serverAdd: {host: newHost, port: newPort}
+                }
+
+                $("#dialog").dialog("close");
 
                 $.ajax({
                     type: "POST",
@@ -362,11 +367,12 @@
                     data: JSON.stringify(sendObject),
                     success: function (data) {
                         console.log("SUCCESS: ", data);
-                        window.location.reload(true);
+                        document.getElementById("loadingMessage").style.display = "none";
+                        alert(data);
+                        if(!data.contains("error"))
+                            getServerList();
                     }
                 });
-
-                $("#dialog").dialog("close");
             }
         });
     });

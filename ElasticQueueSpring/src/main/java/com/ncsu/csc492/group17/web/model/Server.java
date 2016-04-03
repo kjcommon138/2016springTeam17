@@ -1,8 +1,5 @@
 package com.ncsu.csc492.group17.web.model;
 
-import hello.Server.Slots;
-
-
 public class Server {
 
 	private int port;

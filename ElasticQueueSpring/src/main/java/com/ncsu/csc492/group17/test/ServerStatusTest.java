@@ -2,8 +2,6 @@ package com.ncsu.csc492.group17.test;
 
 import com.ncsu.csc492.group17.cluster.ServerStatus;
 
-import java.util.Arrays;
-
 import static junit.framework.TestCase.assertEquals;
 
 /**
@@ -21,29 +19,6 @@ public class ServerStatusTest {
     @org.junit.Test
     public void testGetServerStatus() throws Exception {
         assertEquals(myServer.getServerStatus(), "Active");
-    }
-
-    @org.junit.Test
-    public void testGetList() throws Exception {
-        String[] testArray = myServer.getList("Test1");
-        assertEquals(testArray.length, 3);
-        assertEquals("Test3", testArray[0]);
-        assertEquals("Test2", testArray[1]);
-        assertEquals("Test1", testArray[2]);
-
-        String[] testArray2 = myServer.getList("randomStuff");
-        assertEquals(testArray2.length, 0);
-    }
-
-    @org.junit.Test
-    public void testGetQueueList() throws Exception {
-        String[] testArray3 = myServer.getQueueList();
-        System.out.println(Arrays.toString(testArray3));
-        System.out.println(testArray3[0]);
-        System.out.println(testArray3[1]);
-        assertEquals(testArray3.length, 2);
-        assertEquals("Test2", testArray3[0]);
-        assertEquals("Test1", testArray3[1]);
     }
 
     @org.junit.Test

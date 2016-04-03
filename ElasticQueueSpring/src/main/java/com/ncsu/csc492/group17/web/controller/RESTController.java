@@ -1,6 +1,5 @@
 package com.ncsu.csc492.group17.web.controller;
 
-import com.lambdaworks.redis.RedisCommandExecutionException;
 import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
@@ -9,7 +8,6 @@ import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 import com.ncsu.csc492.group17.web.model.Server;
 import com.ncsu.csc492.group17.web.model.Server.Slots;
 import com.ncsu.csc492.group17.web.model.ServerRequest;
-
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -463,15 +461,52 @@ public class RESTController {
 			}
 		}*/
 
-		//List<String> items = commands.clusterGetKeysInSlot(0, 15999);
-		//System.out.println("servers info: " + items);
-		//List<String> keys = commands.keys("*");
-		List<String> keys = commands.scan().getKeys();
-		int size = keys.size();
-		commands.scan().getKeys();
+        //List<String> items = commands.clusterGetKeysInSlot(0, 15999);
+        //System.out.println("servers info: " + items);
+        //List<String> keys = commands.keys("*");
+        List<String> keys = commands.keys("*");
+        int size = keys.size();
 
-		for(int i = 0; i < size; i++)
-			keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
+        for (int i = 0; i < size; i++) {
+            try {
+                String type = commands.type(keys.get(i));
+                if (type.equalsIgnoreCase("hash"))
+                    keys.add(Long.toString(commands.hlen(keys.get(i))));
+                else if (type.equalsIgnoreCase("list"))
+                    keys.add(Long.toString(commands.llen(keys.get(i))));
+                else if (type.equalsIgnoreCase("set"))
+                    keys.add(Long.toString(commands.scard(keys.get(i))));
+                else if (type.equalsIgnoreCase("none"))
+                    keys.add("0");
+                else
+                    keys.add("1");
+            } catch (Exception e) {
+                String[] splitMessage = e.getMessage().split("\\r?\\n");
+                String[] splitColon = splitMessage[0].split(":");
+                String newPort = splitColon[1];
+                String newHost = splitColon[0].split(" ")[2];
+
+                if(splitColon[0].contains("MOVED")) {
+                    commands = connection.getConnection(newHost, Integer.parseInt(newPort)).sync();
+
+                    String type2 = commands.type(keys.get(i));
+                    if (type2.equalsIgnoreCase("hash"))
+                        keys.add(Long.toString(commands.hlen(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("list"))
+                        keys.add(Long.toString(commands.llen(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("set"))
+                        keys.add(Long.toString(commands.scard(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("none"))
+                        keys.add("0");
+                    else
+                        keys.add("1");
+                } else {
+                    connection.close();
+                    redisClient.shutdown();
+                    return new ArrayList<String>();
+                }
+            }
+        }
 
 		connection.close();
 		redisClient.shutdown();
@@ -499,25 +534,25 @@ public class RESTController {
 
 		String memory = info.substring(beginningMem, endMem);
 
-		String memoryArray[] = memory.split("\\r?\\n");
-		String memoryUsage[] = memoryArray[1].split(":");
+        String memoryArray[] = memory.split("\\r?\\n");
+        String memoryUsage[] = memoryArray[1].split(":");
 
-		System.out.println("Memory Used: "+memoryArray[1]);
+        System.out.println("Memory Used: " + memoryArray[1]);
 
 		int beginningCPU = info.indexOf("# CPU");
 		int endCPU = info.indexOf("# Cluster");
 
 		String cpu = info.substring(beginningCPU, endCPU);
 
-		String cpuArray[] = cpu.split("\\r?\\n");
-		String cpuUsage[] = cpuArray[1].split(":");
+        String cpuArray[] = cpu.split("\\r?\\n");
+        String cpuUsage[] = cpuArray[1].split(":");
 
-		System.out.println("CPU Used: "+cpuArray[1]);
+        System.out.println("CPU Used: " + cpuArray[1]);
 
-		Server server = new Server();
-		server = server1;
-		server.setCpu(cpuUsage[1]);
-		server.setMemory(memoryUsage[1]);
+        Server server = new Server();
+        server = server1;
+        server.setCpu(cpuUsage[1]);
+        server.setMemory(memoryUsage[1]);
 
 		return server;
 	}

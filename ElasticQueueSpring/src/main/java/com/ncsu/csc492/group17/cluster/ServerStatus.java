@@ -1,14 +1,12 @@
 package com.ncsu.csc492.group17.cluster;
 
 import com.lambdaworks.redis.RedisURI;
-import com.lambdaworks.redis.api.sync.RedisCommands;
 import com.lambdaworks.redis.cluster.ClusterClientOptions;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
 import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
 import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class ServerStatus {
     //Private variables for ServerStatus class containing host names
     private String serverStatus = "Active";
-    private String[] elements;
     private String[] queueList;
     private String[] HOST_NAMES = {"152.14.106.22",
             "152.14.106.29",
@@ -61,6 +58,8 @@ public class ServerStatus {
         for (int i = 0; i < HOST_NAMES.length; i++)
             syncApi.clusterMeet(HOST_NAMES[i], 30001);
 */
+
+
         String nodes = syncApi.clusterNodes();
         System.out.println(nodes);
         //String nodesArray[] = nodes.split("\\r?\\n");
@@ -102,14 +101,10 @@ public class ServerStatus {
 
             System.out.println("Connected to Redis");
 
-            syncApi.flushdb();
+            //syncCommand.flushdb();
 
             syncApi.lpush(queueList[0], "Test1", "Test2", "Test3");
             syncApi.lpush(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
-
-            List<String> tempSet = syncApi.lrange(queueList[0], 0, -1);
-            elements = tempSet.toArray(new String[tempSet.size()]);
-            System.out.println(elements[0]);
 
             return getServerStatus();
         }
@@ -118,35 +113,6 @@ public class ServerStatus {
         return getServerStatus();
     }
 
-    public String[] getList(String key) {
-        elements = syncApi.lrange(key, 0, -1).toArray(new String[syncApi.lrange(key, 0, -1).size()]);
-        return elements;
-    }
-
-    public String[] getList() {
-        return elements;
-    }
-
-    public String[] getQueueList() {
-        for(int i = 30001; i <= 30009; i++) {
-            RedisCommands<String, String> syncCommand = connection.getConnection(HOST_NAMES[0], i).sync();
-            List<String> tempList = syncCommand.scan().getKeys();
-            queueList = tempList.toArray(new String[tempList.size()]);
-
-            if(queueList.length != 0) {
-                System.out.println(queueList[0] + ", " + i);
-                return queueList;
-            }
-        }
-        return queueList;
-    }
-
-    public String[] getQueueList(String nodeId) {
-        RedisCommands<String, String> syncCommand = connection.getConnection(nodeId).sync();
-        List<String> tempList = syncCommand.scan().getKeys();
-        queueList = tempList.toArray(new String[tempList.size()]);
-        return queueList;
-    }
 
     public String[][] getServerList() {
         String nodes = syncApi.clusterNodes();
@@ -165,11 +131,5 @@ public class ServerStatus {
 
         return nodeIdArray;
     }
-
-    /*
-    private void closeConnection() {
-        syncApi.close();
-        redisClient.shutdown();
-    }*/
 
 }
