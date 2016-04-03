@@ -58,7 +58,7 @@ public class RESTController {
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
 			System.out.println("Current Server: " + currentServer.getPort());
-			if(currentServer.getPort() == serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
+			if(currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")){
 				serverRemove = allServers.get(i);
 				nodeID = serverRemove.getNodeID();
 				slots = serverRemove.getSlots();
@@ -173,16 +173,17 @@ public class RESTController {
 		//forget the node to remove from every node except for the node itself
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
-			String a = "";
-			a = currentServer.getSlaveOf();
+			String slaveOf = "";
+			slaveOf = currentServer.getSlaveOf();
 			if(currentServer.getSlaveOf() == null){
-				a = "";
+				slaveOf = "";
 			}else{
-				a = currentServer.getSlaveOf();
+				slaveOf = currentServer.getSlaveOf();
 			}
 
 			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
-			if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
+			//if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
+			if((currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) && !slaveOf.equals(serverRemove.getNodeID())){
 
 				RedisURI uri = new RedisURI();
 				uri.setHost(currentServer.getHost());
@@ -266,10 +267,10 @@ public class RESTController {
 			for(int i = 0 ; i < allServers.size(); i++){
 				Server currentServer = allServers.get(i);
 				System.out.println("Current Server: " + currentServer.getPort());
-				if(currentServer.getPort() == serverAddPort){
+				if(currentServer.getPort() == serverAddPort && currentServer.getHost().equals(serverAddHost)){
 					serverAdd = currentServer;
 					System.out.println("Server Add: " + currentServer.getPort());
-				}else if(currentServer.getPort() == existingServerPort){
+				}else if(currentServer.getPort() == existingServerPort && currentServer.getHost().equals(existingServerHost)){
 					existingServer = currentServer;
 					System.out.println("Existing Server: " + currentServer.getPort());
 				}
@@ -278,19 +279,9 @@ public class RESTController {
 				Thread.sleep(1000);
 				System.out.println("Sleep");
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-
-		/*synchronized(serverAdd.getNodeID()){
-			try {
-				serverAdd.getNodeID().wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
 
 
 
@@ -374,7 +365,7 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
-		
+
 
 		String nodes = commands.clusterNodes();
 		//splits on new line
@@ -508,7 +499,7 @@ public class RESTController {
 
 		String memoryArray[] = memory.split("\\r?\\n");
 		String memoryUsage[] = memoryArray[1].split(":");
-		
+
 		System.out.println("Memory Used: "+memoryArray[1]);
 
 		int beginningCPU = info.indexOf("# CPU");
@@ -518,9 +509,9 @@ public class RESTController {
 
 		String cpuArray[] = cpu.split("\\r?\\n");
 		String cpuUsage[] = cpuArray[1].split(":");
-		
+
 		System.out.println("CPU Used: "+cpuArray[1]);
-		
+
 		Server server = new Server();
 		server = server1;
 		server.setCpu(cpuUsage[1]);
