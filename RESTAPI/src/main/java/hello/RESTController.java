@@ -44,7 +44,6 @@ public class RESTController {
 
         StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
 
-        //RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
         RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
 
         String nodeID = "";
@@ -66,6 +65,10 @@ public class RESTController {
         return "Successful Failover of "  + serverRemoveHost + ":" + serverRemovePort;
     }
 
+    /*
+     * Migrates keys and hashslots from removal node to another node
+     * Removes node passed in parameters along with all of its slaves
+     */
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody Server server) {
 		int serverRemovePort = server.getPort();
@@ -84,7 +87,6 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
 
-		//RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
 		RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
 
 		String nodeID = "";
@@ -109,7 +111,6 @@ public class RESTController {
 		}
 
 		//gets all the slaves for the server to remove
-		//Server [] slaves = new Server[0];
 		List<Server> slaves = new ArrayList<Server>();
 		for(int i = 0 ; i < allServers.size(); i++){
 			Server currentServer = allServers.get(i);
@@ -134,8 +135,6 @@ public class RESTController {
 			System.arraycopy(existingSlotsList, 0, allSlotsToRemove, slotsToRemove.length, existingSlotsList.length);
 
 		}
-
-		//NEW
 
 
 		RedisURI uri3 = new RedisURI();
@@ -194,10 +193,7 @@ public class RESTController {
 				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
 
-				//System.out.println(slaves.size());
-
 				for(int k=0; k < slaves.size(); k++){
-					//System.out.println(currentServer.getPort());
 					if(currentServer.getPort() != slaves.get(k).getPort()){
 						commands.clusterForget(slaves.get(k).getNodeID());
 					}
@@ -220,7 +216,6 @@ public class RESTController {
 			}
 
 			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
-			//if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
 			if((currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) && !slaveOf.equals(serverRemove.getNodeID())){
 
 				RedisURI uri = new RedisURI();
@@ -240,21 +235,14 @@ public class RESTController {
 		}
 
 
-		int numServers = allServers.size() - 1;
-		// how many slots each of the remaining servers in cluster will get.
-		//int slotsPerServer = numSlots / numServers;
-		// extra slots that we will add to the first server in the list
-		//int extraSlots = numSlots % numServers;
-
-		//int beginningSlotsToAdd = beginningSlots;
-		//int endSlotsToAdd = beginningSlots + slotsPerServer + extraSlots - 1;
-		//int[] slotsToAdd = getSlots(beginningSlotsToAdd, endSlotsToAdd);
-
-
 		System.out.println("Server " + server.getHost() + " " + server.getPort() + " removed.");
 		return "Server " + server.getHost() + " " + server.getPort() + " removed.";
 	}
 
+	/*
+	 * adds new node to cluster
+	 * migrates half of hashslots with keys from a node to node to add
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/addServers")
 	public String addServers(@RequestBody ServerRequest request) {
 
@@ -344,7 +332,6 @@ public class RESTController {
 		System.out.println(allSlots[0]);
 		System.out.println(allSlots[allSlots.length-1]);
 
-		//System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
 		//slots we are migrating from existing to new node
 		int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length/2);
@@ -387,6 +374,9 @@ public class RESTController {
 
 	}
 
+	/*
+	 * gets list of nodes in cluster of node parameter passed in
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/getServers")
 	public List<Server> getServers(@RequestBody Server server1) {
 
@@ -398,7 +388,6 @@ public class RESTController {
 		RedisURI uri = new RedisURI();
 		uri.setHost(server1.getHost());
 		uri.setPort(server1.getPort());
-		//RedisClusterClient redisClient = new RedisClusterClient(uri);
 		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
@@ -420,7 +409,6 @@ public class RESTController {
 
 			server.setNodeID(info[0]);
 
-			String hostAndPort = info[1];
 			int index = info[1].indexOf(":");
 			System.out.println(info[1]);
 
@@ -553,6 +541,9 @@ public class RESTController {
 
 	}
 
+	/*
+	 * returns (memory used) / (memory rss) for node parameter
+	 */
 	@RequestMapping(method=RequestMethod.POST, value="/getMemory")
 	public Server getMemory(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
@@ -613,9 +604,7 @@ public class RESTController {
 		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
 
 
-		//int beginningSlot = server1.getBeginningSlot();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
-		//int endSlot = server1.getEndSlot();
 		int endSlot = server1.getSlots()[0].getEndSlot();
 		int numSlots = endSlot - beginningSlot + 1;
 
@@ -635,6 +624,9 @@ public class RESTController {
 
 	}
 
+	/*
+	 * creates an array of numbers for the range of slots given
+	 */
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
 		int numSlots = endSlot - beginningSlot + 1;
