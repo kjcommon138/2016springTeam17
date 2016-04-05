@@ -102,9 +102,9 @@
         <div class="col-md-5">
             <h5 id="progressHeading" style="display:none">Load: High</h5>
             <div class="progress" id="progressInfo" style="display:none">
-                <div class="progress-bar" role="progressbar" aria-valuenow="70"
-                     aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                    70%
+                <div class="progress-bar active" id="progress-bar" role="progressbar" aria-valuenow="70"
+                     aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                    0%
                 </div>
             </div>
         </div>
@@ -242,6 +242,41 @@
         });
     }
 
+    function serverMemoryUtil(data2) {
+        console.log(data2.port);
+        console.log(data2.host);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "${home}getMemory",
+            data: JSON.stringify(data2),
+            dataType: 'json',
+            success: function (data) {
+                console.log("SUCCESS: ", data);
+                updateMemoryBar(data.memory);
+            }
+        });
+    }
+
+    //Function to update the memory bar to display the utilization of current server.
+    function updateMemoryBar(data) {
+        data = data * 100;
+        data = Math.ceil(data);
+
+        if(data > 66) {
+            document.getElementById("progressHeading").innerText = "Load: High";
+        } else if (data < 33) {
+            document.getElementById("progressHeading").innerText = "Load: Low";
+        } else {
+            document.getElementById("progressHeading").innerText = "Load: Medium";
+        }
+        $("#progress-bar")
+                .css("width", data + "%")
+                .attr("aria-valuenow", data)
+                .text(data + "%");
+    }
+
     function initializeQueueTable(queueData) {
         document.getElementById("queueLoadIcon").style.display = "inline";
 
@@ -340,6 +375,8 @@
 
             $("#queueHeading .serverValue").html(Cells[2].innerText + ":" + Cells[3].innerText);
 
+            //Get memory util
+            serverMemoryUtil(data[$(this).index()]);
             //Initialize queue list
             getQueues(data[$(this).index()]);
         });
