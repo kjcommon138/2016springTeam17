@@ -8,6 +8,7 @@ import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 import com.ncsu.csc492.group17.web.model.Server;
 import com.ncsu.csc492.group17.web.model.Server.Slots;
 import com.ncsu.csc492.group17.web.model.ServerRequest;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -579,8 +580,12 @@ public class RESTController {
 
         String memoryArray[] = memory.split("\\r?\\n");
         String memoryUsage[] = memoryArray[1].split(":");
+        String memoryRSS[] = memoryArray[3].split(":");
+        double memoryPercent = Double.parseDouble(memoryUsage[1]) / Double.parseDouble(memoryRSS[1]);
 
         System.out.println("Memory Used: " + memoryArray[1]);
+        System.out.println("Memory RSS: " + memoryArray[3]);
+        System.out.println("Memory Percent: " + memoryPercent);
 
 		int beginningCPU = info.indexOf("# CPU");
 		int endCPU = info.indexOf("# Cluster");
@@ -595,7 +600,7 @@ public class RESTController {
         Server server = new Server();
         server = server1;
         server.setCpu(cpuUsage[1]);
-        server.setMemory(memoryUsage[1]);
+        server.setMemory(memoryPercent);
 
 		return server;
 	}

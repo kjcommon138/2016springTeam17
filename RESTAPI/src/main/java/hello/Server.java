@@ -11,7 +11,7 @@ public class Server {
 	private String key;
 	private String status;
 	private String slaveOf;
-	private String memory;
+	private double memory;
 	private String cpu;
 
 	private Slots slots[];
@@ -112,11 +112,11 @@ public class Server {
 		this.slaveOf = slaveOf;
 	}
 	
-	public String getMemory() {
+	public double getMemory() {
 		return memory;
 	}
 
-	public void setMemory(String memory){
+	public void setMemory(double memory){
 		this.memory = memory;
 	}
 	
