@@ -217,10 +217,35 @@
             data: JSON.stringify(data2),
             dataType: 'json',
             success: function (data) {
+                cleanQueueData(data);
                 console.log("SUCCESS: ", data);
                 initializeQueueTable(data);
             }
         });
+    }
+
+    function sortNumber(a,b) {
+        return a - b;
+    }
+
+    function cleanQueueData(data) {
+        var arrayIndexes = [];
+        for(var i = 0; i < data.length / 2; i++) {
+            if(data[i].indexOf("_values") != -1) {
+                var start = data[i].indexOf("{") + 1;
+                var end = data[i].indexOf("}");
+                data[i] = data[i].substring(start, end);
+            } else {
+                arrayIndexes.push(i);
+                arrayIndexes.push(i + data.length / 2);
+            }
+        }
+        //removing elements
+        arrayIndexes.sort(sortNumber);
+        for(var i = arrayIndexes.length - 1; i >= 0; i--) {
+            data.splice(arrayIndexes[i], 1);
+        }
+        console.log("DATA POST REMOVE", data);
     }
 
     function softRemoveServer(data2) {
