@@ -206,6 +206,10 @@
         console.log(data2.port);
         console.log(data2.host);
 
+        //clears entire table
+        $('#queueTable > tbody').remove();
+        $('#queueTable').append("<tbody></tbody>");
+
         $.ajax({
             type: "POST",
             contentType: "application/json",
@@ -239,9 +243,6 @@
     }
 
     function initializeQueueTable(queueData) {
-        //clears entire table
-        $('#queueTable > tbody').remove();
-        $('#queueTable').append("<tbody></tbody>");
         document.getElementById("queueLoadIcon").style.display = "inline";
 
         newQueueRows = qTable.getElementsByTagName("tbody")[0];
