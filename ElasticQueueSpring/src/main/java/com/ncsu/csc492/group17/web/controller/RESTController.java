@@ -504,6 +504,7 @@ public class RESTController {
         //List<String> keys = commands.keys("*");
         List<String> keys = commands.keys("*");
         int size = keys.size();
+		String movedHostPort = server.getHost() + ":" + server.getPort();
 
         for (int i = 0; i < size; i++) {
             try {
@@ -527,6 +528,7 @@ public class RESTController {
                 if(splitColon[0].contains("MOVED")) {
                     commands = connection.getConnection(newHost, Integer.parseInt(newPort)).sync();
 
+					System.out.println("We just moved it. :P");
                     String type2 = commands.type(keys.get(i));
                     if (type2.equalsIgnoreCase("hash"))
                         keys.add(Long.toString(commands.hlen(keys.get(i))));
@@ -538,6 +540,8 @@ public class RESTController {
                         keys.add("0");
                     else
                         keys.add("1");
+
+					movedHostPort = server.getHost() + ":" + server.getPort() + " - Moved to " + newHost + ":" + newPort;
                 } else {
                     connection.close();
                     redisClient.shutdown();
@@ -549,6 +553,7 @@ public class RESTController {
 		connection.close();
 		redisClient.shutdown();
 
+		keys.add(movedHostPort);
 		return keys;
 
 	}

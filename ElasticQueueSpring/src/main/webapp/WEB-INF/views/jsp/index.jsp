@@ -246,14 +246,16 @@
         document.getElementById("queueLoadIcon").style.display = "inline";
 
         newQueueRows = qTable.getElementsByTagName("tbody")[0];
-        for (var l = 0; l < queueData.length / 2; l++) {
+        for (var l = 0; l < ((queueData.length / 2) | 0) - 1; l++) {
             var newRow = newQueueRows.insertRow(l);
             var newCell1 = newRow.insertCell(0);
             newCell1.innerText = queueData[l];
             var newCell2 = newRow.insertCell(1);
-            newCell2.innerText = queueData[l + (queueData.length / 2)];
+            newCell2.innerText = queueData[l + ((queueData.length / 2) | 0) ];
         }
 
+        console.log("Showing Data for: " + queueData[queueData.length - 1]);
+        $("#queueHeading .serverValue").html(queueData[queueData.length - 1]);
         document.getElementById("queueLoadIcon").style.display = "none";
 
         $('#queueTable > tbody').find('tr').click(function () {
