@@ -88,6 +88,8 @@
                     <th>IP Address</th>
                     <th>Port Number</th>
                     <th></th>
+                    <th>Master Port</th>
+                    <th>Master Host</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -380,6 +382,11 @@
                     });
                 };
             })(data[i].host, data[i].port);
+
+            var newCell6 = newRow.insertCell(5);
+            newCell6.innerText = data[i].slaveOf;
+            var newCell7 = newRow.insertCell(6);
+            newCell7.innerText = data[i].slaveOf;
         }
 
         document.getElementById("serverLoadIcon").style.display = "none";
