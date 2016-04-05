@@ -103,8 +103,8 @@ public class ServerStatus {
 
             //syncCommand.flushdb();
 
-            syncApi.lpush(queueList[0], "Test1", "Test2", "Test3");
-            syncApi.lpush(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
+            //syncApi.lpush(queueList[0], "Test1", "Test2", "Test3");
+            //syncApi.lpush(queueList[1], "Hola", "Hello", "Bonjour", "Hallo", "Hej");
 
             return getServerStatus();
         }

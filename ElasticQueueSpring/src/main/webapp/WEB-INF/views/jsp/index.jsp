@@ -217,8 +217,10 @@
             data: JSON.stringify(data2),
             dataType: 'json',
             success: function (data) {
+                console.log("Initial length: ", data.length);
+                $("#queueHeading .serverValue").html(data[data.length - 1]);
                 cleanQueueData(data);
-                console.log("SUCCESS: ", data);
+                console.log("SUCCESS: ", data, "-> length: ", data.length);
                 initializeQueueTable(data);
             }
         });
@@ -230,7 +232,7 @@
 
     function cleanQueueData(data) {
         var arrayIndexes = [];
-        for(var i = 0; i < data.length / 2; i++) {
+        for(var i = 0; i < ((data.length / 2) | 0); i++) {
             if(data[i].indexOf("_values") != -1) {
                 var start = data[i].indexOf("{") + 1;
                 var end = data[i].indexOf("}");
@@ -245,6 +247,7 @@
         for(var i = arrayIndexes.length - 1; i >= 0; i--) {
             data.splice(arrayIndexes[i], 1);
         }
+        data.splice(data.length - 1, 1);
         console.log("DATA POST REMOVE", data);
     }
 
@@ -306,16 +309,14 @@
         document.getElementById("queueLoadIcon").style.display = "inline";
 
         newQueueRows = qTable.getElementsByTagName("tbody")[0];
-        for (var l = 0; l < ((queueData.length / 2) | 0) - 1; l++) {
+        for (var l = 0; l < queueData.length / 2; l++) {
             var newRow = newQueueRows.insertRow(l);
             var newCell1 = newRow.insertCell(0);
             newCell1.innerText = queueData[l];
             var newCell2 = newRow.insertCell(1);
-            newCell2.innerText = queueData[l + ((queueData.length / 2) | 0) ];
+            newCell2.innerText = queueData[l + (queueData.length / 2) ];
         }
 
-        console.log("Showing Data for: " + queueData[queueData.length - 1]);
-        $("#queueHeading .serverValue").html(queueData[queueData.length - 1]);
         document.getElementById("queueLoadIcon").style.display = "none";
 
         $('#queueTable > tbody').find('tr').click(function () {
