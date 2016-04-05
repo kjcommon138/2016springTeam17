@@ -23,13 +23,51 @@ public class RESTController {
 	private final String[] HOST_NAMES = {
 			"sd-vm12.csc.ncsu.edu",
 			"sd-vm19.csc.ncsu.edu",
-			"sd-vm20.csc.ncsu.edu", 
+			"sd-vm20.csc.ncsu.edu",
 	"sd-vm33.csc.ncsu.edu"};
+
+    @RequestMapping(method=RequestMethod.POST, value="/softRemoveServer")
+    public String softRemoveServer(@RequestBody Server server) {
+        int serverRemovePort = server.getPort();
+        String serverRemoveHost = server.getHost();
+        //the node to remove
+        Server serverRemove = null;
+        //a node in the cluster that will get the slots from the removed node
+        Server serverKeep = null;
+
+
+        //connection to server we want to remove
+        RedisURI uri1 = new RedisURI();
+        uri1.setHost(serverRemoveHost);
+        uri1.setPort(serverRemovePort);
+        RedisClusterClient redisClient1 = RedisClusterClient.create(uri1);
+
+        StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
+
+        //RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
+        RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
+
+        String nodeID = "";
+
+        List<Server> allServers = getServers(server);
+
+        //assigns the serverToRemove and serverToKeep
+        for(int i = 0 ; i < allServers.size(); i++){
+            Server currentServer = allServers.get(i);
+            if(currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && currentServer.getType().equalsIgnoreCase("slave")){
+                try {
+                    commands1.clusterFailover(true);
+                } catch(Exception e) {
+                    return "Error with Cluster Failover of " + serverRemoveHost + ":" + serverRemovePort;
+                }
+            }
+        }
+
+        return "Successful Failover of "  + serverRemoveHost + ":" + serverRemovePort;
+    }
 
 	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
 	public String removeServers(@RequestBody Server server) {
-
-
 		int serverRemovePort = server.getPort();
 		String serverRemoveHost = server.getHost();
 		//the node to remove
@@ -391,7 +429,7 @@ public class RESTController {
 			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
 			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
 
-			if(server.getType() == "Slave"){
+			if(server.getType().equals("Slave")){
 				server.setSlaveOf(info[3]);
 			}
 
@@ -461,15 +499,52 @@ public class RESTController {
 			}
 		}*/
 
-		//List<String> items = commands.clusterGetKeysInSlot(0, 15999);
-		//System.out.println("servers info: " + items);
-		//List<String> keys = commands.keys("*");
-		List<String> keys = commands.scan().getKeys();
-		int size = keys.size();
-		commands.scan().getKeys();
+        //List<String> items = commands.clusterGetKeysInSlot(0, 15999);
+        //System.out.println("servers info: " + items);
+        //List<String> keys = commands.keys("*");
+        List<String> keys = commands.keys("*");
+        int size = keys.size();
 
-		for(int i = 0; i < size; i++)
-			keys.add(Integer.toString(commands.lrange(keys.get(i), 0, -1).size()));
+        for (int i = 0; i < size; i++) {
+            try {
+                String type = commands.type(keys.get(i));
+                if (type.equalsIgnoreCase("hash"))
+                    keys.add(Long.toString(commands.hlen(keys.get(i))));
+                else if (type.equalsIgnoreCase("list"))
+                    keys.add(Long.toString(commands.llen(keys.get(i))));
+                else if (type.equalsIgnoreCase("set"))
+                    keys.add(Long.toString(commands.scard(keys.get(i))));
+                else if (type.equalsIgnoreCase("none"))
+                    keys.add("0");
+                else
+                    keys.add("1");
+            } catch (Exception e) {
+                String[] splitMessage = e.getMessage().split("\\r?\\n");
+                String[] splitColon = splitMessage[0].split(":");
+                String newPort = splitColon[1];
+                String newHost = splitColon[0].split(" ")[2];
+
+                if(splitColon[0].contains("MOVED")) {
+                    commands = connection.getConnection(newHost, Integer.parseInt(newPort)).sync();
+
+                    String type2 = commands.type(keys.get(i));
+                    if (type2.equalsIgnoreCase("hash"))
+                        keys.add(Long.toString(commands.hlen(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("list"))
+                        keys.add(Long.toString(commands.llen(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("set"))
+                        keys.add(Long.toString(commands.scard(keys.get(i))));
+                    else if (type2.equalsIgnoreCase("none"))
+                        keys.add("0");
+                    else
+                        keys.add("1");
+                } else {
+                    connection.close();
+                    redisClient.shutdown();
+                    return new ArrayList<String>();
+                }
+            }
+        }
 
 		connection.close();
 		redisClient.shutdown();
@@ -497,25 +572,29 @@ public class RESTController {
 
 		String memory = info.substring(beginningMem, endMem);
 
-		String memoryArray[] = memory.split("\\r?\\n");
-		String memoryUsage[] = memoryArray[1].split(":");
+        String memoryArray[] = memory.split("\\r?\\n");
+        String memoryUsage[] = memoryArray[1].split(":");
+        String memoryRSS[] = memoryArray[3].split(":");
+        double memoryPercent = Double.parseDouble(memoryUsage[1]) / Double.parseDouble(memoryRSS[1]);
 
-		System.out.println("Memory Used: "+memoryArray[1]);
+        System.out.println("Memory Used: " + memoryArray[1]);
+        System.out.println("Memory RSS: " + memoryArray[3]);
+        System.out.println("Memory Percent: " + memoryPercent);
 
 		int beginningCPU = info.indexOf("# CPU");
 		int endCPU = info.indexOf("# Cluster");
 
 		String cpu = info.substring(beginningCPU, endCPU);
 
-		String cpuArray[] = cpu.split("\\r?\\n");
-		String cpuUsage[] = cpuArray[1].split(":");
+        String cpuArray[] = cpu.split("\\r?\\n");
+        String cpuUsage[] = cpuArray[1].split(":");
 
-		System.out.println("CPU Used: "+cpuArray[1]);
+        System.out.println("CPU Used: " + cpuArray[1]);
 
-		Server server = new Server();
-		server = server1;
-		server.setCpu(cpuUsage[1]);
-		server.setMemory(memoryUsage[1]);
+        Server server = new Server();
+        server = server1;
+        server.setCpu(cpuUsage[1]);
+        server.setMemory(memoryPercent);
 
 		return server;
 	}
