@@ -1,5 +1,25 @@
 package com.ncsu.csc492.group17.test;
 
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.cluster.RedisClusterClient;
+import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
+import com.ncsu.csc492.group17.web.model.Server;
+
+
+import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisClusterAsyncConnection;
+import com.lambdaworks.redis.RedisClusterConnection;
+import com.lambdaworks.redis.RedisException;
+import com.lambdaworks.redis.RedisFuture;
+import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.StatefulRedisConnectionImpl;
+import com.lambdaworks.redis.api.StatefulRedisConnection;
+import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
+import com.lambdaworks.redis.cluster.models.partitions.RedisClusterNode;
+
+
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +28,10 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +56,9 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
         //Make sure to wait for items to load before throwing exception
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+
+        driver.get(baseUrl + "/ElasticQueue");
+
     }
 
     /**
@@ -43,10 +70,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckServerLoad() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
-        assertTextPresent("Server", driver);
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
 
@@ -54,20 +77,21 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
         //Get the Master 30001. Don't delete this one.
-        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30001')]]"));
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30002')]]"));
 
         targetRow.click();
 
         WebElement serverSelected = driver.findElement(By.className("serverValue"));
         assertTextPresent("Showing queues for:", driver);
-        assertEquals("152.14.106.22:30001", serverSelected.getText());
+        assertEquals("152.14.106.22:30002", serverSelected.getText());
 
         WebElement queueTable = driver.findElement(By.id("queueTable"));
         assertNotNull(queueTable);
 
-        assertTextPresent("Load: High", driver);
-        WebElement loadPercent = driver.findElement(By.className("progress-bar"));
-        assertEquals("70%", loadPercent.getText());
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("progressHeading"), "Load: Low"));
+
+        assertTextPresent("Load: Low", driver);
     }
 
 
@@ -78,8 +102,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckServerList() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
@@ -106,17 +128,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
     }
 
     /**
-     * Test that information is available for a failed server.
-     * Expects to view selected inactive server's information.
-     * @throws Exception
-     */
-    @Test
-    public void testCheckInvalidServerStatus() throws Exception {
-        //TO DO
-        //NEED INVALID SERVER DATA
-    }
-
-    /**
      * Test that information is available for active servers.
      * Expects to view selected active server's information
      * including queues and server load.
@@ -124,8 +135,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckValidServerStatus() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
@@ -149,9 +158,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckMasterNode() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
-        Thread.sleep(3000);
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
@@ -176,8 +182,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testCheckSlaveNode() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
@@ -203,10 +207,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      */
     @Test
     public void testChangeServerSelection() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
-        assertTextPresent("Server", driver);
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
 
@@ -239,14 +239,10 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     @Test
     public void testRemoveSever() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
-        assertTextPresent("Server", driver);
-
         // find the table of Servers
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
-        assertEquals(7, rowCount);
+        assertEquals(9, rowCount);
 
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
@@ -283,10 +279,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     @Test
     public void testAddServer() throws Exception {
-        driver.get(baseUrl + "/ElasticQueue");
-
-        assertTextPresent("Server", driver);
-
         WebElement menu = driver.findElement(By.className("dropdown-toggle"));
         menu.click();
         //Thread.sleep(1000);
@@ -326,6 +318,56 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     }
 
+    /**
+    @Test
+    public void testDiabolical() throws Exception {
+        // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
+        //Get the Master 30001. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30008')]]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+
+        String host = cells.get(2).getText();
+        int port = Integer.parseInt(cells.get(3).getText());
+
+        assertEquals(30008, port);
+        assertEquals("152.14.106.22", host);
+
+        Server server1 = new Server();
+        server1.setHost(host);
+        server1.setPort(port);
+
+        killServer(server1);
+
+        Thread.sleep(30000);
+
+        driver.get(baseUrl + "/ElasticQueue");
+
+        // find the table of Servers
+        serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
+
+        //Wait for rows to appear.
+        rowLoad = serverTable.findElement(By.id("row0"));
+
+        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30008')]]"));
+        cells = targetRow.findElements(By.tagName("td"));
+
+        boolean promoted = false;
+        if(cells.get(1).getText().contains("Master")) {
+            promoted = true;
+        }
+
+        assertEquals(true, promoted);
+
+    }
+     */
+
     @After
     public void tearDown() throws Exception {
         driver.quit();
@@ -333,6 +375,40 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         if (!"".equals(verificationErrorString)) {
             fail(verificationErrorString);
         }
+    }
+
+    public void killServer(Server server1) {
+        RedisClient client;
+        RedisClusterClient clusterClient;
+
+        StatefulRedisConnection<String, String> redis6;
+
+        RedisClusterCommands<String, String> redissync6;
+
+        client = RedisClient.create(RedisURI.Builder.redis(server1.getHost(), server1.getPort()).build());
+        clusterClient = RedisClusterClient.create(RedisURI.Builder.redis(server1.getHost(), server1.getPort())
+                .build());
+
+        redis6 = client.connect(RedisURI.Builder.redis(server1.getHost(), server1.getPort()).build());
+
+        redissync6 = redis6.sync();
+
+        String failover = redissync6.clusterFailover(true);
+        //assertThat(failover).isEqualTo("OK");
+
+        /**
+        RedisURI uri1 = new RedisURI();
+        uri1.setHost(server1.getHost());
+        uri1.setPort(server1.getPort());
+
+        RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
+        StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
+
+        RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+
+        String info = commands.clusterFailover(false);
+        System.out.println(info);
+         */
     }
 
 
