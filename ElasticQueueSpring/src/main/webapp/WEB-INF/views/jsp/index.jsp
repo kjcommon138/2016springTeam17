@@ -88,8 +88,8 @@
                     <th>IP Address</th>
                     <th>Port Number</th>
                     <th></th>
-                    <th>Master Port</th>
                     <th>Master Host</th>
+                    <th>Master Port</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -295,11 +295,11 @@
         data = Math.ceil(data);
 
         if(data > 66) {
-            document.getElementById("progressHeading").innerText = "Load: High";
+            document.getElementById("progressHeading").innerText = "Memory Load: High";
         } else if (data < 33) {
-            document.getElementById("progressHeading").innerText = "Load: Low";
+            document.getElementById("progressHeading").innerText = "Memory Load: Low";
         } else {
-            document.getElementById("progressHeading").innerText = "Load: Medium";
+            document.getElementById("progressHeading").innerText = "Memory Load: Medium";
         }
         $("#progress-bar")
                 .css("width", data + "%")
@@ -384,9 +384,9 @@
             })(data[i].host, data[i].port);
 
             var newCell6 = newRow.insertCell(5);
-            newCell6.innerText = data[i].slaveOf;
+            newCell6.innerText = data[i].masterHost;
             var newCell7 = newRow.insertCell(6);
-            newCell7.innerText = data[i].slaveOf;
+            newCell7.innerText = data[i].masterPort;
         }
 
         document.getElementById("serverLoadIcon").style.display = "none";
