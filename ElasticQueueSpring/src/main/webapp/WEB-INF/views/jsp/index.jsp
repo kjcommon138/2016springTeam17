@@ -139,16 +139,15 @@
 
 </div>
 
-<div id="dialog" title="Dialog Form">
+<div id="dialog" title="Add New Master Server">
     <label>New Host IP Address:</label>
-    <input id="newHost" name="newHost" type="text" style="color:black;">
+    <input id="newHost" class="form-control" name="newHost" type="text" style="color:black;">
     <label>New Host Port Number:</label>
-    <input id="newPort" name="newPort" type="text" style="color:black;">
-    <label>Existing MASTER Host IP Address:</label>
-    <input id="oldHost" name="oldHost" type="text" style="color:black;">
-    <label>Existing MASTER Port Number:</label>
-    <input id="oldPort" name="oldPort" type="text" style="color:black;">
-    <input id="submit" type="submit" value="Submit" style="color:red;">
+    <input id="newPort" class="form-control" name="newPort" type="text" style="color:black;">
+    <label>Select Master Server to meet with and receive hash slots from:</label>
+    <select class="form-control" id="currentMasterList"></select>
+    <br>
+    <input id="submit" type="submit" class="btn btn-info" value="Submit">
 </div>
 
 <script>
@@ -338,6 +337,17 @@
         console.log(data[0].host);
         console.log(data[0].port);
 
+        var selectBox = document.getElementById("currentMasterList");
+        var option;
+        for(var j = 0; j < data.length; j++) {
+            if(data[j].type == "Master") {
+                option = document.createElement("option");
+                option.value = data[j].host + ":" + data[j].port;
+                option.innerHTML = data[j].host + ":" + data[j].port;
+                selectBox.appendChild(option);
+            }
+        }
+
         //Initialize list of servers
         newServerRows = sTable.getElementsByTagName("tbody")[0];
         for (var i = 0; i < data.length; i++) {
@@ -429,8 +439,10 @@
         $("#submit").click(function (e) {
             var newHost = $("#newHost").val();
             var newPort = $("#newPort").val();
-            var oldHost = $("#oldHost").val();
-            var oldPort = $("#oldPort").val();
+            var currentMasterList = $("#currentMasterList").val();
+            var separateStr = currentMasterList.split(":");
+            var oldHost = separateStr[0];
+            var oldPort = separateStr[1];
             if (newHost === '' || newPort === '' || oldHost === '' || oldPort === '') {
                 alert("Please fill all fields.");
                 e.preventDefault();
