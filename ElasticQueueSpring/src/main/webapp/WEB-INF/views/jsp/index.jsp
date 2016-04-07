@@ -77,6 +77,10 @@
     <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
 </div>
 
+<div class="alert alert-danger" align="center" id="failedServerMessage" style="display: none">
+    <strong>Server Down!</strong> A server is in a failed state.
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-5" margin-bottom:30px;height:240px;width:100%;>
@@ -179,6 +183,18 @@
         }
     }
 
+    function toggleFailedAlert(data) {
+
+        var alertMessage = document.getElementById("failedServerMessage");
+
+        for(var i = 0; i < data.length; j++) {
+            if(data[i].status == "Disabled") {
+                if (alertMessage.style.display = "none")
+                    alertMessage.style.display = "block";
+            }
+        }
+    }
+
     function getServerList() {
         //clears entire server table
         $('#serverTable > tbody').remove();
@@ -197,6 +213,7 @@
             success: function (data) {
                 console.log("SUCCESS: ", data);
                 initializeTable(data);
+                toggleFailedAlert(data);
             }
         });
 
