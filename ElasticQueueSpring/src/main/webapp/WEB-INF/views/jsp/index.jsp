@@ -88,8 +88,7 @@
                     <th>IP Address</th>
                     <th>Port Number</th>
                     <th></th>
-                    <th>Master Host</th>
-                    <th>Master Port</th>
+                    <th>Master Host & Port</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -384,9 +383,8 @@
             })(data[i].host, data[i].port);
 
             var newCell6 = newRow.insertCell(5);
-            newCell6.innerText = data[i].masterHost;
-            var newCell7 = newRow.insertCell(6);
-            newCell7.innerText = data[i].masterPort;
+            if(data[i].masterHost != null && data[i].masterPort != null)
+                newCell6.innerText = data[i].masterHost + ":" + data[i].masterPort;
         }
 
         document.getElementById("serverLoadIcon").style.display = "none";
