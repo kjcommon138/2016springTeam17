@@ -10,7 +10,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 
 public class QueueGenerator {
-    public static final String DEFAULT_ADDR = "sd-vm12.csc.ncsu.edu:30001";
+    public static final String DEFAULT_ADDR = "sd-vm19.csc.ncsu.edu:30001";
 
     RedisConnection conn;
 
@@ -22,7 +22,7 @@ public class QueueGenerator {
         conn = Redis.newClusterConnection(addr);
     }
 
-    public void run(int numQueues, int queueSize) {
+    public boolean run(int numQueues, int queueSize) {
         //testing a PING to sanity check that a connection was established
         RedisRequest req = Redis.req(RedisCommands.PING);
         RedisResponse response = conn.execute(req);
@@ -31,6 +31,7 @@ public class QueueGenerator {
             System.out.println(response.get());
         } catch(Exception e) {
             e.printStackTrace();
+            return false;
         }
 
         //generating the queues on the node
@@ -45,5 +46,6 @@ public class QueueGenerator {
         }
 
         conn.close();
+        return true;
     }
 }
