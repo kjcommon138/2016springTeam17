@@ -55,28 +55,36 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5" style="overflow:scroll;margin-bottom:30px;height:240px;width:100%;overflow:auto">
             <table id="serverTable" class="table" width="100%">
                 <thead>
                 <tr>
                     <th>Server</th>
                     <th>Status</th>
                     <th>Server Type</th>
+                    <th>IP Address</th>
+                    <th>Port Number</th>
                 </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-5">
-            <h5>Load: High</h5>
-            <div class="progress">
+            <h5 id="progressHeading" style="display:none">Load: High</h5>
+            <div class="progress" id="progressInfo" style="display:none">
                 <div class="progress-bar" role="progressbar" aria-valuenow="70"
                      aria-valuemin="0" aria-valuemax="100" style="width:70%">
                     70%
                 </div>
             </div>
-            <h4 id="queueHeading" style="display:none">Showing queues for: <span class="serverValue"></span></h4>
+        </div>
+    </div>
+    <div class="row">
+        <h4 id="queueHeading" style="display:none">Showing queues for: <span class="serverValue"></span></h4>
+        <div class="col-md-5">
             <span style="display:none" class="queueValue"></span>
             <table style="display:none" id="queueTable" class="table" width="100%">
                 <thead>
@@ -96,26 +104,23 @@
                 </tr>
                 </tbody>
             </table>
-
-            <div class="col-md-5" style="overflow:scroll;height:80px;width:100%;overflow:auto">
-
-                <table style="display:none" class="table" width:100% id="redisTable">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Item</th>
-                    </tr>
-                    </thead>
-                </table>
-
-            </div>
-
+        </div>
+        <div class="col-md-5" style="overflow:scroll;margin-left:100px;height:100px;overflow:auto">
+            <table style="display:none" class="table" width:100% id="redisTable">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Item</th>
+                </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
 
+    console.log(<%=myServer.getList()%>);
 
     //Toggles queue table off by default
     var qTable = document.getElementById("queueTable");
@@ -123,6 +128,15 @@
     var sTable = document.getElementById("serverTable");
 
     function toggleQueueTable() {
+
+        var heading = document.getElementById("progressHeading");
+        if (heading.style.display == "none")
+            heading.style.display = "inline";
+
+        var heading = document.getElementById("progressInfo");
+        if (heading.style.display == "none")
+            heading.style.display = "block";
+
         var qTable = document.getElementById("queueTable");
         if (qTable.style.display == "none")
             qTable.style.display = "table";
@@ -170,6 +184,10 @@
         newCell2.innerText = serverList[l][1];
         var newCell3 = newRow.insertCell(2);
         newCell3.innerText = serverList[l][2];
+        var newCell4 = newRow.insertCell(3);
+        newCell4.innerText = serverList[l][3];
+        var newCell5 = newRow.insertCell(4);
+        newCell5.innerText = serverList[l][4];
     }
 
     $('#serverTable > tbody').find('tr').click(function () {
