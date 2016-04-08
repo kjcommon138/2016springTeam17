@@ -77,6 +77,10 @@
     <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
 </div>
 
+<div class="alert alert-danger" align="center" id="failedServerMessage" style="display: none">
+    <strong>Server Down!</strong> A server is in a failed state.
+</div>
+
 <div class="container">
     <div class="row">
         <div class="col-md-5" margin-bottom:30px;height:240px;width:100%;>
@@ -88,8 +92,7 @@
                     <th>IP Address</th>
                     <th>Port Number</th>
                     <th></th>
-                    <th>Master Port</th>
-                    <th>Master Host</th>
+                    <th>Master Host & Port</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -140,16 +143,15 @@
 
 </div>
 
-<div id="dialog" title="Dialog Form">
+<div id="dialog" title="Add New Master Server">
     <label>New Host IP Address:</label>
-    <input id="newHost" name="newHost" type="text" style="color:black;">
+    <input id="newHost" class="form-control" name="newHost" type="text" style="color:black;">
     <label>New Host Port Number:</label>
-    <input id="newPort" name="newPort" type="text" style="color:black;">
-    <label>Existing MASTER Host IP Address:</label>
-    <input id="oldHost" name="oldHost" type="text" style="color:black;">
-    <label>Existing MASTER Port Number:</label>
-    <input id="oldPort" name="oldPort" type="text" style="color:black;">
-    <input id="submit" type="submit" value="Submit" style="color:red;">
+    <input id="newPort" class="form-control" name="newPort" type="text" style="color:black;">
+    <label>Select Master Server to meet with and receive hash slots from:</label>
+    <select class="form-control" id="currentMasterList"></select>
+    <br>
+    <input id="submit" type="submit" class="btn btn-info" value="Submit">
 </div>
 
 <script>
@@ -181,6 +183,18 @@
         }
     }
 
+    function toggleFailedAlert(data) {
+
+        var alertMessage = document.getElementById("failedServerMessage");
+
+        for(var i = 0; i < data.length; j++) {
+            if(data[i].status == "Disabled") {
+                if (alertMessage.style.display = "none")
+                    alertMessage.style.display = "block";
+            }
+        }
+    }
+
     function getServerList() {
         //clears entire server table
         $('#serverTable > tbody').remove();
@@ -199,6 +213,7 @@
             success: function (data) {
                 console.log("SUCCESS: ", data);
                 initializeTable(data);
+                toggleFailedAlert(data);
             }
         });
 
@@ -295,11 +310,11 @@
         data = Math.ceil(data);
 
         if(data > 66) {
-            document.getElementById("progressHeading").innerText = "Load: High";
+            document.getElementById("progressHeading").innerText = "Memory Load: High";
         } else if (data < 33) {
-            document.getElementById("progressHeading").innerText = "Load: Low";
+            document.getElementById("progressHeading").innerText = "Memory Load: Low";
         } else {
-            document.getElementById("progressHeading").innerText = "Load: Medium";
+            document.getElementById("progressHeading").innerText = "Memory Load: Medium";
         }
         $("#progress-bar")
                 .css("width", data + "%")
@@ -338,6 +353,17 @@
     function initializeTable(data) {
         console.log(data[0].host);
         console.log(data[0].port);
+
+        var selectBox = document.getElementById("currentMasterList");
+        var option;
+        for(var j = 0; j < data.length; j++) {
+            if(data[j].type == "Master") {
+                option = document.createElement("option");
+                option.value = data[j].host + ":" + data[j].port;
+                option.innerHTML = data[j].host + ":" + data[j].port;
+                selectBox.appendChild(option);
+            }
+        }
 
         //Initialize list of servers
         newServerRows = sTable.getElementsByTagName("tbody")[0];
@@ -384,9 +410,8 @@
             })(data[i].host, data[i].port);
 
             var newCell6 = newRow.insertCell(5);
-            newCell6.innerText = data[i].slaveOf;
-            var newCell7 = newRow.insertCell(6);
-            newCell7.innerText = data[i].slaveOf;
+            if(data[i].masterHost != null && data[i].masterPort != null)
+                newCell6.innerText = data[i].masterHost + ":" + data[i].masterPort;
         }
 
         document.getElementById("serverLoadIcon").style.display = "none";
@@ -431,8 +456,10 @@
         $("#submit").click(function (e) {
             var newHost = $("#newHost").val();
             var newPort = $("#newPort").val();
-            var oldHost = $("#oldHost").val();
-            var oldPort = $("#oldPort").val();
+            var currentMasterList = $("#currentMasterList").val();
+            var separateStr = currentMasterList.split(":");
+            var oldHost = separateStr[0];
+            var oldPort = separateStr[1];
             if (newHost === '' || newPort === '' || oldHost === '' || oldPort === '') {
                 alert("Please fill all fields.");
                 e.preventDefault();
