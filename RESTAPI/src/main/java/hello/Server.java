@@ -2,6 +2,21 @@ package hello;
 
 
 public class Server {
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Server server = (Server) o;
+
+		return nodeID != null ? nodeID.equals(server.nodeID) : server.nodeID == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return nodeID != null ? nodeID.hashCode() : 0;
+	}
 
 	private int port;
 	private String host;
@@ -11,10 +26,28 @@ public class Server {
 	private String key;
 	private String status;
 	private String slaveOf;
+	private String masterHost;
+	private String masterPort;
 	private double memory;
 	private String cpu;
 
 	private Slots slots[];
+
+	public String getMasterHost() {
+		return masterHost;
+	}
+
+	public void setMasterHost(String masterHost) {
+		this.masterHost = masterHost;
+	}
+
+	public String getMasterPort() {
+		return masterPort;
+	}
+
+	public void setMasterPort(String masterPort) {
+		this.masterPort = masterPort;
+	}
 
 
 	public static class Slots{

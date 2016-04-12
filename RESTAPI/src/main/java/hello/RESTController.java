@@ -26,50 +26,118 @@ public class RESTController {
 			"sd-vm20.csc.ncsu.edu",
 	"sd-vm33.csc.ncsu.edu"};
 
-    @RequestMapping(method=RequestMethod.POST, value="/softRemoveServer")
-    public String softRemoveServer(@RequestBody Server server) {
-        int serverRemovePort = server.getPort();
-        String serverRemoveHost = server.getHost();
-        //the node to remove
-        Server serverRemove = null;
-        //a node in the cluster that will get the slots from the removed node
-        Server serverKeep = null;
+	@RequestMapping(method = RequestMethod.POST, value = "/softRemoveServer")
+	public String softRemoveServer(@RequestBody Server server) {
+		int serverRemovePort = server.getPort();
+		String serverRemoveHost = server.getHost();
+		//the node to remove
+		Server serverRemove = null;
+		//a node in the cluster that will get the slots from the removed node
+		Server serverKeep = null;
 
 
-        //connection to server we want to remove
-        RedisURI uri1 = new RedisURI();
-        uri1.setHost(serverRemoveHost);
-        uri1.setPort(serverRemovePort);
-        RedisClusterClient redisClient1 = RedisClusterClient.create(uri1);
+		//connection to server we want to remove
+		RedisURI uri1 = new RedisURI();
+		uri1.setHost(serverRemoveHost);
+		uri1.setPort(serverRemovePort);
+		RedisClusterClient redisClient1 = RedisClusterClient.create(uri1);
 
-        StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
+		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
 
-        RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
+		//RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
+		RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
 
-        String nodeID = "";
+		String nodeID = "";
 
-        List<Server> allServers = getServers(server);
+		List<Server> allServers = getServers(server);
 
-        //assigns the serverToRemove and serverToKeep
-        for(int i = 0 ; i < allServers.size(); i++){
-            Server currentServer = allServers.get(i);
-            if(currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && currentServer.getType().equalsIgnoreCase("slave")){
-                try {
-                    commands1.clusterFailover(true);
-                } catch(Exception e) {
-                    return "Error with Cluster Failover of " + serverRemoveHost + ":" + serverRemovePort;
-                }
-            }
-        }
+		//assigns the serverToRemove and serverToKeep
+		for (int i = 0; i < allServers.size(); i++) {
+			Server currentServer = allServers.get(i);
+			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && currentServer.getType().equalsIgnoreCase("slave")) {
+				try {
+					commands1.clusterFailover(true);
+				} catch (Exception e) {
+					return "Error with Cluster Failover of " + serverRemoveHost + ":" + serverRemovePort;
+				}
+			}
+		}
 
-        return "Successful Failover of "  + serverRemoveHost + ":" + serverRemovePort;
-    }
+		return "Successful Failover of " + serverRemoveHost + ":" + serverRemovePort;
+	}
 
-    /*
-     * Migrates keys and hashslots from removal node to another node
-     * Removes node passed in parameters along with all of its slaves
-     */
-	@RequestMapping(method=RequestMethod.POST, value="/removeServers")
+	@RequestMapping(method = RequestMethod.POST, value = "/softRemoveServer2")
+	public String softRemoveServer2(@RequestBody Server server) {
+		int serverRemovePort = server.getPort();
+		String serverRemoveHost = server.getHost();
+		//the node to remove
+		Server serverRemove = null;
+		//a node in the cluster that will take over
+		Server serverKeep = null;
+
+		List<Server> allServers = getServers(server);
+
+
+		//get all information for server to remove
+		for (int i = 0; i < allServers.size(); i++) {
+			Server currentServer = allServers.get(i);
+			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
+				serverRemove = allServers.get(i);
+				System.out.println("Server Remove: " + serverRemove.getPort());
+			}
+		}
+
+		//assigns the slave serverToKeep
+		for (int i = 0; i < allServers.size(); i++) {
+			Server currentServer = allServers.get(i);
+			if (currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null && currentServer.getSlaveOf() == serverRemove.getNodeID()) {
+				serverKeep = allServers.get(i);
+				System.out.println("Server Keep: " + serverKeep.getPort());
+			}
+		}
+
+		//connection to slave we want to take over the master
+		RedisURI uri2 = new RedisURI();
+		uri2.setHost(serverKeep.getHost());
+		uri2.setPort(serverKeep.getPort());
+		RedisClusterClient redisClient2 = RedisClusterClient.create(uri2);
+
+		StatefulRedisClusterConnection<String, String> connection2 = redisClient2.connect();
+
+		RedisClusterCommands<String, String> commands2 = connection2.getConnection(serverRemoveHost, serverRemovePort).sync();
+
+		commands2.clusterFailover(true);
+		System.out.print("Failover: " + commands2.clusterFailover(true));
+		
+		connection2.close();
+		redisClient2.shutdown();
+
+
+		//forget the node to remove from every node except for the node itself
+		for (int i = 0; i < allServers.size(); i++) {
+			Server currentServer = allServers.get(i);
+			if (currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) {
+
+				RedisURI uri = new RedisURI();
+				uri.setHost(currentServer.getHost());
+				uri.setPort(currentServer.getPort());
+				RedisClusterClient redisClient = RedisClusterClient.create(uri);
+
+				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
+
+				commands.clusterForget(serverRemove.getNodeID());
+
+				connection.close();
+				redisClient.shutdown();
+			}
+		}
+
+
+		return "Successful Failover of " + serverRemoveHost + ":" + serverRemovePort;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/removeServers")
 	public String removeServers(@RequestBody Server server) {
 		int serverRemovePort = server.getPort();
 		String serverRemoveHost = server.getHost();
@@ -87,6 +155,7 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
 
+		//RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
 		RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
 
 		String nodeID = "";
@@ -95,26 +164,27 @@ public class RESTController {
 		List<Server> allServers = getServers(server);
 
 		//assigns the serverToRemove and serverToKeep
-		for(int i = 0 ; i < allServers.size(); i++){
+		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
 			System.out.println("Current Server: " + currentServer.getPort());
-			if(currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")){
+			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
 				serverRemove = allServers.get(i);
 				nodeID = serverRemove.getNodeID();
 				slots = serverRemove.getSlots();
 				System.out.println("Server Remove: " + serverRemove.getPort());
 				System.out.println(nodeID);
-			}else if(!currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null){
+			} else if (!currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null) {
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
 			}
 		}
 
 		//gets all the slaves for the server to remove
+		//Server [] slaves = new Server[0];
 		List<Server> slaves = new ArrayList<Server>();
-		for(int i = 0 ; i < allServers.size(); i++){
+		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
-			if(currentServer.getType().equalsIgnoreCase("slave") && currentServer.getSlaveOf().equals(serverRemove.getNodeID())){
+			if (currentServer.getType().equalsIgnoreCase("slave") && currentServer.getSlaveOf().equals(serverRemove.getNodeID())) {
 				slaves.add(currentServer);
 				System.out.println("Slave: " + currentServer.getPort());
 			}
@@ -123,7 +193,7 @@ public class RESTController {
 
 		int[] allSlotsToRemove = new int[0];
 		//gets all the slots to remove in one array
-		for(int i = 0; i < slots.length; i ++){
+		for (int i = 0; i < slots.length; i++) {
 			int beginningSlots = slots[i].getBeginningSlot();
 			int endSlots = slots[i].getEndSlot();
 			int[] slotsToRemove = getSlots(beginningSlots, endSlots);
@@ -136,6 +206,8 @@ public class RESTController {
 
 		}
 
+		//NEW
+
 
 		RedisURI uri3 = new RedisURI();
 		System.out.println("Server Keep Port: " + serverKeep.getPort());
@@ -147,11 +219,11 @@ public class RESTController {
 		RedisAdvancedClusterCommands<String, String> commands4 = connection3.sync();
 		RedisClusterCommands<String, String> commands3 = connection3.getConnection(serverKeep.getHost(), serverKeep.getPort()).sync();
 
-		for(int k = 0; k < allSlotsToRemove.length; k++){
+		for (int k = 0; k < allSlotsToRemove.length; k++) {
 			//Source node gets keys
 			int numKeys = (int) (long) commands1.clusterCountKeysInSlot(allSlotsToRemove[k]);
 			//only migrate keys if there are keys
-			if(numKeys > 0){
+			if (numKeys > 0) {
 				//Destination node has to issue the importing command
 				System.out.println("Set Importing");
 				System.out.println(commands3.clusterSetSlotImporting(allSlotsToRemove[k], serverRemove.getNodeID()));
@@ -163,7 +235,7 @@ public class RESTController {
 				List<String> keys = commands1.clusterGetKeysInSlot(allSlotsToRemove[k], numKeys);
 				//Source node sends migrate command
 				System.out.println("Migrating");
-				for(int i = 0; i < keys.size(); i ++){
+				for (int i = 0; i < keys.size(); i++) {
 					System.out.println(commands1.migrate(serverKeep.getHost(), serverKeep.getPort(), keys.get(i), 0, 1000));
 				}
 			}
@@ -181,8 +253,8 @@ public class RESTController {
 
 
 		//forget all the slaves of node to remove from every node
-		if(slaves.size() > 0){
-			for(int i = 0 ; i < allServers.size(); i++){
+		if (slaves.size() > 0) {
+			for (int i = 0; i < allServers.size(); i++) {
 				Server currentServer = allServers.get(i);
 
 				RedisURI uri = new RedisURI();
@@ -193,8 +265,11 @@ public class RESTController {
 				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
 
-				for(int k=0; k < slaves.size(); k++){
-					if(currentServer.getPort() != slaves.get(k).getPort()){
+				//System.out.println(slaves.size());
+
+				for (int k = 0; k < slaves.size(); k++) {
+					//System.out.println(currentServer.getPort());
+					if (currentServer.getPort() != slaves.get(k).getPort()) {
 						commands.clusterForget(slaves.get(k).getNodeID());
 					}
 				}
@@ -205,18 +280,19 @@ public class RESTController {
 		}
 
 		//forget the node to remove from every node except for the node itself
-		for(int i = 0 ; i < allServers.size(); i++){
+		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
 			String slaveOf = "";
 			slaveOf = currentServer.getSlaveOf();
-			if(currentServer.getSlaveOf() == null){
+			if (currentServer.getSlaveOf() == null) {
 				slaveOf = "";
-			}else{
+			} else {
 				slaveOf = currentServer.getSlaveOf();
 			}
 
 			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
-			if((currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) && !slaveOf.equals(serverRemove.getNodeID())){
+			//if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
+			if ((currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) && !slaveOf.equals(serverRemove.getNodeID())) {
 
 				RedisURI uri = new RedisURI();
 				uri.setHost(currentServer.getHost());
@@ -235,15 +311,22 @@ public class RESTController {
 		}
 
 
+		int numServers = allServers.size() - 1;
+		// how many slots each of the remaining servers in cluster will get.
+		//int slotsPerServer = numSlots / numServers;
+		// extra slots that we will add to the first server in the list
+		//int extraSlots = numSlots % numServers;
+
+		//int beginningSlotsToAdd = beginningSlots;
+		//int endSlotsToAdd = beginningSlots + slotsPerServer + extraSlots - 1;
+		//int[] slotsToAdd = getSlots(beginningSlotsToAdd, endSlotsToAdd);
+
+
 		System.out.println("Server " + server.getHost() + " " + server.getPort() + " removed.");
 		return "Server " + server.getHost() + " " + server.getPort() + " removed.";
 	}
 
-	/*
-	 * adds new node to cluster
-	 * migrates half of hashslots with keys from a node to node to add
-	 */
-	@RequestMapping(method=RequestMethod.POST, value="/addServers")
+	@RequestMapping(method = RequestMethod.POST, value = "/addServers")
 	public String addServers(@RequestBody ServerRequest request) {
 
 		//node we are adding
@@ -280,23 +363,23 @@ public class RESTController {
 		System.out.println(commands.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
 		/*try {
-			Thread.sleep(7500);
+            Thread.sleep(7500);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
 
 
-		while(serverAdd.getNodeID() == null){
+		while (serverAdd.getNodeID() == null) {
 			System.out.println("Searching for node");
 			List<Server> allServers = getServers(existingServer);
-			for(int i = 0 ; i < allServers.size(); i++){
+			for (int i = 0; i < allServers.size(); i++) {
 				Server currentServer = allServers.get(i);
 				System.out.println("Current Server: " + currentServer.getPort());
-				if(currentServer.getPort() == serverAddPort && currentServer.getHost().equals(serverAddHost)){
+				if (currentServer.getPort() == serverAddPort && currentServer.getHost().equals(serverAddHost)) {
 					serverAdd = currentServer;
 					System.out.println("Server Add: " + currentServer.getPort());
-				}else if(currentServer.getPort() == existingServerPort && currentServer.getHost().equals(existingServerHost)){
+				} else if (currentServer.getPort() == existingServerPort && currentServer.getHost().equals(existingServerHost)) {
 					existingServer = currentServer;
 					System.out.println("Existing Server: " + currentServer.getPort());
 				}
@@ -310,11 +393,10 @@ public class RESTController {
 		}
 
 
-
 		int[] allSlots = new int[0];
 		Slots[] existingSlots = existingServer.getSlots();
 		//gets all the slots to remove in one array
-		for(int i = existingSlots.length - 1; i >= 0; i --){
+		for (int i = existingSlots.length - 1; i >= 0; i--) {
 			int beginningSlots = existingSlots[i].getBeginningSlot();
 			int endSlots = existingSlots[i].getEndSlot();
 
@@ -330,18 +412,19 @@ public class RESTController {
 		}
 		System.out.println("SLOTS!!!!!!");
 		System.out.println(allSlots[0]);
-		System.out.println(allSlots[allSlots.length-1]);
+		System.out.println(allSlots[allSlots.length - 1]);
 
+		//System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
 		//slots we are migrating from existing to new node
-		int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length/2);
+		int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length / 2);
 
 		//resharding/migration of slots
-		for(int k = 0; k < firstHalf.length; k++){
+		for (int k = 0; k < firstHalf.length; k++) {
 			//Source node gets keys
 			int numKeys = (int) (long) commandsExisting.clusterCountKeysInSlot(firstHalf[k]);
 			//only migrate keys if there are keys
-			if(numKeys > 0){
+			if (numKeys > 0) {
 				//Destination node has to issue the importing command
 				System.out.println("Set Importing");
 				System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
@@ -352,7 +435,7 @@ public class RESTController {
 				List<String> keys = commandsExisting.clusterGetKeysInSlot(firstHalf[k], numKeys);
 				//Source node sends migrate command
 				System.out.println("Migrating");
-				for(int i = 0; i < keys.size(); i ++){
+				for (int i = 0; i < keys.size(); i++) {
 					System.out.println(commandsExisting.migrate(serverAdd.getHost(), serverAdd.getPort(), keys.get(i), 0, 1000));
 				}
 			}
@@ -374,10 +457,7 @@ public class RESTController {
 
 	}
 
-	/*
-	 * gets list of nodes in cluster of node parameter passed in
-	 */
-	@RequestMapping(method=RequestMethod.POST, value="/getServers")
+	@RequestMapping(method = RequestMethod.POST, value = "/getServers")
 	public List<Server> getServers(@RequestBody Server server1) {
 
 		/*RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
@@ -388,6 +468,7 @@ public class RESTController {
 		RedisURI uri = new RedisURI();
 		uri.setHost(server1.getHost());
 		uri.setPort(server1.getPort());
+		//RedisClusterClient redisClient = new RedisClusterClient(uri);
 		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
@@ -398,33 +479,37 @@ public class RESTController {
 		//splits on new line
 		String nodesArray[] = nodes.split("\\r?\\n");
 
-		List<Server> servers = new ArrayList<Server>();
+		List<Server> servers = new ArrayList<>();
+		List<Server> masterNodes = new ArrayList<>();
 
-		for(int i = 0; i < nodesArray.length; i++){
+		for (int i = 0; i < nodesArray.length; i++) {
 			System.out.println(nodesArray[i]);
 
-			String info [] = nodesArray[i].split("\\s+");
+			String info[] = nodesArray[i].split("\\s+");
 
 			Server server = new Server();
 
 			server.setNodeID(info[0]);
 
-			int index = info[1].indexOf(":");
-			System.out.println(info[1]);
+			String hostAndPort = info[1];
+			int index = hostAndPort.indexOf(":");
+			System.out.println(hostAndPort);
 
-			server.setHost(info[1].substring(0, index));
-			server.setPort(Integer.parseInt(info[1].substring(index + 1)));
+			server.setHost(hostAndPort.substring(0, index));
+			server.setPort(Integer.parseInt(hostAndPort.substring(index + 1)));
 			server.setType(info[2].indexOf("master") == -1 ? "Slave" : "Master");
 			server.setStatus(nodesArray[i].indexOf("disconnected") == -1 ? "Active" : "Disabled");
 
-			if(server.getType().equals("Slave")){
+			if (server.getType().equals("Slave")) {
 				server.setSlaveOf(info[3]);
+			} else if(server.getType().equals("Master")) {
+				masterNodes.add(server);
 			}
 
 
 			Slots slots[] = new Slots[info.length - 8];
 
-			for(int k = 8; k < info.length; k ++){
+			for (int k = 8; k < info.length; k++) {
 				Slots slot = new Slots();
 				System.out.println(info[k]);
 				index = info[k].indexOf("-");
@@ -437,11 +522,27 @@ public class RESTController {
 			server.setSlots(slots);
 
 
-
 			servers.add(server);
 
 		}
 
+		for(int k = 0; k < servers.size(); k++) {
+			Server temp = servers.get(k);
+
+			if(temp.getType().equals("Slave")) {
+
+				Server master = new Server();
+				master.setNodeID(temp.getSlaveOf());
+				int idx = masterNodes.indexOf(master);
+
+				System.out.println(temp.getHost() + ":" + temp.getPort() + " -> " + idx);
+				if (idx != -1) {
+					System.out.println("Slave assigned");
+					servers.get(k).setMasterHost(masterNodes.get(idx).getHost());
+					servers.get(k).setMasterPort(Integer.toString(masterNodes.get(idx).getPort()));
+				}
+			}
+		}
 
 		String info = commands.clusterInfo();
 		System.out.println("INFO");
@@ -453,7 +554,7 @@ public class RESTController {
 		return servers;
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/getQueues")
+	@RequestMapping(method = RequestMethod.POST, value = "/getQueues")
 	public List<String> getQueues(@RequestBody Server server) {
 
 
@@ -487,64 +588,66 @@ public class RESTController {
 			}
 		}*/
 
-        //List<String> items = commands.clusterGetKeysInSlot(0, 15999);
-        //System.out.println("servers info: " + items);
-        //List<String> keys = commands.keys("*");
-        List<String> keys = commands.keys("*");
-        int size = keys.size();
+		//List<String> items = commands.clusterGetKeysInSlot(0, 15999);
+		//System.out.println("servers info: " + items);
+		//List<String> keys = commands.keys("*");
+		List<String> keys = commands.keys("*");
+		int size = keys.size();
+		String movedHostPort = server.getHost() + ":" + server.getPort();
 
-        for (int i = 0; i < size; i++) {
-            try {
-                String type = commands.type(keys.get(i));
-                if (type.equalsIgnoreCase("hash"))
-                    keys.add(Long.toString(commands.hlen(keys.get(i))));
-                else if (type.equalsIgnoreCase("list"))
-                    keys.add(Long.toString(commands.llen(keys.get(i))));
-                else if (type.equalsIgnoreCase("set"))
-                    keys.add(Long.toString(commands.scard(keys.get(i))));
-                else if (type.equalsIgnoreCase("none"))
-                    keys.add("0");
-                else
-                    keys.add("1");
-            } catch (Exception e) {
-                String[] splitMessage = e.getMessage().split("\\r?\\n");
-                String[] splitColon = splitMessage[0].split(":");
-                String newPort = splitColon[1];
-                String newHost = splitColon[0].split(" ")[2];
+		for (int i = 0; i < size; i++) {
+			try {
+				String type = commands.type(keys.get(i));
+				if (type.equalsIgnoreCase("hash"))
+					keys.add(Long.toString(commands.hlen(keys.get(i))));
+				else if (type.equalsIgnoreCase("list"))
+					keys.add(Long.toString(commands.llen(keys.get(i))));
+				else if (type.equalsIgnoreCase("set"))
+					keys.add(Long.toString(commands.scard(keys.get(i))));
+				else if (type.equalsIgnoreCase("none"))
+					keys.add("0");
+				else
+					keys.add("1");
+			} catch (Exception e) {
+				String[] splitMessage = e.getMessage().split("\\r?\\n");
+				String[] splitColon = splitMessage[0].split(":");
+				String newPort = splitColon[1];
+				String newHost = splitColon[0].split(" ")[2];
 
-                if(splitColon[0].contains("MOVED")) {
-                    commands = connection.getConnection(newHost, Integer.parseInt(newPort)).sync();
+				if (splitColon[0].contains("MOVED")) {
+					commands = connection.getConnection(newHost, Integer.parseInt(newPort)).sync();
 
-                    String type2 = commands.type(keys.get(i));
-                    if (type2.equalsIgnoreCase("hash"))
-                        keys.add(Long.toString(commands.hlen(keys.get(i))));
-                    else if (type2.equalsIgnoreCase("list"))
-                        keys.add(Long.toString(commands.llen(keys.get(i))));
-                    else if (type2.equalsIgnoreCase("set"))
-                        keys.add(Long.toString(commands.scard(keys.get(i))));
-                    else if (type2.equalsIgnoreCase("none"))
-                        keys.add("0");
-                    else
-                        keys.add("1");
-                } else {
-                    connection.close();
-                    redisClient.shutdown();
-                    return new ArrayList<String>();
-                }
-            }
-        }
+					System.out.println("We just moved it. :P");
+					String type2 = commands.type(keys.get(i));
+					if (type2.equalsIgnoreCase("hash"))
+						keys.add(Long.toString(commands.hlen(keys.get(i))));
+					else if (type2.equalsIgnoreCase("list"))
+						keys.add(Long.toString(commands.llen(keys.get(i))));
+					else if (type2.equalsIgnoreCase("set"))
+						keys.add(Long.toString(commands.scard(keys.get(i))));
+					else if (type2.equalsIgnoreCase("none"))
+						keys.add("0");
+					else
+						keys.add("1");
+
+					movedHostPort = server.getHost() + ":" + server.getPort() + " - Moved to " + newHost + ":" + newPort;
+				} else {
+					connection.close();
+					redisClient.shutdown();
+					return new ArrayList<String>();
+				}
+			}
+		}
 
 		connection.close();
 		redisClient.shutdown();
 
+		keys.add(movedHostPort);
 		return keys;
 
 	}
 
-	/*
-	 * returns (memory used) / (memory rss) for node parameter
-	 */
-	@RequestMapping(method=RequestMethod.POST, value="/getMemory")
+	@RequestMapping(method = RequestMethod.POST, value = "/getMemory")
 	public Server getMemory(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
@@ -563,34 +666,34 @@ public class RESTController {
 
 		String memory = info.substring(beginningMem, endMem);
 
-        String memoryArray[] = memory.split("\\r?\\n");
-        String memoryUsage[] = memoryArray[1].split(":");
-        String memoryRSS[] = memoryArray[3].split(":");
-        double memoryPercent = Double.parseDouble(memoryUsage[1]) / Double.parseDouble(memoryRSS[1]);
+		String memoryArray[] = memory.split("\\r?\\n");
+		String memoryUsage[] = memoryArray[1].split(":");
+		String memoryRSS[] = memoryArray[3].split(":");
+		double memoryPercent = Double.parseDouble(memoryUsage[1]) / Double.parseDouble(memoryRSS[1]);
 
-        System.out.println("Memory Used: " + memoryArray[1]);
-        System.out.println("Memory RSS: " + memoryArray[3]);
-        System.out.println("Memory Percent: " + memoryPercent);
+		System.out.println("Memory Used: " + memoryArray[1]);
+		System.out.println("Memory RSS: " + memoryArray[3]);
+		System.out.println("Memory Percent: " + memoryPercent);
 
 		int beginningCPU = info.indexOf("# CPU");
 		int endCPU = info.indexOf("# Cluster");
 
 		String cpu = info.substring(beginningCPU, endCPU);
 
-        String cpuArray[] = cpu.split("\\r?\\n");
-        String cpuUsage[] = cpuArray[1].split(":");
+		String cpuArray[] = cpu.split("\\r?\\n");
+		String cpuUsage[] = cpuArray[1].split(":");
 
-        System.out.println("CPU Used: " + cpuArray[1]);
+		System.out.println("CPU Used: " + cpuArray[1]);
 
-        Server server = new Server();
-        server = server1;
-        server.setCpu(cpuUsage[1]);
-        server.setMemory(memoryPercent);
+		Server server = new Server();
+		server = server1;
+		server.setCpu(cpuUsage[1]);
+		server.setMemory(memoryPercent);
 
 		return server;
 	}
 
-	@RequestMapping(method=RequestMethod.POST, value="/addSlots")
+	@RequestMapping(method = RequestMethod.POST, value = "/addSlots")
 	public String addSlots(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
@@ -604,14 +707,16 @@ public class RESTController {
 		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
 
 
+		//int beginningSlot = server1.getBeginningSlot();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
+		//int endSlot = server1.getEndSlot();
 		int endSlot = server1.getSlots()[0].getEndSlot();
 		int numSlots = endSlot - beginningSlot + 1;
 
 		int[] slots = new int[numSlots];
 
-		for(int i = beginningSlot; i < endSlot + 1; i ++){
-			slots[i-beginningSlot] = i;
+		for (int i = beginningSlot; i < endSlot + 1; i++) {
+			slots[i - beginningSlot] = i;
 		}
 
 		String a = commands.clusterAddSlots(slots);
@@ -620,13 +725,10 @@ public class RESTController {
 		connection.close();
 		redisClient.shutdown();
 
-		return("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
+		return ("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
 	}
 
-	/*
-	 * creates an array of numbers for the range of slots given
-	 */
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
 		int numSlots = endSlot - beginningSlot + 1;
@@ -634,8 +736,8 @@ public class RESTController {
 		System.out.println(numSlots);
 		int[] slots = new int[numSlots];
 
-		for(int i = beginningSlot; i < endSlot + 1; i ++){
-			slots[i-beginningSlot] = i;
+		for (int i = beginningSlot; i < endSlot + 1; i++) {
+			slots[i - beginningSlot] = i;
 		}
 
 		return slots;
