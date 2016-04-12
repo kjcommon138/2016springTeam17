@@ -1,6 +1,8 @@
 package com.ncsu.csc492.group17.web.controller;
 
+import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
+import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
 import com.lambdaworks.redis.cluster.api.sync.RedisAdvancedClusterCommands;
@@ -91,28 +93,22 @@ public class RESTController {
 		//assigns the slave serverToKeep
 		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
-			if (currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null && currentServer.getSlaveOf() == serverRemove.getNodeID()) {
+			//System.out.println(currentServer.getType());
+			//System.out.println("Slave of: " + currentServer.getSlaveOf());
+			if (currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null && currentServer.getSlaveOf().equals(serverRemove.getNodeID())) {
 				serverKeep = allServers.get(i);
 				System.out.println("Server Keep: " + serverKeep.getPort());
 			}
 		}
 
 		//connection to slave we want to take over the master
-		RedisURI uri2 = new RedisURI();
-		uri2.setHost(serverKeep.getHost());
-		uri2.setPort(serverKeep.getPort());
-		RedisClusterClient redisClient2 = RedisClusterClient.create(uri2);
-
-		StatefulRedisClusterConnection<String, String> connection2 = redisClient2.connect();
-
-		RedisClusterCommands<String, String> commands2 = connection2.getConnection(serverRemoveHost, serverRemovePort).sync();
-
-		commands2.clusterFailover(true);
-		System.out.print("Failover: " + commands2.clusterFailover(true));
+		RedisClient client = RedisClient.create(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
+		StatefulRedisConnection<String, String> clientConnection = client.connect(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
+		RedisClusterCommands<String, String> clientCommands = clientConnection.sync();
+		System.out.print("Failover: " + clientCommands.clusterFailover(true));
 		
-		connection2.close();
-		redisClient2.shutdown();
-
+		clientConnection.close();
+		client.shutdown();
 
 		//forget the node to remove from every node except for the node itself
 		for (int i = 0; i < allServers.size(); i++) {
