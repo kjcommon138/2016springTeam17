@@ -28,48 +28,9 @@ public class RESTController {
 			"sd-vm20.csc.ncsu.edu",
 	"sd-vm33.csc.ncsu.edu"};
 
+
 	@RequestMapping(method = RequestMethod.POST, value = "/softRemoveServer")
 	public String softRemoveServer(@RequestBody Server server) {
-		int serverRemovePort = server.getPort();
-		String serverRemoveHost = server.getHost();
-		//the node to remove
-		Server serverRemove = null;
-		//a node in the cluster that will get the slots from the removed node
-		Server serverKeep = null;
-
-
-		//connection to server we want to remove
-		RedisURI uri1 = new RedisURI();
-		uri1.setHost(serverRemoveHost);
-		uri1.setPort(serverRemovePort);
-		RedisClusterClient redisClient1 = RedisClusterClient.create(uri1);
-
-		StatefulRedisClusterConnection<String, String> connection1 = redisClient1.connect();
-
-		//RedisAdvancedClusterCommands<String, String> commands1 = connection1.sync();
-		RedisClusterCommands<String, String> commands1 = connection1.getConnection(serverRemoveHost, serverRemovePort).sync();
-
-		String nodeID = "";
-
-		List<Server> allServers = getServers(server);
-
-		//assigns the serverToRemove and serverToKeep
-		for (int i = 0; i < allServers.size(); i++) {
-			Server currentServer = allServers.get(i);
-			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && currentServer.getType().equalsIgnoreCase("slave")) {
-				try {
-					commands1.clusterFailover(true);
-				} catch (Exception e) {
-					return "Error with Cluster Failover of " + serverRemoveHost + ":" + serverRemovePort;
-				}
-			}
-		}
-
-		return "Successful Failover of " + serverRemoveHost + ":" + serverRemovePort;
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/softRemoveServer2")
-	public String softRemoveServer2(@RequestBody Server server) {
 		int serverRemovePort = server.getPort();
 		String serverRemoveHost = server.getHost();
 		//the node to remove
@@ -440,7 +401,8 @@ public class RESTController {
 			try{
 				System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
 			}catch(Exception e){
-				System.out.ln(e.toString());
+				System.out.println(e.toString());
+				continue;
 			}
 			System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
 		}
@@ -707,9 +669,7 @@ public class RESTController {
 		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
 
 
-		//int beginningSlot = server1.getBeginningSlot();
 		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
-		//int endSlot = server1.getEndSlot();
 		int endSlot = server1.getSlots()[0].getEndSlot();
 		int numSlots = endSlot - beginningSlot + 1;
 

@@ -407,7 +407,7 @@
                     $.ajax({
                         type: "POST",
                         contentType: "application/json",
-                        url: "${home}softRemoveServer2",
+                        url: "${home}softRemoveServer",
                         data: JSON.stringify(sendObject),
                         success: function (data) {
                             console.log("SUCCESS: ", data);
