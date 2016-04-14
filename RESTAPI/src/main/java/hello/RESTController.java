@@ -105,7 +105,7 @@ public class RESTController {
 		StatefulRedisConnection<String, String> clientConnection = client.connect(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
 		RedisClusterCommands<String, String> clientCommands = clientConnection.sync();
 		System.out.print("Failover: " + clientCommands.clusterFailover(true));
-		
+
 		clientConnection.close();
 		client.shutdown();
 
@@ -437,7 +437,11 @@ public class RESTController {
 			}
 			//Both nodes set the slot node to the node to keep in the cluster
 			System.out.println("Setting");
-			System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+			try{
+				System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+			}catch(Exception e){
+				System.out.ln(e.toString());
+			}
 			System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
 		}
 
