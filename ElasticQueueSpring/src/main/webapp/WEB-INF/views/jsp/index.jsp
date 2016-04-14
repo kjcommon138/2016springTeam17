@@ -273,16 +273,17 @@
         console.log(data2.host);
 
         $.ajax({
-           type: "POST",
+            type: "POST",
             contentType: "application/json",
             url: "${home}softRemoveServer",
             data: JSON.stringify(data2),
             dataType: 'json',
             success: function (data) {
                 console.log("SUCCESS: ", data);
+                document.getElementById("loadingMessage").style.display = "none";
                 alert(data);
                 if(data.contains("Successful Failover of "))
-                        getServerList();
+                    getServerList();
             }
         });
     }
@@ -355,6 +356,13 @@
         console.log(data[0].port);
 
         var selectBox = document.getElementById("currentMasterList");
+        //Clear the list options first.
+        var length = selectBox.options.length;
+        for (i = 0; i < length; i++) {
+            selectBox.options[i] = null;
+        }
+
+        //Now add all current options.
         var option;
         for(var j = 0; j < data.length; j++) {
             if(data[j].type == "Master") {
@@ -399,11 +407,13 @@
                     $.ajax({
                         type: "POST",
                         contentType: "application/json",
-                        url: "${home}softRemoveServer",
+                        url: "${home}softRemoveServer2",
                         data: JSON.stringify(sendObject),
                         success: function (data) {
                             console.log("SUCCESS: ", data);
-                            getServerList();
+                            document.getElementById("loadingMessage").style.display = "none";
+                            alert("Done");
+                            location.reload();
                         }
                     });
                 };
@@ -488,8 +498,11 @@
                         console.log("SUCCESS: ", data);
                         document.getElementById("loadingMessage").style.display = "none";
                         alert(data);
-                        if(!data.contains("error"))
-                            getServerList();
+                        location.reload();
+                        //if(!data.contains("error")) {
+                        //    location.reload();
+                        //}
+
                     }
                 });
             }

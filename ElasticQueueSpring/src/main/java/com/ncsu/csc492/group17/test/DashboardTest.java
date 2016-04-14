@@ -16,6 +16,7 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.*;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -237,8 +238,9 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Click the Master 30001. Don't delete this one.
+        //Click the Master 30003. Don't delete this one.
         WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30003']]"));
+        WebElement cell = targetRow.findElement(By.xpath("//td[text()='Master']"));
         List<WebElement> cells = targetRow.findElements(By.tagName("td"));
         assertEquals("30003", cells.get(3).getText());
         assertEquals("152.14.106.22", cells.get(2).getText());
@@ -249,20 +251,32 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         Alert alert = driver.switchTo().alert();
         assertEquals(alert.getText().contains("Are you sure you want to remove 152.14.106.22:30003?"), true);
 
-        /**
+
         alert.accept();
 
         Thread.sleep(2000);
 
-        alert = driver.switchTo().alert();
-        assertEquals(alert.getText().contains("Deleting 152.14.106.22:30003. Press OK to continue."), true);
+        driver.manage().timeouts().implicitlyWait(300000, TimeUnit.SECONDS);
+
+        WebElement alertMessage = driver.findElement(By.id("loadingMessage"));
+        //assertTextPresent("Deleting 152.14.106.22:30003. Please wait.", driver);
+        assertEquals(alertMessage.getText().contains("Deleting 152.14.106.22:30003. Please wait."), true);
+
+        waitForAlert(driver, alert);
+        assertEquals(alert.getText().contains("Done"), true);
         alert.accept();
 
-        Thread.sleep(45000);
+        serverTable = driver.findElement(By.id("serverTable"));
+        assertNotNull(serverTable);
 
-        rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
-        assertEquals(6, rowCount);
-         */
+        //Wait for rows to appear.
+        rowLoad = serverTable.findElement(By.id("row0"));
+
+        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30007']]"));
+        cell = targetRow.findElement(By.xpath("//td[text()='Master']"));
+        assertEquals(cell.getText(), "Master");
+        cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("Master", cells.get(1).getText());
 
     }
 
@@ -271,7 +285,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
     public void testAddServer() throws Exception {
         WebElement menu = driver.findElement(By.className("dropdown-toggle"));
         menu.click();
-        //Thread.sleep(1000);
+        Thread.sleep(1000);
         WebElement addOption = driver.findElement(By.id("addOption"));
         addOption.click();
 
@@ -281,11 +295,44 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         newPortInput.sendKeys("30003");
 
         WebElement listMasterServers = driver.findElement(By.id("currentMasterList"));
-        listMasterServers.sendKeys("152.14.106.22:30001");
+        listMasterServers.sendKeys("152.14.106.22:30007");
         WebElement submitButton = driver.findElement(By.id("submit"));
+        Thread.sleep(1000);
         submitButton.click();
 
+        Thread.sleep(3000);
+
+        Alert alert = driver.switchTo().alert();
+        assertEquals(alert.getText().contains("Do you want to add 152.14.106.22:30003?"), true);
+
+        alert.accept();
+
         Thread.sleep(2000);
+
+        driver.manage().timeouts().implicitlyWait(300000, TimeUnit.SECONDS);
+
+        WebElement alertMessage = driver.findElement(By.id("loadingMessage"));
+        //assertTextPresent("Deleting 152.14.106.22:30003. Please wait.", driver);
+        assertEquals(alertMessage.getText().contains("Adding 152.14.106.22:30003. Please wait."), true);
+
+        //Wait for the finished adding alert.
+        waitForAlert(driver, alert);
+        //assertEquals(alert.getText().contains("Server 152.14.106.22 30003 added."), true);
+        alert.accept();
+
+        Thread.sleep(2000);
+
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+        //Check the server added as a slave.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30003']]"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("Slave", cells.get(1).getText());
+
+        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(8, rowCount);
+
 
         /**
         Alert alert = driver.switchTo().alert();
@@ -483,6 +530,24 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         redissync6.shutdown(false);
         //assertThat(failover).isEqualTo("OK");
 
+    }
+
+    public void waitForAlert(WebDriver driver, Alert alert) throws Exception {
+        boolean done = false;
+        while(!done)
+        {
+            try
+            {
+                alert = driver.switchTo().alert();
+                done = true;
+                break;
+            }
+            catch(NoAlertPresentException e)
+            {
+                Thread.sleep(1000);
+                continue;
+            }
+        }
     }
 
 

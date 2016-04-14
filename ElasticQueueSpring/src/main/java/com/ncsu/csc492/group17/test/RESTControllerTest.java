@@ -24,20 +24,25 @@ public class RESTControllerTest {
         controller = new RESTController();
         request = new ServerRequest();
         server1 = new Server();
-        server1.setHost("152.14.106.29");
-        server1.setPort(6000);
+        server1.setHost("152.14.106.22");
+        server1.setPort(10001);
     }
 
     @Test
     public void testGetServers() {
         List<Server> list = controller.getServers(server1);
-        assertEquals(4, list.size());
+        assertEquals(9, list.size());
 
         ArrayList portList = new ArrayList();
-        portList.add(6000);
-        portList.add(6001);
-        portList.add(6002);
-        portList.add(6003);
+        portList.add(10001);
+        portList.add(10002);
+        portList.add(10003);
+        portList.add(10004);
+        portList.add(10005);
+        portList.add(10006);
+        portList.add(10007);
+        portList.add(10008);
+        portList.add(10009);
 
         //Check all servers are present. Cannot check for a specific order.
         for(int i=0; i < list.size(); i++) {
@@ -46,28 +51,28 @@ public class RESTControllerTest {
     }
 
     @Test
-    public void testRemoveThenAddServers() {
+    public void testHardRemoveThenAddServers() {
         List<Server> list = controller.getServers(server1);
-        assertEquals(4, list.size());
+        assertEquals(9, list.size());
 
         //Create the new server we are adding.
         Server testServer = new Server();
-        testServer.setHost("152.14.106.29");
-        testServer.setPort(6003);
+        testServer.setHost("152.14.106.22");
+        testServer.setPort(10003);
         //assertEquals(true, list.contains(testServer));
 
         //Create the server we are adding the new  server to.
         //Make sure it exists.
         Server existingServer = new Server();
-        existingServer.setHost("152.14.106.29");
-        existingServer.setPort(6000);
+        existingServer.setHost("152.14.106.22");
+        existingServer.setPort(10001);
         //assertEquals(true, list.contains(existingServer));
 
         //remove the server so it may be added.
         String result = controller.removeServers(testServer);
-        assertEquals("Server 152.14.106.29 6003 removed.", result);
+        assertEquals("Server 152.14.106.22 10003 removed.", result);
         list = controller.getServers(existingServer);
-        assertEquals(3, list.size());
+        assertEquals(6, list.size());
 
         //Set the servers for the request. We are add the new server
         //to the existing server.
@@ -76,9 +81,9 @@ public class RESTControllerTest {
         request.setServerAdd(testServer);
 
         result = controller.addServers(request);
-        assertEquals("Server 152.14.106.296003 added.", result);
+        assertEquals("Server 152.14.106.2210003 added.", result);
         list = controller.getServers(server1);
-        assertEquals(4, list.size());
+        assertEquals(9, list.size());
 
     }
 
