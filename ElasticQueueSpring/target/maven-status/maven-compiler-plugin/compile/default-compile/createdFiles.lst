@@ -1,0 +1,16 @@
+com\ncsu\csc492\group17\web\controller\RESTController.class
+com\ncsu\csc492\group17\test\ServerTest.class
+com\ncsu\csc492\group17\cluster\ServerStatus.class
+com\ncsu\csc492\group17\web\jsonview\Views.class
+com\ncsu\csc492\group17\servlet3\MyWebInitializer.class
+com\ncsu\csc492\group17\test\RESTControllerTest.class
+com\ncsu\csc492\group17\test\ServerRequestTest.class
+com\ncsu\csc492\group17\web\controller\WelcomeController.class
+com\ncsu\csc492\group17\web\jsonview\Views$Public.class
+com\ncsu\csc492\group17\test\DashboardTest.class
+com\ncsu\csc492\group17\config\SpringWebConfig.class
+com\ncsu\csc492\group17\test\ServerStatusTest.class
+com\ncsu\csc492\group17\web\model\Server.class
+com\ncsu\csc492\group17\web\model\ServerRequest.class
+com\ncsu\csc492\group17\test\SeleniumTest.class
+com\ncsu\csc492\group17\web\model\Server$Slots.class

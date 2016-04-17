@@ -1,11 +1,12 @@
 package test;
 
-import hello.*;
-
 import junit.framework.*;
 import junit.framework.Assert;
+
 import org.junit.*;
 import org.junit.Test;
+
+import cluster.*;
 
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class RESTControllerTest {
         assertEquals("Slots 12000 to 13000 removed from 152.14.106.29:6000", message);
     }*/
 
-    @Test
+ /*   @Test
     public void testAddSlots() {
         Server.Slots s = new Server.Slots();
         s.setBeginningSlot(12000);
@@ -102,7 +103,7 @@ public class RESTControllerTest {
         server1.setSlots(slot);
         String message = controller.addSlots(server1);
         assertEquals("Slots 12000 to 13000 added to 152.14.106.29:6000", message);
-    }
+    }*/
 
 
 }

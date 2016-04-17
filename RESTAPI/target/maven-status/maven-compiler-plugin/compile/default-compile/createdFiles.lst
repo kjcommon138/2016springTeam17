@@ -1,0 +1,8 @@
+cluster\Server.class
+cluster\ServerRequest.class
+test\ServerRequestTest.class
+cluster\Application.class
+test\RESTControllerTest.class
+test\ServerTest.class
+cluster\Server$Slots.class
+cluster\RESTController.class

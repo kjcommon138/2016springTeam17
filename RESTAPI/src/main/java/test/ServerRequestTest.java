@@ -1,9 +1,8 @@
 package test;
 
-import hello.*;
-
 import org.junit.*;
 
+import cluster.*;
 import static junit.framework.TestCase.assertEquals;
 
 /**

@@ -1,10 +1,9 @@
 package test;
 
-import hello.Server;
-import hello.Server.Slots;
-
 import org.junit.*;
 
+import cluster.Server;
+import cluster.Server.Slots;
 import static junit.framework.TestCase.assertEquals;
 
 /**

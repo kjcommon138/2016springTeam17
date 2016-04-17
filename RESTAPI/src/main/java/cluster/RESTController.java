@@ -1,6 +1,4 @@
-package hello;
-
-import hello.Server.Slots;
+package cluster;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import cluster.Server.Slots;
 
 import com.lambdaworks.redis.RedisClient;
 import com.lambdaworks.redis.RedisURI;
@@ -44,31 +44,36 @@ public class RESTController {
 		//get all information for server to remove
 		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
-			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
+			//if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
+			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost)) {
 				serverRemove = allServers.get(i);
 				System.out.println("Server Remove: " + serverRemove.getPort());
 			}
 		}
 
-		//assigns the slave serverToKeep
-		for (int i = 0; i < allServers.size(); i++) {
-			Server currentServer = allServers.get(i);
-			//System.out.println(currentServer.getType());
-			//System.out.println("Slave of: " + currentServer.getSlaveOf());
-			if (currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null && currentServer.getSlaveOf().equals(serverRemove.getNodeID())) {
-				serverKeep = allServers.get(i);
-				System.out.println("Server Keep: " + serverKeep.getPort());
+		String returnString = "";
+		//only do failover if server to remove is a master
+		if(!serverRemove.getType().equalsIgnoreCase("slave")){
+			//assigns the slave serverToKeep
+			for (int i = 0; i < allServers.size(); i++) {
+				Server currentServer = allServers.get(i);
+				if (currentServer.getType().equalsIgnoreCase("slave") && !currentServer.getType().equalsIgnoreCase("handshake") && serverKeep == null && currentServer.getSlaveOf().equals(serverRemove.getNodeID())) {
+					serverKeep = allServers.get(i);
+					System.out.println("Server Keep: " + serverKeep.getPort());
+				}
 			}
+
+			//connection to slave we want to take over the master
+			RedisClient client = RedisClient.create(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
+			StatefulRedisConnection<String, String> clientConnection = client.connect(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
+			RedisClusterCommands<String, String> clientCommands = clientConnection.sync();
+			System.out.print("Failover: " + clientCommands.clusterFailover(true));
+
+			returnString += " Successful Takeover by slave " + serverKeep.getHost() + ":" + serverKeep.getPort();
+			
+			clientConnection.close();
+			client.shutdown();
 		}
-
-		//connection to slave we want to take over the master
-		RedisClient client = RedisClient.create(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
-		StatefulRedisConnection<String, String> clientConnection = client.connect(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
-		RedisClusterCommands<String, String> clientCommands = clientConnection.sync();
-		System.out.print("Failover: " + clientCommands.clusterFailover(true));
-
-		clientConnection.close();
-		client.shutdown();
 
 		//forget the node to remove from every node except for the node itself
 		for (int i = 0; i < allServers.size(); i++) {
@@ -91,7 +96,8 @@ public class RESTController {
 		}
 
 
-		return "Successful Failover of " + serverRemoveHost + ":" + serverRemovePort;
+		returnString = "Successful Failover of " + serverRemoveHost + ":" + serverRemovePort + returnString;
+		return returnString;
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/removeServers")
@@ -247,8 +253,6 @@ public class RESTController {
 				slaveOf = currentServer.getSlaveOf();
 			}
 
-			//if(currentServer.getPort() != serverRemovePort && !currentServer.getType().equalsIgnoreCase("slave")){
-			//if(currentServer.getPort() != serverRemovePort && !a.equals(serverRemove.getNodeID())){
 			if ((currentServer.getPort() != serverRemovePort || !currentServer.getHost().equals(serverRemoveHost)) && !slaveOf.equals(serverRemove.getNodeID())) {
 
 				RedisURI uri = new RedisURI();
@@ -266,17 +270,6 @@ public class RESTController {
 			}
 
 		}
-
-
-		int numServers = allServers.size() - 1;
-		// how many slots each of the remaining servers in cluster will get.
-		//int slotsPerServer = numSlots / numServers;
-		// extra slots that we will add to the first server in the list
-		//int extraSlots = numSlots % numServers;
-
-		//int beginningSlotsToAdd = beginningSlots;
-		//int endSlotsToAdd = beginningSlots + slotsPerServer + extraSlots - 1;
-		//int[] slotsToAdd = getSlots(beginningSlotsToAdd, endSlotsToAdd);
 
 
 		System.out.println("Server " + server.getHost() + " " + server.getPort() + " removed.");
@@ -418,7 +411,7 @@ public class RESTController {
 
 
 		System.out.println("Server " + request.getServerAdd().getHost() + " " + request.getServerAdd().getPort() + " added.");
-		return "Server " + request.getServerAdd().getHost() + request.getServerAdd().getPort() + " added.";
+		return "Server " + request.getServerAdd().getHost() + ":" + request.getServerAdd().getPort() + " added.";
 
 	}
 
@@ -433,7 +426,6 @@ public class RESTController {
 		RedisURI uri = new RedisURI();
 		uri.setHost(server1.getHost());
 		uri.setPort(server1.getPort());
-		//RedisClusterClient redisClient = new RedisClusterClient(uri);
 		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
@@ -658,7 +650,7 @@ public class RESTController {
 		return server;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, value = "/addSlots")
+	/*@RequestMapping(method = RequestMethod.POST, value = "/addSlots")
 	public String addSlots(@RequestBody Server server1) {
 		RedisURI uri1 = new RedisURI();
 		uri1.setHost(server1.getHost());
@@ -690,7 +682,7 @@ public class RESTController {
 
 		return ("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
 
-	}
+	}*/
 
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
