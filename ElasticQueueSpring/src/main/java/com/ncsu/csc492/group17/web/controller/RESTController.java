@@ -350,62 +350,65 @@ public class RESTController {
 			}
 		}
 
+		//only migrate slots if server to add is not a slave
+		if(!serverAdd.getType().equalsIgnoreCase("slave")){
 
-		int[] allSlots = new int[0];
-		Slots[] existingSlots = existingServer.getSlots();
-		//gets all the slots to remove in one array
-		for (int i = existingSlots.length - 1; i >= 0; i--) {
-			int beginningSlots = existingSlots[i].getBeginningSlot();
-			int endSlots = existingSlots[i].getEndSlot();
+			int[] allSlots = new int[0];
+			Slots[] existingSlots = existingServer.getSlots();
+			//gets all the slots to remove in one array
+			for (int i = existingSlots.length - 1; i >= 0; i--) {
+				int beginningSlots = existingSlots[i].getBeginningSlot();
+				int endSlots = existingSlots[i].getEndSlot();
 
-			//one range of slots
-			int[] slotsRange = getSlots(beginningSlots, endSlots);
+				//one range of slots
+				int[] slotsRange = getSlots(beginningSlots, endSlots);
 
-			int[] existingSlotsList = allSlots;
-			allSlots = new int[allSlots.length + slotsRange.length];
+				int[] existingSlotsList = allSlots;
+				allSlots = new int[allSlots.length + slotsRange.length];
 
-			System.arraycopy(slotsRange, 0, allSlots, 0, slotsRange.length);
-			System.arraycopy(existingSlotsList, 0, allSlots, slotsRange.length, existingSlotsList.length);
+				System.arraycopy(slotsRange, 0, allSlots, 0, slotsRange.length);
+				System.arraycopy(existingSlotsList, 0, allSlots, slotsRange.length, existingSlotsList.length);
 
-		}
-		System.out.println("SLOTS!!!!!!");
-		System.out.println(allSlots[0]);
-		System.out.println(allSlots[allSlots.length - 1]);
+			}
+			System.out.println("SLOTS!!!!!!");
+			System.out.println(allSlots[0]);
+			System.out.println(allSlots[allSlots.length - 1]);
 
-		//System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
-		//slots we are migrating from existing to new node
-		int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length / 2);
+			//slots we are migrating from existing to new node
+			int[] firstHalf = Arrays.copyOfRange(allSlots, 0, allSlots.length / 2);
 
-		//resharding/migration of slots
-		for (int k = 0; k < firstHalf.length; k++) {
-			//Source node gets keys
-			int numKeys = (int) (long) commandsExisting.clusterCountKeysInSlot(firstHalf[k]);
-			//only migrate keys if there are keys
-			if (numKeys > 0) {
-				//Destination node has to issue the importing command
-				System.out.println("Set Importing");
-				System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
-				//Source node issues migrate command
-				System.out.println("Set Migrating");
-				System.out.println(commandsExisting.clusterSetSlotMigrating(firstHalf[k], serverAdd.getNodeID()));
-				System.out.println("Getting Keys");
-				List<String> keys = commandsExisting.clusterGetKeysInSlot(firstHalf[k], numKeys);
-				//Source node sends migrate command
-				System.out.println("Migrating");
-				for (int i = 0; i < keys.size(); i++) {
-					System.out.println(commandsExisting.migrate(serverAdd.getHost(), serverAdd.getPort(), keys.get(i), 0, 1000));
+			//resharding/migration of slots
+			for (int k = 0; k < firstHalf.length; k++) {
+				//Source node gets keys
+				int numKeys = (int) (long) commandsExisting.clusterCountKeysInSlot(firstHalf[k]);
+				//only migrate keys if there are keys
+				if (numKeys > 0) {
+					//Destination node has to issue the importing command
+					System.out.println("Set Importing");
+					System.out.println(commands.clusterSetSlotImporting(firstHalf[k], existingServer.getNodeID()));
+					//Source node issues migrate command
+					System.out.println("Set Migrating");
+					System.out.println(commandsExisting.clusterSetSlotMigrating(firstHalf[k], serverAdd.getNodeID()));
+					System.out.println("Getting Keys");
+					List<String> keys = commandsExisting.clusterGetKeysInSlot(firstHalf[k], numKeys);
+					//Source node sends migrate command
+					System.out.println("Migrating");
+					for (int i = 0; i < keys.size(); i++) {
+						System.out.println(commandsExisting.migrate(serverAdd.getHost(), serverAdd.getPort(), keys.get(i), 0, 1000));
+					}
 				}
+				//Both nodes set the slot node to the node to keep in the cluster
+				System.out.println("Setting");
+				try{
+					System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+				}catch(Exception e){
+					System.out.println(e.toString());
+					continue;
+				}
+				System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
 			}
-			//Both nodes set the slot node to the node to keep in the cluster
-			System.out.println("Setting");
-			try{
-				System.out.println(commands.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
-			}catch(Exception e){
-				System.out.println(e.toString());
-				continue;
-			}
-			System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
+
 		}
 
 		connection.close();
