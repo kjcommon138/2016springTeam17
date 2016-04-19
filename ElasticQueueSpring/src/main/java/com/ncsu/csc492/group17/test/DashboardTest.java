@@ -1,5 +1,6 @@
 package com.ncsu.csc492.group17.test;
 
+import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
 import com.ncsu.csc492.group17.web.model.Server;
 
 import com.lambdaworks.redis.RedisURI;
@@ -48,6 +49,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
         driver.get(baseUrl + "/ElasticQueue");
+        Thread.sleep(1000);
 
     }
 
@@ -333,107 +335,108 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
         assertEquals(8, rowCount);
 
+    }
 
-        /**
+    @Test
+    public void testAddASlave() throws Exception {
+        WebElement menu = driver.findElement(By.className("dropdown-toggle"));
+        menu.click();
+        Thread.sleep(1000);
+        WebElement addOption = driver.findElement(By.id("addOption"));
+        addOption.click();
+
+        WebElement newHostInput = driver.findElement(By.id("newHost"));
+        newHostInput.sendKeys("152.14.106.22");
+        WebElement newPortInput = driver.findElement(By.id("newPort"));
+        newPortInput.sendKeys("30006");
+
+        WebElement listMasterServers = driver.findElement(By.id("currentMasterList"));
+        listMasterServers.sendKeys("152.14.106.22:30002");
+        WebElement submitButton = driver.findElement(By.id("submit"));
+        Thread.sleep(1000);
+        submitButton.click();
+
+        Thread.sleep(3000);
+
         Alert alert = driver.switchTo().alert();
-        assertEquals(alert.getText().contains("Adding 152.14.106.22:30003."), true);
+        assertEquals(alert.getText().contains("Do you want to add 152.14.106.22:30006?"), true);
+
         alert.accept();
 
-        Thread.sleep(45000);
+        Thread.sleep(2000);
+
+        driver.manage().timeouts().implicitlyWait(300000, TimeUnit.SECONDS);
+
+        WebElement alertMessage = driver.findElement(By.id("loadingMessage"));
+        //assertTextPresent("Deleting 152.14.106.22:30003. Please wait.", driver);
+        assertEquals(alertMessage.getText().contains("Adding 152.14.106.22:30006. Please wait."), true);
+
+        //Wait for the finished adding alert.
+        waitForAlert(driver, alert);
+        //assertEquals(alert.getText().contains("Server 152.14.106.22 30003 added."), true);
+        alert.accept();
+
+        Thread.sleep(2000);
 
         WebElement serverTable = driver.findElement(By.id("serverTable"));
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
-
-        //Click the Master 30001. Don't delete this one.
-        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30003')]]"));
+        //Check the server added as a slave.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30006']]"));
         List<WebElement> cells = targetRow.findElements(By.tagName("td"));
-        assertEquals("30003", cells.get(3).getText());
-        assertEquals("152.14.106.22", cells.get(2).getText());
-         */
-
-    }
-
-
-    /**
-    @Test
-    public void testDiabolical() throws Exception {
-        // find the table of Servers
-        WebElement serverTable = driver.findElement(By.id("serverTable"));
-        assertNotNull(serverTable);
-
-        //Wait for rows to appear.
-        WebElement rowLoad = serverTable.findElement(By.id("row0"));
-
-        //Get the Slave 30008. Will promote this one.
-        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30008')]]"));
-        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
-
-        String host = cells.get(2).getText();
-        int port = Integer.parseInt(cells.get(3).getText());
-
-        assertEquals(30008, port);
-        assertEquals("152.14.106.22", host);
-
-        Server server1 = new Server();
-        server1.setHost(host);
-        server1.setPort(port);
-
-        killServer(server1);
-
-        Thread.sleep(3000);
-
-        driver.get(baseUrl + "/ElasticQueue");
-
-        // find the table of Servers
-        serverTable = driver.findElement(By.id("serverTable"));
-        assertNotNull(serverTable);
-
-        //Wait for rows to appear.
-        rowLoad = serverTable.findElement(By.id("row0"));
-
-        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30008')]]"));
-        cells = targetRow.findElements(By.tagName("td"));
-
-        boolean promoted = false;
-        if(cells.get(1).getText().contains("Master")) {
-            promoted = true;
-        }
-
-        assertEquals(true, promoted);
-
-        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30003')]]"));
-        cells = targetRow.findElements(By.tagName("td"));
         assertEquals("Slave", cells.get(1).getText());
 
-        host = cells.get(2).getText();
-        port = Integer.parseInt(cells.get(3).getText());
+        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(7, rowCount);
+    }
 
-        server1 = new Server();
-        server1.setHost(host);
-        server1.setPort(port);
-
-        killServer(server1);
-
-        Thread.sleep(3000);
-
-        driver.get(baseUrl + "/ElasticQueue");
-
+    @Test
+    public void testRemoveASlave() throws Exception {
         // find the table of Servers
+        WebElement serverTable = driver.findElement(By.id("serverTable"));
+        int rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(7, rowCount);
+
+        //Wait for rows to appear.
+        WebElement rowLoad = serverTable.findElement(By.id("row0"));
+
+        //Click the Master 30003. Don't delete this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30006']]"));
+        WebElement cell = targetRow.findElement(By.xpath("//td[text()='Master']"));
+        List<WebElement> cells = targetRow.findElements(By.tagName("td"));
+        assertEquals("30006", cells.get(3).getText());
+        assertEquals("152.14.106.22", cells.get(2).getText());
+        cells.get(4).click();
+
+        Thread.sleep(2000);
+
+        Alert alert = driver.switchTo().alert();
+        assertEquals(alert.getText().contains("Are you sure you want to remove 152.14.106.22:30006?"), true);
+
+
+        alert.accept();
+
+        Thread.sleep(2000);
+
+        driver.manage().timeouts().implicitlyWait(300000, TimeUnit.SECONDS);
+
+        WebElement alertMessage = driver.findElement(By.id("loadingMessage"));
+        //assertTextPresent("Deleting 152.14.106.22:30006. Please wait.", driver);
+        assertEquals(alertMessage.getText().contains("Deleting 152.14.106.22:30006. Please wait."), true);
+
+        waitForAlert(driver, alert);
+        assertEquals(alert.getText().contains("Done"), true);
+        alert.accept();
+
         serverTable = driver.findElement(By.id("serverTable"));
         assertNotNull(serverTable);
 
         //Wait for rows to appear.
         rowLoad = serverTable.findElement(By.id("row0"));
 
-        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30003')]]"));
-        cells = targetRow.findElements(By.tagName("td"));
-        assertEquals("Master", cells.get(1).getText());
-
+        rowCount = driver.findElements(By.xpath("//table[@id='serverTable']/tbody/tr")).size();
+        assertEquals(6, rowCount);
     }
-     */
-
-    /**
 
     @Test
     public void testDisabledStatus() throws Exception {
@@ -444,8 +447,8 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the Slave 30009. Will kill this one.
-        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30008ss']]"));
+        //Get the Slave 30008. Will kill this one.
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30008']]"));
         List<WebElement> cells = targetRow.findElements(By.tagName("td"));
 
         assertEquals("Active", cells.get(0).getText());
@@ -472,14 +475,13 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //Wait for rows to appear.
         rowLoad = serverTable.findElement(By.id("row0"));
 
-        //Get the Slave 30009. Will kill this one.
-        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30009')]]"));
+        //Get the Slave 30008. Will kill this one.
+        targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30008')]]"));
         cells = targetRow.findElements(By.tagName("td"));
 
         assertEquals("Disabled", cells.get(0).getText());
 
     }
-     */
 
 
     @After
@@ -489,26 +491,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         if (!"".equals(verificationErrorString)) {
             fail(verificationErrorString);
         }
-    }
-
-    public void killServer(Server server1) {
-        RedisClient client;
-        RedisClusterClient clusterClient;
-
-        StatefulRedisConnection<String, String> redis6;
-
-        RedisClusterCommands<String, String> redissync6;
-
-        client = RedisClient.create(RedisURI.Builder.redis(server1.getHost(), server1.getPort()).build());
-        clusterClient = RedisClusterClient.create(RedisURI.Builder.redis(server1.getHost(), server1.getPort())
-                .build());
-
-        redis6 = client.connect(RedisURI.Builder.redis(server1.getHost(), server1.getPort()).build());
-
-        redissync6 = redis6.sync();
-
-        String failover = redissync6.clusterFailover(true);
-        //assertThat(failover).isEqualTo("OK");
     }
 
     public void shutdownServer(Server server1) {
@@ -531,6 +513,42 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         //assertThat(failover).isEqualTo("OK");
 
     }
+
+    public void reviveServer(Server serverAdd, Server existingServer) {
+        //node we are adding
+        String serverAddHost = serverAdd.getHost();
+        int serverAddPort = serverAdd.getPort();
+
+        //node that already exists in the cluster
+        String existingServerHost = existingServer.getHost();
+        int existingServerPort = existingServer.getPort();
+
+        //connection to node to add
+        RedisURI uri = new RedisURI();
+        uri.setHost(existingServerHost);
+        uri.setPort(existingServerPort);
+        RedisClusterClient redisClient = RedisClusterClient.create(uri);
+
+        StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
+        RedisClusterCommands<String, String> commands = connection.getConnection(serverAddHost, serverAddPort).sync();
+
+        //connection to existing cluster node
+        RedisURI uriExisting = new RedisURI();
+        uriExisting.setHost(existingServerHost);
+        uriExisting.setPort(existingServerPort);
+        RedisClusterClient redisClientExisting = RedisClusterClient.create(uriExisting);
+
+        StatefulRedisClusterConnection<String, String> connectionExisting = redisClientExisting.connect();
+        RedisClusterCommands<String, String> commandsExisting1 = connectionExisting.sync();
+        RedisClusterCommands<String, String> commandsExisting = connectionExisting.getConnection(existingServerHost, existingServerPort).sync();
+
+        System.out.println(commandsExisting1.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+        System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+        System.out.println(commands.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
+
+    }
+
+
 
     public void waitForAlert(WebDriver driver, Alert alert) throws Exception {
         boolean done = false;

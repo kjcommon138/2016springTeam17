@@ -50,6 +50,46 @@ public class RESTControllerTest {
         }
     }
 
+
+    @Test
+    public void testSoftRemoveThenAddServers() {
+        List<Server> list = controller.getServers(server1);
+        assertEquals(9, list.size());
+
+        //Create the new server we are adding.
+        Server testServer = new Server();
+        testServer.setHost("152.14.106.22");
+        testServer.setPort(10003);
+        //assertEquals(true, list.contains(testServer));
+
+        //Create the server we are adding the new  server to.
+        //Make sure it exists.
+        Server existingServer = new Server();
+        existingServer.setHost("152.14.106.22");
+        existingServer.setPort(10001);
+        //assertEquals(true, list.contains(existingServer));
+
+        //remove the server so it may be added.
+        //Removes the master node and promotes a slave.
+        String result = controller.softRemoveServer(testServer);
+        assertEquals(true, result.contains("Successful Failover of 152.14.106.22:10003 Successful Takeover by slave"));
+        list = controller.getServers(existingServer);
+        assertEquals(8, list.size());
+
+        //Set the servers for the request. We are add the new server
+        //to the existing server.
+        ServerRequest request = new ServerRequest();
+        request.setServer(existingServer);
+        request.setServerAdd(testServer);
+
+
+        //Add only adds the single node; not all of it's slaves.
+        result = controller.addServers(request);
+        assertEquals("Server 152.14.106.22:10003 added.", result);
+        list = controller.getServers(server1);
+        assertEquals(9, list.size());
+    }
+
     @Test
     public void testHardRemoveThenAddServers() {
         List<Server> list = controller.getServers(server1);
@@ -69,6 +109,7 @@ public class RESTControllerTest {
         //assertEquals(true, list.contains(existingServer));
 
         //remove the server so it may be added.
+        //Removes the master node and all of it's slaves
         String result = controller.removeServers(testServer);
         assertEquals("Server 152.14.106.22 10003 removed.", result);
         list = controller.getServers(existingServer);
@@ -80,25 +121,43 @@ public class RESTControllerTest {
         request.setServer(existingServer);
         request.setServerAdd(testServer);
 
+
+        //Add only adds the single node; not all of it's slaves.
         result = controller.addServers(request);
-        assertEquals("Server 152.14.106.2210003 added.", result);
+        assertEquals("Server 152.14.106.22:10003 added.", result);
+        list = controller.getServers(server1);
+        assertEquals(7, list.size());
+
+        //Will add both of the slaves back.
+        testServer.setPort(10008);
+        request.setServerAdd(testServer);
+        result = controller.addServers(request);
+        assertEquals("Server 152.14.106.22:10008 added.", result);
+        list = controller.getServers(server1);
+
+        testServer.setPort(10009);
+        request.setServerAdd(testServer);
+        result = controller.addServers(request);
+        assertEquals("Server 152.14.106.22:10009 added.", result);
         list = controller.getServers(server1);
         assertEquals(9, list.size());
 
+
+    }
+
+
+
+    @Test
+    public void testGetQueues() {
+        List<String> list = controller.getQueues(server1);
+        assertEquals(true, list.size() >= 1);
     }
 
     /**
     @Test
-    public void testGetQueues() {
-        List<String> list = controller.getQueues(server1);
-        assertEquals(1, list.size());
-        assertEquals("myList2", list.get(0));
-    }
-
-    @Test
     public void testAddSlots() {
         Server.Slots s = new Server.Slots();
-        s.setBeginningSlot(12000);
+        s.setBeginningSlot(12001);
         s.setEndSlot(13000);
 
         Server.Slots slot[] = new Server.Slots[1];
@@ -106,9 +165,8 @@ public class RESTControllerTest {
 
         server1.setSlots(slot);
         String message = controller.addSlots(server1);
-        assertEquals("Slots 12000 to 13000 added to 152.14.106.29:6000", message);
+        assertEquals("Slots 12001 to 13000 added to 152.14.106.29:6000", message);
     }
-
     */
 
 }
