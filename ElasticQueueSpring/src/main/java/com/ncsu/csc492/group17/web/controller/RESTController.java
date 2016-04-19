@@ -89,7 +89,12 @@ public class RESTController {
 				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
 
+				try{
 				commands.clusterForget(serverRemove.getNodeID());
+				}catch(RedisException e){
+					e.toString();
+					continue;
+				}
 
 				connection.close();
 				redisClient.shutdown();
@@ -430,8 +435,8 @@ public class RESTController {
 		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
-
+		//RedisAdvancedClusterCommands<String, String> commands = connection.sync();
+		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
 
 		String nodes = commands.clusterNodes();
 		//splits on new line

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cluster.Server.Slots;
 
 import com.lambdaworks.redis.RedisClient;
+import com.lambdaworks.redis.RedisException;
 import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
@@ -88,7 +89,12 @@ public class RESTController {
 				StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 				RedisClusterCommands<String, String> commands = connection.getConnection(currentServer.getHost(), currentServer.getPort()).sync();
 
+				try{
 				commands.clusterForget(serverRemove.getNodeID());
+				}catch(RedisException e){
+					e.toString();
+					continue;
+				}
 
 				connection.close();
 				redisClient.shutdown();
@@ -430,7 +436,7 @@ public class RESTController {
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
 		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
-
+		//RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
 
 		String nodes = commands.clusterNodes();
 		//splits on new line
