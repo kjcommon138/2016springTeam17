@@ -150,4 +150,53 @@ public class ServerTest {
         myServer.setServerInfo("item1, item2");
         assertEquals(myServer.getServerInfo(), "item1, item2");
     }
+
+    @Test
+    public void testGetMasterHost() throws Exception {
+        myServer.setMasterHost("152.14.106.22");
+        assertEquals("152.14.106.22", myServer.getMasterHost());
+    }
+
+    @Test
+    public void testSetMasterHost() throws Exception {
+        myServer.setMasterHost("152.14.106.29");
+        assertEquals("152.14.106.29", myServer.getMasterHost());
+    }
+
+    @Test
+    public void testGetStatus() throws Exception {
+        myServer.setStatus("Active");
+        assertEquals("Active", myServer.getStatus());
+    }
+
+    @Test
+    public void testSetStatus() throws Exception {
+        myServer.setStatus("Disabled");
+        assertEquals("Disabled", myServer.getStatus());
+    }
+
+    @Test
+    public void testGetMemory() throws Exception {
+        myServer.setMemory(45.55);
+        assertEquals(45.55, myServer.getMemory());
+    }
+
+    @Test
+    public void testSetMemory() throws Exception {
+        myServer.setMemory(0.05);
+        assertEquals(0.05, myServer.getMemory());
+    }
+
+    @Test
+    public void testGetCPU() throws Exception {
+        myServer.setCpu("High");
+        assertEquals("High", myServer.getCpu());
+    }
+
+    @Test
+    public void testSetCPU() throws Exception {
+        myServer.setCpu("Low");
+        assertEquals("Low", myServer.getCpu());
+    }
+
 }

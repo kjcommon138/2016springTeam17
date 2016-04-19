@@ -412,7 +412,7 @@
                         success: function (data) {
                             console.log("SUCCESS: ", data);
                             document.getElementById("loadingMessage").style.display = "none";
-                            alert("Done");
+                            alert(data);
                             location.reload();
                         }
                     });

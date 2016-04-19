@@ -59,7 +59,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
      * Expect to get a new table to appear and message stating what
      * Server's queues are being displayed.
      * @throws Exception
-
+     */
     @Test
     public void testCheckServerLoad() throws Exception {
         // find the table of Servers
@@ -69,7 +69,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         WebElement rowLoad = serverTable.findElement(By.id("row0"));
 
         //Get the Master 30001. Don't delete this one.
-        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[contains(.,'30002')]]"));
+        WebElement targetRow = serverTable.findElement(By.xpath("//tr[descendant::td[text()='30002']]"));
 
         targetRow.click();
 
@@ -85,7 +85,6 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
         assertTextPresent("Load: Low", driver);
     }
-    */
 
 
     /**
@@ -230,6 +229,13 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     }
 
+    /**
+     * Test removing a server from the table.
+     * The user clicks the trashcan item of a master node.
+     * The user confirms they want to delete the master.
+     * The master node is deleted and a slave takes over for it.
+     * @throws Exception
+     */
     @Test
     public void testRemoveSever() throws Exception {
         // find the table of Servers
@@ -265,7 +271,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         assertEquals(alertMessage.getText().contains("Deleting 152.14.106.22:30003. Please wait."), true);
 
         waitForAlert(driver, alert);
-        assertEquals(alert.getText().contains("Done"), true);
+        assertEquals(alert.getText().contains("Successful Failover"), true);
         alert.accept();
 
         serverTable = driver.findElement(By.id("serverTable"));
@@ -282,7 +288,17 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     }
 
-
+    /**
+     * Test adding an existing master server to the cluster.
+     * The user clicks the Servers dropdown.
+     * The user selects the Add Server menu option.
+     * The user enters a new host IP address and new port number of server.
+     * The user selects an existing master node in the cluster to connect to
+     * and presses submit.
+     * The user confirms they want to add the master.
+     * The new master node appears in the table.
+     * @throws Exception
+     */
     @Test
     public void testAddServer() throws Exception {
         WebElement menu = driver.findElement(By.className("dropdown-toggle"));
@@ -337,6 +353,18 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
 
     }
 
+
+    /**
+     * Test adding an existing slave node to the cluster.
+     * The user clicks the Servers dropdown.
+     * The user selects the Add Server menu option.
+     * The user enters a new host IP address and new port number of server.
+     * The user selects an existing master node in the cluster to connect to
+     * and presses submit.
+     * The user confirms they want to add the node.
+     * The new slave node appears in the table.
+     * @throws Exception
+     */
     @Test
     public void testAddASlave() throws Exception {
         WebElement menu = driver.findElement(By.className("dropdown-toggle"));
@@ -390,6 +418,14 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         assertEquals(7, rowCount);
     }
 
+
+    /**
+     * Test removing a server from the table.
+     * The user clicks the trashcan item of a slave node.
+     * The user confirms they want to delete the node.
+     * The slave node is deleted.
+     * @throws Exception
+     */
     @Test
     public void testRemoveASlave() throws Exception {
         // find the table of Servers
@@ -425,7 +461,7 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         assertEquals(alertMessage.getText().contains("Deleting 152.14.106.22:30006. Please wait."), true);
 
         waitForAlert(driver, alert);
-        assertEquals(alert.getText().contains("Done"), true);
+        assertEquals(alert.getText().contains("Successful Failover"), true);
         alert.accept();
 
         serverTable = driver.findElement(By.id("serverTable"));
@@ -438,6 +474,12 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         assertEquals(6, rowCount);
     }
 
+
+    /**
+     * Test to make sure a disabled server is reflected in the table.
+     * A server is shutdown. The server appears as disabled in the table.
+     * @throws Exception
+     */
     @Test
     public void testDisabledStatus() throws Exception {
         // find the table of Servers
@@ -493,6 +535,10 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         }
     }
 
+    /**
+     * Method to shutdown a specified server. This will result in a disabled state.
+     * @param server1
+     */
     public void shutdownServer(Server server1) {
         RedisClient client;
         RedisClusterClient clusterClient;
@@ -510,46 +556,16 @@ public class DashboardTest extends com.ncsu.csc492.group17.test.SeleniumTest {
         redissync6 = redis6.sync();
 
         redissync6.shutdown(false);
-        //assertThat(failover).isEqualTo("OK");
 
     }
 
-    public void reviveServer(Server serverAdd, Server existingServer) {
-        //node we are adding
-        String serverAddHost = serverAdd.getHost();
-        int serverAddPort = serverAdd.getPort();
-
-        //node that already exists in the cluster
-        String existingServerHost = existingServer.getHost();
-        int existingServerPort = existingServer.getPort();
-
-        //connection to node to add
-        RedisURI uri = new RedisURI();
-        uri.setHost(existingServerHost);
-        uri.setPort(existingServerPort);
-        RedisClusterClient redisClient = RedisClusterClient.create(uri);
-
-        StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-        RedisClusterCommands<String, String> commands = connection.getConnection(serverAddHost, serverAddPort).sync();
-
-        //connection to existing cluster node
-        RedisURI uriExisting = new RedisURI();
-        uriExisting.setHost(existingServerHost);
-        uriExisting.setPort(existingServerPort);
-        RedisClusterClient redisClientExisting = RedisClusterClient.create(uriExisting);
-
-        StatefulRedisClusterConnection<String, String> connectionExisting = redisClientExisting.connect();
-        RedisClusterCommands<String, String> commandsExisting1 = connectionExisting.sync();
-        RedisClusterCommands<String, String> commandsExisting = connectionExisting.getConnection(existingServerHost, existingServerPort).sync();
-
-        System.out.println(commandsExisting1.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
-        System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
-        System.out.println(commands.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
-
-    }
-
-
-
+    /**
+     * Method to make sure the test waits appropriately for an
+     * alert to appear.
+     * @param driver
+     * @param alert
+     * @throws Exception
+     */
     public void waitForAlert(WebDriver driver, Alert alert) throws Exception {
         boolean done = false;
         while(!done)

@@ -145,28 +145,16 @@ public class RESTControllerTest {
 
     }
 
-
-
     @Test
     public void testGetQueues() {
         List<String> list = controller.getQueues(server1);
         assertEquals(true, list.size() >= 1);
     }
 
-    /**
     @Test
-    public void testAddSlots() {
-        Server.Slots s = new Server.Slots();
-        s.setBeginningSlot(12001);
-        s.setEndSlot(13000);
-
-        Server.Slots slot[] = new Server.Slots[1];
-        slot[0] = s;
-
-        server1.setSlots(slot);
-        String message = controller.addSlots(server1);
-        assertEquals("Slots 12001 to 13000 added to 152.14.106.29:6000", message);
+    public void testGetMemory() {
+        Server memServer = controller.getMemory(server1);
+        assertEquals(true, memServer.getMemory() > 0);
     }
-    */
 
 }
