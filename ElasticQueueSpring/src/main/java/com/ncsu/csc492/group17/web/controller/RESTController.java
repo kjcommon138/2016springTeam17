@@ -64,6 +64,10 @@ public class RESTController {
 					System.out.println("Server Keep: " + serverKeep.getPort());
 				}
 			}
+			
+			if(serverKeep == null){
+				return "Cannot soft remove, this master has no slaves. Use removeServers instead for hard removal";
+			}
 
 			//connection to slave we want to take over the master
 			RedisClient client = RedisClient.create(RedisURI.Builder.redis(serverKeep.getHost(), serverKeep.getPort()).build());
@@ -319,13 +323,6 @@ public class RESTController {
 		System.out.println(commandsExisting.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 		System.out.println(commands.clusterMeet(serverAdd.getHost(), serverAdd.getPort()));
 
-		/*try {
-            Thread.sleep(7500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-
 
 		while (serverAdd.getNodeID() == null) {
 			System.out.println("Searching for node");
@@ -424,11 +421,6 @@ public class RESTController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/getServers")
 	public List<Server> getServers(@RequestBody Server server1) {
-
-		/*RedisClient redisClient = new RedisClient(server1.getHost(), server1.getPort());
-
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();*/
 
 		RedisURI uri = new RedisURI();
 		uri.setHost(server1.getHost());
