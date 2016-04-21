@@ -143,7 +143,7 @@
 
 </div>
 
-<div id="dialog" title="Add New Master Server">
+<div id="dialog" title="Add Server">
     <label>New Host IP Address:</label>
     <input id="newHost" class="form-control" name="newHost" type="text" style="color:black;">
     <label>New Host Port Number:</label>
