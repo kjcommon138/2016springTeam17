@@ -45,7 +45,6 @@ public class RESTController {
 		//get all information for server to remove
 		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
-			//if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
 			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost)) {
 				serverRemove = allServers.get(i);
 				System.out.println("Server Remove: " + serverRemove.getPort());
@@ -139,7 +138,6 @@ public class RESTController {
 		//assigns the serverToRemove and serverToKeep
 		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
-			System.out.println("Current Server: " + currentServer.getPort());
 			if (currentServer.getPort() == serverRemovePort && currentServer.getHost().equals(serverRemoveHost) && !currentServer.getType().equalsIgnoreCase("slave")) {
 				serverRemove = allServers.get(i);
 				nodeID = serverRemove.getNodeID();
@@ -153,7 +151,6 @@ public class RESTController {
 		}
 
 		//gets all the slaves for the server to remove
-		//Server [] slaves = new Server[0];
 		List<Server> slaves = new ArrayList<Server>();
 		for (int i = 0; i < allServers.size(); i++) {
 			Server currentServer = allServers.get(i);
@@ -179,8 +176,6 @@ public class RESTController {
 
 		}
 
-		//NEW
-
 
 		RedisURI uri3 = new RedisURI();
 		System.out.println("Server Keep Port: " + serverKeep.getPort());
@@ -189,7 +184,6 @@ public class RESTController {
 		RedisClusterClient redisClient3 = RedisClusterClient.create(uri3);
 
 		StatefulRedisClusterConnection<String, String> connection3 = redisClient3.connect();
-		RedisAdvancedClusterCommands<String, String> commands4 = connection3.sync();
 		RedisClusterCommands<String, String> commands3 = connection3.getConnection(serverKeep.getHost(), serverKeep.getPort()).sync();
 
 		for (int k = 0; k < allSlotsToRemove.length; k++) {
@@ -512,40 +506,15 @@ public class RESTController {
 	@RequestMapping(method = RequestMethod.POST, value = "/getQueues")
 	public List<String> getQueues(@RequestBody Server server) {
 
-
-		/*RedisClient redisClient = new RedisClient(server.getHost(), server.getPort());
-		StatefulRedisConnection<String, String> connection = redisClient.connect();
-		RedisCommands<String, String> commands = connection.sync();*/
-
 		RedisURI uri = new RedisURI();
 		uri.setHost(server.getHost());
 		uri.setPort(server.getPort());
-		//RedisClusterClient redisClient = new RedisClusterClient(uri);
 		RedisClusterClient redisClient = RedisClusterClient.create(uri);
 
 		StatefulRedisClusterConnection<String, String> connection = redisClient.connect();
-		//RedisAdvancedClusterCommands<String, String> commands = connection.sync();
-
 
 		RedisClusterCommands<String, String> commands = connection.getConnection(server.getHost(), server.getPort()).sync();
 
-		//gets slots distribution for all servers in cluster
-		/*List<Object> clusterSlots = commands.clusterSlots();
-		String serversInfo[][] = new String[clusterSlots.size()][4];
-		String clusterSlotsArray[] = null;
-		for(int i = 0; i < clusterSlots.size(); i++){
-			String clusterSlotsInfo = clusterSlots.get(i).toString();
-			clusterSlotsInfo = clusterSlotsInfo.replace("[", "").replace("]", "");
-			clusterSlotsArray = clusterSlotsInfo.split("\\s*,\\s*");
-			for(int j = 0; j < clusterSlotsArray.length; j++){
-				System.out.println(clusterSlotsArray[j]);
-				serversInfo[i][j] = clusterSlotsArray[j];
-			}
-		}*/
-
-		//List<String> items = commands.clusterGetKeysInSlot(0, 15999);
-		//System.out.println("servers info: " + items);
-		//List<String> keys = commands.keys("*");
 		List<String> keys = commands.keys("*");
 		int size = keys.size();
 		String movedHostPort = server.getHost() + ":" + server.getPort();
@@ -678,7 +647,6 @@ public class RESTController {
 
 		int numSlots = endSlot - beginningSlot + 1;
 
-		System.out.println(numSlots);
 		int[] slots = new int[numSlots];
 
 		for (int i = beginningSlot; i < endSlot + 1; i++) {
