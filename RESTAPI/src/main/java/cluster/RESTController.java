@@ -621,13 +621,8 @@ public class RESTController {
 
 		RedisAdvancedClusterCommands<String, String> commands = connection.sync();
 
-		String info = commands.info();
-		System.out.println(info);
-
-		int beginningMem = info.indexOf("# Memory");
-		int endMem = info.indexOf("# Persistence");
-
-		String memory = info.substring(beginningMem, endMem);
+		String memory = commands.info("memory");
+		System.out.println(memory);
 
 		String memoryArray[] = memory.split("\\r?\\n");
 		String memoryUsage[] = memoryArray[1].split(":");
@@ -638,10 +633,7 @@ public class RESTController {
 		System.out.println("Memory RSS: " + memoryArray[3]);
 		System.out.println("Memory Percent: " + memoryPercent);
 
-		int beginningCPU = info.indexOf("# CPU");
-		int endCPU = info.indexOf("# Cluster");
-
-		String cpu = info.substring(beginningCPU, endCPU);
+		String cpu = commands.info("cpu");
 
 		String cpuArray[] = cpu.split("\\r?\\n");
 		String cpuUsage[] = cpuArray[1].split(":");
