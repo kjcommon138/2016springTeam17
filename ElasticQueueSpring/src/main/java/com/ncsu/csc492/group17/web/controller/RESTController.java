@@ -610,40 +610,6 @@ public class RESTController {
 		return server;
 	}
 
-	/*@RequestMapping(method = RequestMethod.POST, value = "/addSlots")
-	public String addSlots(@RequestBody Server server1) {
-		RedisURI uri1 = new RedisURI();
-		uri1.setHost(server1.getHost());
-		uri1.setPort(server1.getPort());
-		RedisClusterClient redisClient = RedisClusterClient.create(uri1);
-
-
-		RedisClusterClient clusterClient = RedisClusterClient.create(uri1);
-		StatefulRedisClusterConnection<String, String> connection = clusterClient.connect();
-
-		RedisClusterCommands<String, String> commands = connection.getConnection(server1.getHost(), server1.getPort()).sync();
-
-
-		int beginningSlot = server1.getSlots()[0].getBeginningSlot();
-		int endSlot = server1.getSlots()[0].getEndSlot();
-		int numSlots = endSlot - beginningSlot + 1;
-
-		int[] slots = new int[numSlots];
-
-		for (int i = beginningSlot; i < endSlot + 1; i++) {
-			slots[i - beginningSlot] = i;
-		}
-
-		String a = commands.clusterAddSlots(slots);
-		System.out.println(a);
-
-		connection.close();
-		redisClient.shutdown();
-
-		return ("Slots " + beginningSlot + " to " + endSlot + " added to " + server1.getHost() + ":" + server1.getPort());
-
-	}*/
-
 	public int[] getSlots(int beginningSlot, int endSlot) {
 
 		int numSlots = endSlot - beginningSlot + 1;
