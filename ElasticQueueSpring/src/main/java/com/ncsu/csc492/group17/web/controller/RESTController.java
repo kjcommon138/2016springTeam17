@@ -1,8 +1,8 @@
 package com.ncsu.csc492.group17.web.controller;
 
 import com.lambdaworks.redis.RedisClient;
-import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.RedisException;
+import com.lambdaworks.redis.RedisURI;
 import com.lambdaworks.redis.api.StatefulRedisConnection;
 import com.lambdaworks.redis.cluster.RedisClusterClient;
 import com.lambdaworks.redis.cluster.api.StatefulRedisClusterConnection;
@@ -11,7 +11,6 @@ import com.lambdaworks.redis.cluster.api.sync.RedisClusterCommands;
 import com.ncsu.csc492.group17.web.model.Server;
 import com.ncsu.csc492.group17.web.model.Server.Slots;
 import com.ncsu.csc492.group17.web.model.ServerRequest;
-
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -338,6 +337,8 @@ public class RESTController {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
+
 		}
 
 		//only migrate slots if server to add is not a slave
@@ -398,6 +399,7 @@ public class RESTController {
 				}
 				System.out.println(commandsExisting.clusterSetSlotNode(firstHalf[k], serverAdd.getNodeID()));
 			}
+
 
 		}
 
